@@ -22,7 +22,11 @@ http.createServer(async (req, res) => {
       if (!file.startsWith(ROOT)) throw new Error("bad path");
       const st = await fs.stat(file).catch(() => null);
       if (st?.isDirectory()) file = path.join(file, "index.html");
-      else if (!st) file += ".html";
+      else if (!st) {
+        const html = await fs.stat(file + ".html").catch(() => null);
+        // /blog/<slug> → blog/post.html (igual que la regla de vercel.json)
+        file = html ? file + ".html" : /^\/blog\/[^/]+$/.test(url.pathname) ? path.join(ROOT, "blog/post.html") : file;
+      }
     }
     const data = await fs.readFile(file);
     res.writeHead(200, { "Content-Type": MIME[path.extname(file)] || "application/octet-stream" });

@@ -444,5 +444,52 @@
       }
     ],
     "cookiesText": "Usamos cookies propias para que la web funcione bien."
+  },
+  "blog": {
+    "show": true,
+    "eyebrow": "Novedades",
+    "title": "Lo último",
+    "titleAccent": "del horno",
+    "homeCount": 3,
+    "pageTitle": "Novedades",
+    "pageIntro": "Anuncios, noticias y todo lo que se cuece en Forn Almenar.",
+    "posts": [
+      {
+        "id": "p1",
+        "slug": "ya-estan-aqui-los-panellets",
+        "title": "Ya están aquí los panellets",
+        "category": "Anuncio",
+        "date": "2026-09-28",
+        "cover": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=1600&q=80",
+        "pinned": true,
+        "published": true,
+        "excerpt": "Piñones, almendra, coco y boniato: este año preparamos cuatro variedades. Ya puedes encargarlos.",
+        "body": "<p>Como cada otoño, el obrador huele a almendra tostada. <strong>Ya tenemos panellets</strong> y este año preparamos cuatro variedades:</p><ul><li>Piñones (el clásico de siempre)</li><li>Almendra y limón</li><li>Coco</li><li>Boniato y canela</li></ul><h2>Cómo encargarlos</h2><p>Puedes reservarlos en tienda, por teléfono o desde el formulario de encargos de la web. Te recomendamos encargarlos con al menos <strong>48 horas</strong> de antelación para la semana de Todos los Santos.</p><blockquote>«La receta de los panellets de piñones es la misma que usaba el abuelo en 1952.»</blockquote><p>¡Te esperamos!</p>"
+      },
+      {
+        "id": "p2",
+        "slug": "horario-especial-12-de-octubre",
+        "title": "Horario especial el 12 de octubre",
+        "category": "Aviso",
+        "date": "2026-09-22",
+        "cover": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=1600&q=80",
+        "pinned": false,
+        "published": true,
+        "excerpt": "El día del Pilar abrimos por la mañana en las dos tiendas. Así quedan los horarios.",
+        "body": "<p>El <strong>lunes 12 de octubre</strong> es festivo, pero no te quedarás sin pan. Abrimos con horario de domingo:</p><ul><li><strong>Centro:</strong> de 07:30 a 14:00</li><li><strong>Obrador:</strong> de 07:00 a 13:00</li></ul><p>Por la tarde las dos tiendas estarán cerradas. ¡Gracias por vuestra comprensión!</p>"
+      },
+      {
+        "id": "p3",
+        "slug": "asi-cuidamos-nuestra-masa-madre",
+        "title": "Así cuidamos nuestra masa madre",
+        "category": "Noticia",
+        "date": "2026-09-10",
+        "cover": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=1600&q=80",
+        "pinned": false,
+        "published": true,
+        "excerpt": "Lleva décadas viva y la alimentamos cada día. Te contamos el secreto de nuestro pan.",
+        "body": "<p>La masa madre es un fermento natural de harina y agua. La nuestra lleva <strong>décadas</strong> viva y la alimentamos cada mañana, antes de encender el horno.</p><h2>¿Por qué masa madre?</h2><p>Porque fermenta despacio. Eso hace que el pan tenga más sabor, una miga más jugosa y que aguante tierno varios días.</p><h3>Nuestros tres básicos</h3><ol><li>Harina de molino de piedra.</li><li>Agua y sal, nada más.</li><li>Tiempo: hasta 48 horas de fermentación.</li></ol><p>Si quieres ver cómo trabajamos, pregúntanos en tienda: nos encanta enseñarlo.</p>"
+      }
+    ]
   }
 }

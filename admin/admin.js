@@ -196,6 +196,18 @@
       ],
     },
     {
+      id: "blog", name: "Blog · Novedades", desc: "Noticias, anuncios y avisos", special: true, anchor: "novedades",
+      fields: [
+        { key: "show", label: "Mostrar las últimas novedades en la portada", type: "toggle" },
+        { key: "homeCount", label: "¿Cuántas noticias se ven en la portada?", type: "number" },
+        { type: "group", label: "Títulos del bloque en la portada", collapsed: true, fields: head() },
+        { type: "group", label: "Página /blog", collapsed: true, fields: [
+          { key: "pageTitle", label: "Título de la página", type: "text" },
+          { key: "pageIntro", label: "Texto de introducción", type: "textarea", rows: 2 },
+        ]},
+      ],
+    },
+    {
       id: "footer", name: "Pie de página", desc: "Texto final, avisos legales y cookies", anchor: "footer",
       fields: [
         { key: "text", label: "Texto del pie", type: "textarea", rows: 3 },
@@ -221,6 +233,8 @@
     search: "",
     device: innerWidth < 760 ? "mobile" : "desktop",
     previewReady: false,
+    previewPath: "/",
+    blogPost: null,
   };
 
   /* ---------- API ---------- */
@@ -278,7 +292,10 @@
     if (!state.content) {
       try {
         const { content } = await api("/api/content?fresh=" + Date.now());
-        state.content = content || (await (await fetch("/content/default.json")).json());
+        const defaults = await (await fetch("/content/default.json")).json();
+        state.content = content || defaults;
+        // Si el contenido guardado es de una versión anterior, añade las secciones nuevas
+        for (const k of Object.keys(defaults)) if (!(k in state.content)) state.content[k] = defaults[k];
       } catch (e) {
         toast("No se ha podido cargar el contenido: " + e.message, "error", 8000);
         state.content = await (await fetch("/content/default.json")).json();
@@ -301,12 +318,12 @@
       nav.append(h("button", {
         class: `nav-item ${s.id === state.section ? "is-active" : ""} ${hidden ? "is-off" : ""}`,
         onclick: () => {
-          state.section = s.id; state.search = "";
+          state.section = s.id; state.search = ""; state.blogPost = null;
           history.replaceState(null, "", "#" + s.id);
           renderNav(); renderEditor();
           $("#editor").scrollTop = 0;
           document.body.classList.remove("menu-open");
-          if (s.anchor) postPreview({ type: "scrollTo", id: s.anchor });
+          if (s.anchor && state.previewPath === "/") postPreview({ type: "scrollTo", id: s.anchor });
         },
       }, h("span", { class: "nav-item__name" }, s.name, hidden ? h("em", {}, "oculta") : ""), h("span", { class: "nav-item__desc" }, s.desc)));
     });
@@ -320,7 +337,10 @@
     const sec = SECTIONS.find((s) => s.id === state.section);
     const ed = $("#editor");
     ed.innerHTML = "";
+    setPreviewPath(sec.id === "blog" ? (state.blogPost ? "/blog/_preview" : "/blog") : "/");
+    if (sec.id === "blog" && state.blogPost) return renderPostEditor(ed);
     ed.append(h("div", { class: "editor__head" }, h("h1", {}, sec.name), h("p", {}, sec.desc)));
+    if (sec.id === "blog") return renderBlogList(ed, sec);
     if (sec.special) return renderBackups(ed);
     const obj = state.content[sec.id] || (state.content[sec.id] = {});
     ed.append(renderFields(sec.fields, obj, sec.id));
@@ -355,6 +375,11 @@
       }
       case "row":
         return h("div", { class: "row" }, renderFields(f.fields, obj, path));
+      case "date": {
+        const input = h("input", { type: "date", value: obj[f.key] || "" });
+        input.addEventListener("input", () => { obj[f.key] = input.value; changed(); });
+        return wrap(f, input);
+      }
       case "text":
       case "number": {
         const input = h("input", { type: f.type === "number" ? "number" : "text", value: obj[f.key] ?? "", placeholder: f.placeholder || "" });
@@ -564,6 +589,181 @@
       h("span", { class: "field__help" }, "Marca los días que abrís. Si un día hacéis horario partido, poned la hora de apertura y la de cierre."));
   }
 
+  /* =========================================================
+     BLOG
+     ========================================================= */
+  const blogData = () => state.content.blog || (state.content.blog = { show: true, homeCount: 3, posts: [] });
+  const today = () => new Date().toISOString().slice(0, 10);
+  const slugify = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 70) || "entrada";
+  const uniqueSlug = (base, id) => {
+    const used = new Set(blogData().posts.filter((p) => p.id !== id).map((p) => p.slug));
+    let s = base, n = 2;
+    while (used.has(s)) s = `${base}-${n++}`;
+    return s;
+  };
+  const fmtDate = (d) => d ? new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : "Sin fecha";
+  const CATS = ["Noticia", "Anuncio", "Aviso", "Evento", "Receta"];
+
+  function openPost(id) {
+    state.blogPost = id;
+    renderEditor();
+    $("#editor").scrollTop = 0;
+  }
+
+  function renderBlogList(ed, sec) {
+    const B = blogData();
+    const posts = [...B.posts].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || String(b.date).localeCompare(String(a.date)));
+    const newPost = () => {
+      const id = "p" + Date.now().toString(36);
+      B.posts.unshift({ id, slug: "", title: "", category: "Noticia", date: today(), cover: "", excerpt: "", body: "", published: false, pinned: false });
+      changed();
+      openPost(id);
+    };
+    const search = h("input", { type: "search", class: "list__search", placeholder: "Buscar noticia…" });
+    const list = h("div", { class: "posts" });
+    const draw = () => {
+      const q = search.value.trim().toLowerCase();
+      list.innerHTML = "";
+      const shown = posts.filter((p) => !q || `${p.title} ${p.category}`.toLowerCase().includes(q));
+      if (!shown.length) list.append(h("p", { class: "muted empty-note" }, B.posts.length ? "No hay noticias con ese texto." : "Aún no hay noticias. ¡Crea la primera!"));
+      shown.forEach((p) => list.append(h("button", { type: "button", class: `post-row ${p.published === false ? "is-draft" : ""}`, onclick: () => openPost(p.id) },
+        h("span", { class: "item__thumb" }, p.cover ? h("img", { src: p.cover, alt: "" }) : ""),
+        h("span", { class: "post-row__main" },
+          h("strong", {}, p.title || "Sin título"),
+          h("small", {}, [p.category, fmtDate(p.date)].filter(Boolean).join(" · "))),
+        h("span", { class: "post-row__badges" },
+          p.pinned ? h("span", { class: "badge badge--gold" }, "Destacada") : "",
+          h("span", { class: `badge ${p.published === false ? "badge--draft" : "badge--ok"}` }, p.published === false ? "Borrador" : "Publicada")),
+        h("span", { class: "post-row__go", "aria-hidden": "true" }, "›"))));
+    };
+    search.addEventListener("input", draw);
+    draw();
+    ed.append(
+      h("div", { class: "list__tools" }, search, h("button", { type: "button", class: "btn btn--add", onclick: newPost }, "+ Nueva noticia")),
+      list,
+      h("div", { class: "blog-settings" }, h("h2", { class: "subhead" }, "Ajustes del blog"), renderFields(sec.fields, B, "blog")));
+  }
+
+  function renderPostEditor(ed) {
+    const B = blogData();
+    const post = B.posts.find((p) => p.id === state.blogPost);
+    if (!post) { state.blogPost = null; return renderEditor(); }
+    const back = h("button", { type: "button", class: "back-link", onclick: () => { state.blogPost = null; renderEditor(); } }, "← Todas las noticias");
+
+    const statusBox = h("div", { class: "post-status" });
+    const drawStatus = () => {
+      statusBox.className = `post-status ${post.published === false ? "is-draft" : "is-live"}`;
+      statusBox.innerHTML = "";
+      statusBox.append(
+        h("div", {}, h("strong", {}, post.published === false ? "Borrador" : "Publicada"),
+          h("span", {}, post.published === false ? "No se ve en la web hasta que la publiques y guardes." : "Visible en la web al guardar los cambios.")),
+        h("button", { type: "button", class: `btn btn--small ${post.published === false ? "btn--primary" : ""}`, onclick: () => {
+          post.published = post.published === false;
+          drawStatus(); changed();
+          if (post.published) toast("Lista para publicar. Pulsa «Guardar cambios» para que aparezca en la web.");
+        } }, post.published === false ? "Publicar" : "Pasar a borrador"));
+    };
+    drawStatus();
+
+    // Título (actualiza la dirección mientras no se haya cambiado a mano)
+    const titleInput = h("input", { type: "text", class: "input-title", value: post.title, placeholder: "Título de la noticia" });
+    const slugInput = h("input", { type: "text", value: post.slug });
+    const slugPreview = h("span", { class: "field__help" });
+    const drawSlug = () => { slugPreview.textContent = `Dirección: ${location.origin}/blog/${post.slug || "…"}`; };
+    titleInput.addEventListener("input", () => {
+      post.title = titleInput.value;
+      if (!post.slugEdited) { post.slug = uniqueSlug(slugify(post.title), post.id); slugInput.value = post.slug; drawSlug(); }
+      changed();
+    });
+    slugInput.addEventListener("input", () => { post.slugEdited = true; post.slug = slugify(slugInput.value); drawSlug(); changed(); });
+    slugInput.addEventListener("change", () => { post.slug = uniqueSlug(slugify(slugInput.value), post.id); slugInput.value = post.slug; drawSlug(); changed(); });
+    drawSlug();
+
+    // Categoría con sugerencias
+    const listId = "cats-" + post.id;
+    const usedCats = [...new Set([...CATS, ...B.posts.map((p) => p.category).filter(Boolean)])];
+    const catInput = h("input", { type: "text", value: post.category || "", list: listId, placeholder: "Noticia, Anuncio, Aviso…" });
+    catInput.addEventListener("input", () => { post.category = catInput.value; changed(); });
+
+    ed.append(
+      back,
+      h("div", { class: "editor__head" }, h("h1", {}, post.title ? "Editar noticia" : "Nueva noticia")),
+      statusBox,
+      h("label", { class: "field" }, h("span", { class: "field__label" }, "Título"), titleInput),
+      h("div", { class: "row" },
+        h("label", { class: "field" }, h("span", { class: "field__label" }, "Tipo"), catInput,
+          h("datalist", { id: listId }, usedCats.map((c) => h("option", { value: c })))),
+        renderField({ key: "date", label: "Fecha", type: "date", small: true }, post, "post")),
+      renderField({ key: "pinned", label: "Destacar", type: "toggle", help: "Sale la primera y más grande en el blog y en la portada." }, post, "post"),
+      renderField({ key: "cover", label: "Foto de portada", type: "image", ratio: "wide", maxSize: 2000 }, post, "post"),
+      renderField({ key: "excerpt", label: "Resumen", type: "textarea", rows: 2, help: "Una o dos frases para la tarjeta. Si lo dejas vacío se usa el principio del texto." }, post, "post"),
+      h("div", { class: "field" }, h("span", { class: "field__label" }, "Texto de la noticia"), richEditor(post),
+        h("span", { class: "field__help" }, "Selecciona texto para ponerlo en negrita, hacer un título, una lista o un enlace. Con el botón de imagen puedes meter fotos dentro del texto.")),
+      h("details", { class: "group" }, h("summary", {}, "Opciones avanzadas"),
+        h("div", { class: "group__body" },
+          h("label", { class: "field" }, h("span", { class: "field__label" }, "Dirección de la noticia"), slugInput, slugPreview),
+          h("button", { type: "button", class: "btn btn--danger", onclick: () => {
+            if (!confirm(`¿Borrar la noticia «${post.title || "sin título"}»? Podrás recuperarla desde Copias de seguridad si ya estaba guardada.`)) return;
+            B.posts.splice(B.posts.indexOf(post), 1);
+            state.blogPost = null; changed(); renderEditor();
+            toast("Noticia borrada. Pulsa «Guardar cambios» para aplicarlo.");
+          } }, "Borrar esta noticia"))),
+    );
+  }
+
+  // Editor de texto enriquecido (Quill)
+  function richEditor(post) {
+    const wrapEl = h("div", { class: "rich" });
+    const area = h("div", {});
+    wrapEl.append(area);
+    if (!window.Quill) { wrapEl.append(h("p", { class: "muted" }, "No se ha podido cargar el editor.")); return wrapEl; }
+    const quill = new Quill(area, {
+      theme: "snow",
+      placeholder: "Escribe aquí la noticia…",
+      modules: {
+        toolbar: {
+          container: [[{ header: [2, 3, false] }], ["bold", "italic", "underline", "strike"], [{ list: "ordered" }, { list: "bullet" }], ["blockquote", "link", "image"], [{ align: [] }], ["clean"]],
+          handlers: {
+            image: () => {
+              const input = h("input", { type: "file", accept: "image/jpeg,image/png,image/webp,image/gif" });
+              input.addEventListener("change", async () => {
+                const file = input.files[0];
+                if (!file) return;
+                const range = quill.getSelection(true) || { index: quill.getLength() };
+                const t = h("div", { class: "toast is-in" }, "Subiendo foto…");
+                $("#toasts").append(t);
+                try {
+                  const blob = await prepareImage(file, 1600);
+                  const { url } = await api("/api/upload", { method: "POST", headers: { "X-File-Type": blob.type, "Content-Type": "application/octet-stream" }, body: blob });
+                  quill.insertEmbed(range.index, "image", url, "user");
+                  quill.setSelection(range.index + 1, 0, "silent");
+                } catch (e) { toast("No se ha podido subir la foto: " + e.message, "error", 6000); }
+                t.remove();
+              });
+              input.click();
+            },
+          },
+        },
+      },
+    });
+    if (post.body) quill.clipboard.dangerouslyPasteHTML(post.body, "silent");
+    quill.on("text-change", (_d, _o, source) => {
+      if (source !== "user") return;
+      const empty = quill.getText().trim() === "" && !quill.root.querySelector("img");
+      post.body = empty ? "" : quill.getSemanticHTML().replace(/&nbsp;/g, " ");
+      changed();
+    });
+    // Ayudas en español para los botones
+    const tips = { "ql-bold": "Negrita", "ql-italic": "Cursiva", "ql-underline": "Subrayado", "ql-strike": "Tachado", "ql-blockquote": "Cita", "ql-link": "Enlace", "ql-image": "Insertar foto", "ql-clean": "Quitar formato", "ql-header": "Tipo de texto", "ql-align": "Alineación" };
+    $$(".ql-toolbar button, .ql-toolbar .ql-picker", wrapEl).forEach((b) => {
+      const cls = [...b.classList].find((c) => tips[c]);
+      if (cls) b.title = tips[cls];
+      if (b.classList.contains("ql-list")) b.title = b.value === "ordered" ? "Lista numerada" : "Lista con puntos";
+    });
+    return wrapEl;
+  }
+
   /* ---------- Copias de seguridad ---------- */
   async function renderBackups(ed) {
     const box = h("div", { class: "backups" }, h("p", { class: "muted" }, "Cargando copias…"));
@@ -634,14 +834,21 @@
      ========================================================= */
   const frame = $("#preview-frame");
   const postPreview = (msg) => frame.contentWindow?.postMessage(msg, location.origin);
-  const sendPreview = () => { if (state.previewReady && state.content) postPreview({ type: "preview", content: state.content }); };
+  const sendPreview = () => {
+    if (state.previewReady && state.content) postPreview({ type: "preview", content: state.content, postId: state.section === "blog" ? state.blogPost : null });
+  };
+  function setPreviewPath(path) {
+    if (state.previewPath === path) return;
+    state.previewPath = path; state.previewReady = false;
+    frame.src = `${path}?preview=1`;
+  }
   let pvTimer;
   const schedulePreview = () => { clearTimeout(pvTimer); pvTimer = setTimeout(sendPreview, 250); };
   addEventListener("message", (e) => {
     if (e.origin === location.origin && e.data?.type === "preview-ready") {
       state.previewReady = true; sendPreview();
       const sec = SECTIONS.find((s) => s.id === state.section);
-      if (sec?.anchor) setTimeout(() => postPreview({ type: "scrollTo", id: sec.anchor }), 300);
+      if (sec?.anchor && state.previewPath === "/") setTimeout(() => postPreview({ type: "scrollTo", id: sec.anchor }), 300);
     }
   });
 

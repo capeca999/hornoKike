@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/vendor/quill.snow.css" />
   <link rel="stylesheet" href="/admin/admin.css" />
   <script>addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG")t.style.visibility="hidden"},true);</script>
 </head>
@@ -39,7 +40,7 @@
       <div class="topbar__actions">
         <button class="btn btn--ghost topbar__preview-toggle" id="preview-toggle"><span class="hide-xs">Vista previa</span><span class="show-xs">Ver</span></button>
         <a class="btn btn--ghost hide-sm" href="/" target="_blank" rel="noopener">Ver la web ↗</a>
-        <button class="btn btn--primary" id="save-btn" disabled>Guardar<span class="hide-xs">&nbsp;cambios</span></button>
+        <button class="btn btn--primary" id="save-btn" disabled>Guardar<span class="hide-xs"> cambios</span></button>
         <button class="icon-btn" id="logout-btn" title="Salir" aria-label="Salir">⏻</button>
       </div>
     </header>
@@ -70,6 +71,7 @@
 
   <div class="toasts" id="toasts" aria-live="polite"></div>
 
+  <script src="/admin/vendor/quill.js"></script>
   <script src="/admin/admin.js"></script>
 </body>
 </html>
