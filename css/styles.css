@@ -156,7 +156,7 @@ p { margin: 0 0 1em; }
   .header__inner { grid-template-columns: auto 1fr; }
   .nav { display: none; }
   .burger { display: block; position: relative; z-index: 60; }
-  .burger.is-open span { background: var(--cream); }
+  .burger.is-open span { background: var(--burgundy); }
   .header__logo { justify-self: start; }
 }
 

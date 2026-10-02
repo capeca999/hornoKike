@@ -10,30 +10,8 @@
   const isPreview = new URLSearchParams(location.search).has("preview") && window.parent !== window;
   const PAGE = document.body.dataset.page || "home"; // home | blog | post
 
-  /* ---------- Cabecera, menú móvil, WhatsApp y cookies (iguales en todas las páginas) ---------- */
-  const NAV = [
-    ["hero", "/#inicio", "Inicio", "l"], ["products", "/#productos", "Productos", "l"], ["blog", "/blog", "Novedades", "l"],
-    ["history", "/#historia", "Nuestra historia", "r"], ["stores", "/#tiendas", "Tiendas", "r"],
-  ];
-  const navLinks = (side) => NAV.filter((n) => !side || n[3] === side)
-    .map(([k, href, label]) => `<a href="${href}" data-sec="${k}" ${k === "blog" && PAGE !== "home" ? 'aria-current="page"' : ""}>${label}</a>`).join("");
-  document.body.insertAdjacentHTML("afterbegin", `
-    <header class="header ${PAGE !== "home" ? "header--solid" : ""}" id="top">
-      <div class="header__inner">
-        <nav class="nav nav--left" aria-label="Principal">${navLinks("l")}</nav>
-        <a href="/" class="header__logo" aria-label="Forn Almenar, inicio">
-          <img src="/img/logo.png" alt="Forn Almenar 1952" width="792" height="458" data-logo />
-        </a>
-        <nav class="nav nav--right" aria-label="Secundaria">${navLinks("r")}
-          <a href="/#contacto" class="btn btn--small" data-sec="contact" data-header-btn>Haz tu encargo</a>
-        </nav>
-        <button class="burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
-      </div>
-    </header>
-    <div class="mobile-menu" id="mobile-menu" hidden>
-      ${navLinks()}<a href="/#obrador" data-sec="workshop">Obrador</a>
-      <a href="/#contacto" class="btn" data-sec="contact" data-header-btn>Haz tu encargo</a>
-    </div>`);
+  /* ---------- La cabecera y el menú están en el HTML. Aquí: marcar "Novedades" y añadir WhatsApp + cookies ---------- */
+  if (PAGE !== "home") $$('[data-sec="blog"]').forEach((a) => a.setAttribute("aria-current", "page"));
   document.body.insertAdjacentHTML("beforeend", `
     <a class="wa-float" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" data-wa hidden>
       <svg viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.8L4 20Z"/><path d="M9 9.5c.3 2 2.3 4.2 4.8 4.8l1-1.1 1.6.8c-.2 1.1-1 1.7-2 1.7-3.3-.3-6.4-3.4-6.6-6.6 0-1 .6-1.8 1.7-2l.8 1.6-1.3.8Z" fill="currentColor" stroke="none"/></svg>
@@ -337,7 +315,7 @@
   const footer = () => {
     const g = C.general, f = C.footer || {};
     const navItems = [["products", "/#productos", "Productos"], ["blog", "/blog", "Novedades"], ["workshop", "/#obrador", "Obrador"], ["history", "/#historia", "Nuestra historia"], ["contact", "/#contacto", "Encargos"]]
-      .filter(([k]) => (k === "blog" ? publishedPosts().length > 0 : C[k]?.show !== false));
+      .filter(([k]) => k === "blog" || C[k]?.show !== false);
     const icon = {
       ig: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>`,
       fb: `<svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v6h4v-6h3l1-4h-4V8Z"/></svg>`,
@@ -385,7 +363,7 @@
     if (g.siteDescription) $('meta[name="description"]')?.setAttribute("content", g.siteDescription);
     $$("[data-logo]").forEach((el) => (el.src = g.logo || "/img/logo.png"));
     $$("[data-header-btn]").forEach((el) => (el.textContent = g.headerButton || "Haz tu encargo"));
-    $$("[data-sec]").forEach((el) => (el.hidden = el.dataset.sec === "blog" ? !publishedPosts().length : C[el.dataset.sec]?.show === false));
+    $$("[data-sec]").forEach((el) => (el.hidden = el.dataset.sec === "blog" ? false : C[el.dataset.sec]?.show === false));
     const wa = $("[data-wa]");
     wa.hidden = !g.whatsapp; wa.href = waLink(g.whatsapp);
     $("[data-cookies-text]").textContent = C.footer?.cookiesText || "";
@@ -653,12 +631,17 @@
   };
 
   async function load() {
+    const defaultsP = fetch("/content/default.json").then((r) => r.json());
+    let saved = null;
     try {
       const r = await fetch("/api/content");
-      if (r.ok) { const d = await r.json(); if (d && d.content) return d.content; }
+      if (r.ok) { const d = await r.json(); saved = d && d.content; }
     } catch {}
-    const r = await fetch("/content/default.json");
-    return r.json();
+    const defaults = await defaultsP;
+    if (!saved) return defaults;
+    // Si lo guardado es de una versión anterior (p. ej. sin blog), completa lo que falte
+    for (const k of Object.keys(defaults)) if (!(k in saved)) saved[k] = defaults[k];
+    return saved;
   }
 
   if (isPreview) {
