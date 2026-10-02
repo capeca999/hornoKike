@@ -1,0 +1,448 @@
+{
+  "general": {
+    "siteTitle": "Forn Almenar · Horno artesano desde 1952",
+    "siteDescription": "Forn Almenar, horno artesano desde 1952. Pan de masa madre, bollería y pastelería tradicional elaborada cada mañana en nuestro obrador.",
+    "logo": "/img/logo.png",
+    "logoLight": "/img/logo-light.png",
+    "phone": "+34 960 000 000",
+    "whatsapp": "+34 600 000 000",
+    "email": "hola@fornalmenar.com",
+    "instagram": "https://instagram.com/",
+    "facebook": "https://facebook.com/",
+    "headerButton": "Haz tu encargo"
+  },
+  "hero": {
+    "show": true,
+    "slides": [
+      {
+        "eyebrow": "Desde 1952",
+        "title": "Pan de verdad,\ncomo siempre",
+        "text": "Masa madre, harinas de molino y horas de reposo. Sin prisas, sin atajos.",
+        "button": "Ver productos",
+        "link": "#productos",
+        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1920&q=80"
+      },
+      {
+        "eyebrow": "Recién salido del horno",
+        "title": "Bollería\nde mantequilla",
+        "text": "Croissants, ensaïmadas y napolitanas que salen del obrador cada mañana.",
+        "button": "Descúbrela",
+        "link": "#productos",
+        "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1920&q=80"
+      },
+      {
+        "eyebrow": "Por encargo",
+        "title": "Tartas para\ntus momentos",
+        "text": "Cumpleaños, celebraciones o un domingo cualquiera. Encárgala con 48 h.",
+        "button": "Haz tu encargo",
+        "link": "#contacto",
+        "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1920&q=80"
+      }
+    ]
+  },
+  "marquee": {
+    "show": true,
+    "items": [
+      {
+        "text": "Masa madre"
+      },
+      {
+        "text": "Hecho a mano"
+      },
+      {
+        "text": "Sin conservantes"
+      },
+      {
+        "text": "Harina de molino"
+      },
+      {
+        "text": "Desde 1952"
+      }
+    ]
+  },
+  "intro": {
+    "show": true,
+    "eyebrow": "Tres generaciones de horneros",
+    "title": "Elaboramos todo",
+    "titleAccent": "con las manos",
+    "text1": "Creemos en el oficio de siempre. Por eso trabajamos con masa madre propia, harinas de molinos cercanos y largas fermentaciones que dan al pan su sabor, su miga y su corteza.",
+    "text2": "No usamos conservantes ni mejorantes. Cada receta se elabora a diario en nuestro obrador, igual que lo hacía el abuelo cuando encendió el horno por primera vez en 1952.",
+    "image1": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=900&q=80",
+    "image2": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=900&q=80",
+    "stats": [
+      {
+        "value": 74,
+        "suffix": "",
+        "label": "años horneando"
+      },
+      {
+        "value": 48,
+        "suffix": "",
+        "label": "horas de fermentación"
+      },
+      {
+        "value": 100,
+        "suffix": "%",
+        "label": "artesano"
+      }
+    ]
+  },
+  "featured": {
+    "show": true,
+    "eyebrow": "Lo que más os gusta",
+    "title": "Nuestras creaciones",
+    "titleAccent": "son irresistibles",
+    "items": [
+      {
+        "name": "Croissant de mantequilla",
+        "text": "Hojaldre laminado a mano durante tres días. Crujiente por fuera, tierno por dentro.",
+        "image": "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=700&q=80"
+      },
+      {
+        "name": "Hogaza de masa madre",
+        "text": "Nuestro pan insignia: 48 horas de fermentación y corteza tostada al horno de piedra.",
+        "image": "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=700&q=80"
+      },
+      {
+        "name": "Pastas de la abuela",
+        "text": "La receta original de 1952: almendra, mantequilla y un toque de canela.",
+        "image": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=700&q=80"
+      }
+    ]
+  },
+  "products": {
+    "show": true,
+    "eyebrow": "Cada mañana en el mostrador",
+    "title": "Nuestros",
+    "titleAccent": "productos",
+    "categories": [
+      {
+        "id": "pan",
+        "name": "Pan"
+      },
+      {
+        "id": "bolleria",
+        "name": "Bollería"
+      },
+      {
+        "id": "pasteleria",
+        "name": "Pastelería"
+      },
+      {
+        "id": "salado",
+        "name": "Salado"
+      }
+    ],
+    "items": [
+      {
+        "visible": true,
+        "name": "Hogaza de masa madre",
+        "cat": "pan",
+        "price": "4,20 €",
+        "desc": "48 h de fermentación, corteza crujiente.",
+        "image": "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=600&q=80",
+        "tag": "Estrella"
+      },
+      {
+        "visible": true,
+        "name": "Barra de leña",
+        "cat": "pan",
+        "price": "1,30 €",
+        "desc": "La de toda la vida, cocida en horno de piedra.",
+        "image": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=600&q=80",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Pan integral de espelta",
+        "cat": "pan",
+        "price": "3,80 €",
+        "desc": "100% espelta integral con semillas.",
+        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Pan de centeno",
+        "cat": "pan",
+        "price": "3,50 €",
+        "desc": "Miga densa y aromática, ideal para tostar.",
+        "image": "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=600&q=80",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Croissant de mantequilla",
+        "cat": "bolleria",
+        "price": "1,60 €",
+        "desc": "Laminado a mano durante tres días.",
+        "image": "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=600&q=80",
+        "tag": "Favorito"
+      },
+      {
+        "visible": true,
+        "name": "Napolitana de chocolate",
+        "cat": "bolleria",
+        "price": "1,70 €",
+        "desc": "Hojaldre y chocolate negro del bueno.",
+        "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Ensaïmada",
+        "cat": "bolleria",
+        "price": "1,90 €",
+        "desc": "Esponjosa, con azúcar glas por encima.",
+        "image": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=600&q=80",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Tarta de chocolate",
+        "cat": "pasteleria",
+        "price": "24 €",
+        "desc": "Bizcocho húmedo y ganache. 8 raciones.",
+        "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80",
+        "tag": "Por encargo"
+      },
+      {
+        "visible": true,
+        "name": "Pastas de la abuela",
+        "cat": "pasteleria",
+        "price": "14 €/kg",
+        "desc": "Receta original de 1952 con almendra.",
+        "image": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Coca de llanda",
+        "cat": "pasteleria",
+        "price": "6,50 €",
+        "desc": "El clásico valenciano para el almuerzo.",
+        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Coca de verduras",
+        "cat": "salado",
+        "price": "3,20 €",
+        "desc": "Pimiento, cebolla y tomate asados.",
+        "image": "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=600&q=80",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Empanadilla de pisto",
+        "cat": "salado",
+        "price": "1,80 €",
+        "desc": "Masa casera y relleno de pisto con atún.",
+        "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80",
+        "tag": ""
+      }
+    ]
+  },
+  "cta": {
+    "show": true,
+    "eyebrow": "Encargos y celebraciones",
+    "title": "Te lo dejamos\npreparado",
+    "text": "Reserva tu pan, tu roscón o tu tarta y pasa a recogerlo sin colas.",
+    "button": "Haz tu encargo",
+    "image": "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=1920&q=80"
+  },
+  "workshop": {
+    "show": true,
+    "eyebrow": "El obrador",
+    "title": "Así nace",
+    "titleAccent": "nuestro pan",
+    "steps": [
+      {
+        "title": "La masa madre",
+        "text": "La alimentamos cada día desde hace décadas. Es el corazón de todo lo que horneamos."
+      },
+      {
+        "title": "Amasado lento",
+        "text": "Harinas de molino, agua y sal. Amasamos despacio para respetar el grano."
+      },
+      {
+        "title": "Fermentación",
+        "text": "Hasta 48 horas de reposo en frío para lograr aroma, sabor y una miga abierta."
+      },
+      {
+        "title": "Horno de piedra",
+        "text": "Cocción a alta temperatura que da esa corteza dorada que cruje al partirla."
+      }
+    ],
+    "gallery": [
+      {
+        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80"
+      }
+    ]
+  },
+  "history": {
+    "show": true,
+    "eyebrow": "Nuestra historia",
+    "title": "Más de 70 años",
+    "titleAccent": "encendiendo el horno",
+    "items": [
+      {
+        "year": "1952",
+        "title": "El primer horno",
+        "text": "El abuelo abre un pequeño horno de leña en Almenar. Pan de cada día para todo el pueblo."
+      },
+      {
+        "year": "1978",
+        "title": "Llega la pastelería",
+        "text": "La segunda generación incorpora la bollería y las tartas que hoy siguen siendo nuestras favoritas."
+      },
+      {
+        "year": "2005",
+        "title": "Nuevo obrador",
+        "text": "Ampliamos el obrador sin renunciar a lo esencial: masa madre, tiempo y manos."
+      },
+      {
+        "year": "Hoy",
+        "title": "La tercera generación",
+        "text": "Seguimos horneando cada madrugada con la misma ilusión, y con nuevas recetas en el mostrador."
+      }
+    ]
+  },
+  "stores": {
+    "show": true,
+    "eyebrow": "Te esperamos",
+    "title": "Nuestras",
+    "titleAccent": "tiendas",
+    "items": [
+      {
+        "name": "Forn Almenar · Centro",
+        "address": "Calle Mayor, 12 · 46000 Valencia",
+        "phone": "+34 960 000 000",
+        "mapsUrl": "https://maps.google.com/?q=Valencia",
+        "schedule": [
+          {
+            "open": "07:00",
+            "close": "20:30"
+          },
+          {
+            "open": "07:00",
+            "close": "20:30"
+          },
+          {
+            "open": "07:00",
+            "close": "20:30"
+          },
+          {
+            "open": "07:00",
+            "close": "20:30"
+          },
+          {
+            "open": "07:00",
+            "close": "20:30"
+          },
+          {
+            "open": "07:00",
+            "close": "20:30"
+          },
+          {
+            "open": "07:30",
+            "close": "14:00"
+          }
+        ]
+      },
+      {
+        "name": "Forn Almenar · Obrador",
+        "address": "Avenida del Puerto, 45 · 46000 Valencia",
+        "phone": "+34 960 000 001",
+        "mapsUrl": "https://maps.google.com/?q=Valencia",
+        "schedule": [
+          {
+            "open": "06:30",
+            "close": "14:30"
+          },
+          {
+            "open": "06:30",
+            "close": "14:30"
+          },
+          {
+            "open": "06:30",
+            "close": "14:30"
+          },
+          {
+            "open": "06:30",
+            "close": "14:30"
+          },
+          {
+            "open": "06:30",
+            "close": "14:30"
+          },
+          {
+            "open": "06:30",
+            "close": "14:30"
+          },
+          {
+            "open": "",
+            "close": ""
+          }
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "show": true,
+    "eyebrow": "Encargos",
+    "title": "¿Qué te",
+    "titleAccent": "preparamos?",
+    "text": "Cuéntanos qué necesitas y cuándo quieres recogerlo. Te confirmamos el encargo en menos de 24 horas.",
+    "orderTypes": [
+      {
+        "text": "Pan"
+      },
+      {
+        "text": "Bollería"
+      },
+      {
+        "text": "Tarta"
+      },
+      {
+        "text": "Catering / evento"
+      },
+      {
+        "text": "Otro"
+      }
+    ],
+    "minDays": 1
+  },
+  "footer": {
+    "text": "Un horno de barrio con más de 70 años de oficio. Pan, bollería y pastelería artesana hecha cada mañana.",
+    "legal": [
+      {
+        "label": "Política de privacidad",
+        "url": "#"
+      },
+      {
+        "label": "Política de cookies",
+        "url": "#"
+      },
+      {
+        "label": "Condiciones de uso",
+        "url": "#"
+      },
+      {
+        "label": "Alérgenos",
+        "url": "#"
+      }
+    ],
+    "cookiesText": "Usamos cookies propias para que la web funcione bien."
+  }
+}

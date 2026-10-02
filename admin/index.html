@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Panel · Forn Almenar</title>
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/admin.css" />
+  <script>addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG")t.style.visibility="hidden"},true);</script>
+</head>
+<body>
+
+  <!-- ============ LOGIN ============ -->
+  <section class="login" id="login" hidden>
+    <form class="login__card" id="login-form">
+      <img src="/img/logo.png" alt="Forn Almenar" class="login__logo" />
+      <h1>Panel de la web</h1>
+      <p>Escribe la contraseña para editar textos, fotos y precios.</p>
+      <label class="field">
+        <span class="field__label">Contraseña</span>
+        <input type="password" name="password" autocomplete="current-password" required autofocus />
+      </label>
+      <button class="btn btn--primary btn--block" type="submit">Entrar</button>
+      <p class="login__error" role="alert"></p>
+      <a href="/" class="login__back">← Volver a la web</a>
+    </form>
+  </section>
+
+  <!-- ============ APP ============ -->
+  <div class="app" id="app" hidden>
+    <header class="topbar">
+      <button class="icon-btn topbar__menu" id="menu-btn" aria-label="Secciones">☰</button>
+      <a href="/" target="_blank" class="topbar__brand"><img src="/img/favicon.png" alt="" /><span>Forn Almenar <small>Panel</small></span></a>
+      <span class="status" id="status" data-state="saved">Todo guardado</span>
+      <div class="topbar__actions">
+        <button class="btn btn--ghost topbar__preview-toggle" id="preview-toggle"><span class="hide-xs">Vista previa</span><span class="show-xs">Ver</span></button>
+        <a class="btn btn--ghost hide-sm" href="/" target="_blank" rel="noopener">Ver la web ↗</a>
+        <button class="btn btn--primary" id="save-btn" disabled>Guardar<span class="hide-xs">&nbsp;cambios</span></button>
+        <button class="icon-btn" id="logout-btn" title="Salir" aria-label="Salir">⏻</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <nav id="nav"></nav>
+      <div class="sidebar__help">
+        <strong>¿Cómo funciona?</strong>
+        <p>Elige una sección, cambia lo que quieras y mira el resultado a la derecha. Cuando esté a tu gusto, pulsa <b>Guardar cambios</b>.</p>
+      </div>
+    </aside>
+
+    <main class="editor" id="editor"></main>
+
+    <section class="preview" id="preview">
+      <div class="preview__bar">
+        <span>Vista previa</span>
+        <div class="seg">
+          <button class="is-active" data-device="desktop">Ordenador</button>
+          <button data-device="mobile">Móvil</button>
+        </div>
+      </div>
+      <div class="preview__stage" id="preview-stage">
+        <iframe id="preview-frame" title="Vista previa de la web" src="/?preview=1"></iframe>
+      </div>
+    </section>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="/admin/admin.js"></script>
+</body>
+</html>
