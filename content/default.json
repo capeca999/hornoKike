@@ -8,8 +8,7 @@
     "whatsapp": "+34 600 000 000",
     "email": "hola@fornalmenar.com",
     "instagram": "https://instagram.com/",
-    "facebook": "https://facebook.com/",
-    "headerButton": "Haz tu encargo"
+    "facebook": "https://facebook.com/"
   },
   "hero": {
     "show": true,
@@ -31,11 +30,11 @@
         "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1920&q=80"
       },
       {
-        "eyebrow": "Por encargo",
+        "eyebrow": "Para compartir",
         "title": "Tartas para\ntus momentos",
-        "text": "Cumpleaños, celebraciones o un domingo cualquiera. Encárgala con 48 h.",
-        "button": "Haz tu encargo",
-        "link": "#contacto",
+        "text": "Cumpleaños, celebraciones o un domingo cualquiera. Ven a ver lo que tenemos hoy.",
+        "button": "Ver productos",
+        "link": "#productos",
         "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1920&q=80"
       }
     ]
@@ -204,7 +203,7 @@
         "price": "24 €",
         "desc": "Bizcocho húmedo y ganache. 8 raciones.",
         "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80",
-        "tag": "Por encargo"
+        "tag": "Para compartir"
       },
       {
         "visible": true,
@@ -246,11 +245,12 @@
   },
   "cta": {
     "show": true,
-    "eyebrow": "Encargos y celebraciones",
-    "title": "Te lo dejamos\npreparado",
-    "text": "Reserva tu pan, tu roscón o tu tarta y pasa a recogerlo sin colas.",
-    "button": "Haz tu encargo",
-    "image": "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=1920&q=80"
+    "eyebrow": "Te esperamos",
+    "title": "Ven a\nconocernos",
+    "text": "Pan recién hecho cada mañana, a la vuelta de la esquina.",
+    "button": "Dónde estamos",
+    "image": "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=1920&q=80",
+    "link": "#tiendas"
   },
   "workshop": {
     "show": true,
@@ -321,14 +321,14 @@
   "stores": {
     "show": true,
     "eyebrow": "Te esperamos",
-    "title": "Nuestras",
-    "titleAccent": "tiendas",
+    "title": "Dónde",
+    "titleAccent": "estamos",
     "items": [
       {
-        "name": "Forn Almenar · Centro",
+        "name": "Forn Almenar",
         "address": "Calle Mayor, 12 · 46000 Valencia",
         "phone": "+34 960 000 000",
-        "mapsUrl": "https://maps.google.com/?q=Valencia",
+        "mapsUrl": "https://www.google.com/maps?ftid=0xd6048a9dfd2ab29:0x6e5b0c74dcd02521",
         "schedule": [
           {
             "open": "07:00",
@@ -358,70 +358,11 @@
             "open": "07:30",
             "close": "14:00"
           }
-        ]
-      },
-      {
-        "name": "Forn Almenar · Obrador",
-        "address": "Avenida del Puerto, 45 · 46000 Valencia",
-        "phone": "+34 960 000 001",
-        "mapsUrl": "https://maps.google.com/?q=Valencia",
-        "schedule": [
-          {
-            "open": "06:30",
-            "close": "14:30"
-          },
-          {
-            "open": "06:30",
-            "close": "14:30"
-          },
-          {
-            "open": "06:30",
-            "close": "14:30"
-          },
-          {
-            "open": "06:30",
-            "close": "14:30"
-          },
-          {
-            "open": "06:30",
-            "close": "14:30"
-          },
-          {
-            "open": "06:30",
-            "close": "14:30"
-          },
-          {
-            "open": "",
-            "close": ""
-          }
-        ]
+        ],
+        "showMap": true,
+        "map": "39.48570, -0.36891"
       }
     ]
-  },
-  "contact": {
-    "show": true,
-    "eyebrow": "Encargos",
-    "title": "¿Qué te",
-    "titleAccent": "preparamos?",
-    "text": "Cuéntanos qué necesitas y cuándo quieres recogerlo. Te confirmamos el encargo en menos de 24 horas.",
-    "orderTypes": [
-      {
-        "text": "Pan"
-      },
-      {
-        "text": "Bollería"
-      },
-      {
-        "text": "Tarta"
-      },
-      {
-        "text": "Catering / evento"
-      },
-      {
-        "text": "Otro"
-      }
-    ],
-    "minDays": 1
   },
   "footer": {
     "text": "Un horno de barrio con más de 70 años de oficio. Pan, bollería y pastelería artesana hecha cada mañana.",
@@ -463,8 +404,8 @@
         "cover": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=1600&q=80",
         "pinned": true,
         "published": true,
-        "excerpt": "Piñones, almendra, coco y boniato: este año preparamos cuatro variedades. Ya puedes encargarlos.",
-        "body": "<p>Como cada otoño, el obrador huele a almendra tostada. <strong>Ya tenemos panellets</strong> y este año preparamos cuatro variedades:</p><ul><li>Piñones (el clásico de siempre)</li><li>Almendra y limón</li><li>Coco</li><li>Boniato y canela</li></ul><h2>Cómo encargarlos</h2><p>Puedes reservarlos en tienda, por teléfono o desde el formulario de encargos de la web. Te recomendamos encargarlos con al menos <strong>48 horas</strong> de antelación para la semana de Todos los Santos.</p><blockquote>«La receta de los panellets de piñones es la misma que usaba el abuelo en 1952.»</blockquote><p>¡Te esperamos!</p>"
+        "excerpt": "Piñones, almendra, coco y boniato: este año preparamos cuatro variedades. Ya los tienes en el mostrador.",
+        "body": "<p>Como cada otoño, el obrador huele a almendra tostada. <strong>Ya tenemos panellets</strong> y este año preparamos cuatro variedades:</p><ul><li>Piñones (el clásico de siempre)</li><li>Almendra y limón</li><li>Coco</li><li>Boniato y canela</li></ul><h2>Dónde encontrarlos</h2><p>Los tendrás cada día en el mostrador hasta <strong>Todos los Santos</strong>. Ven pronto, que los de piñones vuelan.</p><blockquote>«La receta de los panellets de piñones es la misma que usaba el abuelo en 1952.»</blockquote><p>¡Te esperamos!</p>"
       },
       {
         "id": "p2",
@@ -475,8 +416,8 @@
         "cover": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=1600&q=80",
         "pinned": false,
         "published": true,
-        "excerpt": "El día del Pilar abrimos por la mañana en las dos tiendas. Así quedan los horarios.",
-        "body": "<p>El <strong>lunes 12 de octubre</strong> es festivo, pero no te quedarás sin pan. Abrimos con horario de domingo:</p><ul><li><strong>Centro:</strong> de 07:30 a 14:00</li><li><strong>Obrador:</strong> de 07:00 a 13:00</li></ul><p>Por la tarde las dos tiendas estarán cerradas. ¡Gracias por vuestra comprensión!</p>"
+        "excerpt": "El día del Pilar abrimos por la mañana. Así queda el horario.",
+        "body": "<p>El <strong>lunes 12 de octubre</strong> es festivo, pero no te quedarás sin pan. Abrimos con horario de domingo: <strong>de 07:30 a 14:00</strong>.</p><p>Por la tarde estaremos cerrados. ¡Gracias por vuestra comprensión!</p>"
       },
       {
         "id": "p3",

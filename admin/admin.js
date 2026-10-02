@@ -22,7 +22,7 @@
      ESQUEMA: qué se puede editar y cómo
      ========================================================= */
   const ANCHORS = [
-    ["#productos", "Productos"], ["#contacto", "Formulario de encargos"], ["#tiendas", "Tiendas"],
+    ["#productos", "Productos"], ["#tiendas", "Dónde estamos"], ["#novedades", "Novedades"],
     ["#historia", "Nuestra historia"], ["#obrador", "Obrador"], ["#amor", "Sobre nosotros"],
   ];
   const head = (eyebrowHelp = "Texto pequeño encima del título.") => [
@@ -38,17 +38,16 @@
       fields: [
         { type: "group", label: "Contacto", fields: [
           { key: "phone", label: "Teléfono", type: "text", placeholder: "+34 960 000 000" },
-          { key: "whatsapp", label: "WhatsApp", type: "text", placeholder: "+34 600 000 000", help: "Los encargos de la web llegan a este número. Déjalo vacío para que lleguen por email." },
+          { key: "whatsapp", label: "WhatsApp", type: "text", placeholder: "+34 600 000 000", help: "Se usa en el botón verde flotante y en «Dónde estamos». Déjalo vacío para ocultarlo." },
           { key: "email", label: "Email", type: "text", placeholder: "hola@fornalmenar.com" },
         ]},
         { type: "group", label: "Redes sociales", fields: [
           { key: "instagram", label: "Enlace de Instagram", type: "text", placeholder: "https://instagram.com/…", help: "Déjalo vacío para ocultar el icono." },
           { key: "facebook", label: "Enlace de Facebook", type: "text", placeholder: "https://facebook.com/…" },
         ]},
-        { type: "group", label: "Logo y cabecera", fields: [
+        { type: "group", label: "Logo", fields: [
           { key: "logo", label: "Logo (fondo claro)", type: "image", ratio: "logo", maxSize: 1200, keepPng: true },
           { key: "logoLight", label: "Logo para el pie (fondo granate)", type: "image", ratio: "logo", maxSize: 1200, keepPng: true, dark: true },
-          { key: "headerButton", label: "Texto del botón de la cabecera", type: "text" },
         ]},
         { type: "group", label: "Google y buscadores", fields: [
           { key: "siteTitle", label: "Título de la pestaña", type: "text", help: "Lo que se ve en la pestaña del navegador y en Google." },
@@ -125,7 +124,7 @@
             ]},
             { key: "cat", label: "Categoría", type: "select", options: (c) => c.products.categories.map((x) => [x.id, x.name]) },
             { key: "desc", label: "Descripción corta", type: "textarea", rows: 2 },
-            { key: "tag", label: "Etiqueta (opcional)", type: "text", placeholder: "Novedad, Favorito, Por encargo…" },
+            { key: "tag", label: "Etiqueta (opcional)", type: "text", placeholder: "Novedad, Favorito, De temporada…" },
             { key: "image", label: "Foto", type: "image", ratio: "photo" },
           ] },
         { key: "categories", label: "Categorías", type: "list", addLabel: "Añadir categoría", inline: true, rerender: true,
@@ -136,13 +135,14 @@
       ],
     },
     {
-      id: "cta", name: "Banner de encargos", desc: "La franja con foto a pantalla completa", anchor: "banner-encargos",
+      id: "cta", name: "Banner con foto", desc: "La franja con foto a pantalla completa", anchor: "banner",
       fields: [show,
         { key: "image", label: "Foto de fondo", type: "image", ratio: "wide", maxSize: 2200 },
         { key: "eyebrow", label: "Antetítulo", type: "text" },
         { key: "title", label: "Título", type: "textarea", rows: 2 },
         { key: "text", label: "Texto", type: "textarea", rows: 2 },
-        { key: "button", label: "Texto del botón", type: "text" },
+        { key: "button", label: "Texto del botón", type: "text", help: "Déjalo vacío para no mostrar botón." },
+        { key: "link", label: "El botón lleva a…", type: "select", options: () => ANCHORS },
       ],
     },
     {
@@ -172,28 +172,23 @@
       }],
     },
     {
-      id: "stores", name: "Tiendas y horarios", desc: "Direcciones, teléfonos y horas", anchor: "tiendas",
+      id: "stores", name: "Dónde estamos", desc: "Dirección, mapa, teléfono y horario", anchor: "tiendas",
       fields: [show, {
-        key: "items", label: "Tiendas", type: "list", addLabel: "Añadir tienda",
-        itemTitle: (s) => s.name,
-        newItem: () => ({ name: "Nueva tienda", address: "", phone: "", mapsUrl: "", schedule: Array.from({ length: 7 }, () => ({ open: "", close: "" })) }),
+        key: "items", type: "first",
+        newItem: () => ({ name: "Forn Almenar", address: "", phone: "", showMap: true, map: "", mapsUrl: "", schedule: Array.from({ length: 7 }, () => ({ open: "", close: "" })) }),
         item: [
           { key: "name", label: "Nombre", type: "text" },
-          { key: "address", label: "Dirección", type: "text" },
+          { key: "address", label: "Dirección", type: "textarea", rows: 2 },
           { key: "phone", label: "Teléfono", type: "text" },
-          { key: "mapsUrl", label: "Enlace de Google Maps", type: "text", help: "En Google Maps: Compartir → Copiar enlace." },
           { key: "schedule", label: "Horario", type: "schedule" },
+          { type: "group", label: "Mapa de Google", fields: [
+            { key: "showMap", label: "Mostrar el mapa", type: "toggle" },
+            { key: "map", label: "Ubicación en el mapa", type: "textarea", rows: 2, placeholder: "39.48570, -0.36891",
+              help: "Pega las coordenadas (en Google Maps: clic derecho sobre el horno → clic en los números para copiarlos) o el código de Compartir → Insertar un mapa. Si lo dejas vacío, se busca la dirección." },
+            { key: "mapsUrl", label: "Enlace del botón «Cómo llegar» (opcional)", type: "text", help: "En Google Maps: Compartir → Copiar enlace. Si lo dejas vacío, se calcula solo." },
+          ]},
         ],
       }, { type: "group", label: "Títulos de la sección", collapsed: true, fields: head() }],
-    },
-    {
-      id: "contact", name: "Formulario de encargos", desc: "Textos y tipos de encargo", anchor: "contacto",
-      fields: [show, ...head(),
-        { key: "text", label: "Texto", type: "textarea", rows: 3 },
-        { key: "minDays", label: "Días mínimos de antelación", type: "number", help: "0 = se puede encargar para hoy." },
-        { key: "orderTypes", label: "Tipos de encargo", type: "list", addLabel: "Añadir tipo", inline: true,
-          newItem: () => ({ text: "" }), item: [{ key: "text", label: "Tipo", type: "text" }] },
-      ],
     },
     {
       id: "blog", name: "Blog · Novedades", desc: "Noticias, anuncios y avisos", special: true, anchor: "novedades",
@@ -213,7 +208,6 @@
         { key: "text", label: "Texto del pie", type: "textarea", rows: 3 },
         { key: "cookiesText", label: "Aviso de cookies", type: "textarea", rows: 2 },
         { key: "legal", label: "Enlaces legales", type: "list", addLabel: "Añadir enlace", inline: true,
-          help: "El primero se usa como «política de privacidad» del formulario.",
           newItem: () => ({ label: "", url: "" }),
           item: [{ key: "label", label: "Texto", type: "text" }, { key: "url", label: "Enlace", type: "text", placeholder: "https://…" }] },
       ],
@@ -228,7 +222,7 @@
     token: sessionStorage.getItem("fa-token") || "",
     content: null,
     savedJson: "",
-    section: "general",
+    section: "blog",
     open: new Set(),
     search: "",
     device: innerWidth < 760 ? "mobile" : "desktop",
@@ -310,24 +304,39 @@
   /* =========================================================
      NAVEGACIÓN
      ========================================================= */
+  function goSection(id) {
+    const s = SECTIONS.find((x) => x.id === id);
+    state.section = id; state.search = ""; state.blogPost = null;
+    history.replaceState(null, "", "#" + id);
+    renderNav(); renderEditor();
+    $("#editor").scrollTop = 0;
+    document.body.classList.remove("menu-open");
+    if (s.anchor && state.previewPath === "/") postPreview({ type: "scrollTo", id: s.anchor });
+  }
+
   function renderNav() {
     const nav = $("#nav");
     nav.innerHTML = "";
-    SECTIONS.forEach((s) => {
+    // Tarjeta destacada del blog, siempre arriba
+    const posts = (state.content.blog?.posts || []);
+    const live = posts.filter((p) => p.published !== false).length, drafts = posts.length - live;
+    nav.append(h("div", { class: `blog-card ${state.section === "blog" ? "is-active" : ""}` },
+      h("button", { type: "button", class: "blog-card__main", onclick: () => goSection("blog") },
+        h("span", { class: "blog-card__icon", "aria-hidden": "true" }, "✎"),
+        h("span", {}, h("strong", {}, "Blog · Novedades"),
+          h("small", {}, `${live} publicada${live === 1 ? "" : "s"}${drafts ? ` · ${drafts} borrador${drafts === 1 ? "" : "es"}` : ""}`))),
+      h("button", { type: "button", class: "blog-card__new", onclick: () => { goSection("blog"); createPost(); } }, "+ Escribir noticia")));
+    nav.append(h("p", { class: "nav-label" }, "Contenido de la web"));
+    SECTIONS.filter((s) => s.id !== "blog").forEach((s) => {
+      if (s.id === "backups") nav.append(h("p", { class: "nav-label" }, "Seguridad"));
       const hidden = state.content[s.id]?.show === false;
       nav.append(h("button", {
         class: `nav-item ${s.id === state.section ? "is-active" : ""} ${hidden ? "is-off" : ""}`,
-        onclick: () => {
-          state.section = s.id; state.search = ""; state.blogPost = null;
-          history.replaceState(null, "", "#" + s.id);
-          renderNav(); renderEditor();
-          $("#editor").scrollTop = 0;
-          document.body.classList.remove("menu-open");
-          if (s.anchor && state.previewPath === "/") postPreview({ type: "scrollTo", id: s.anchor });
-        },
+        onclick: () => goSection(s.id),
       }, h("span", { class: "nav-item__name" }, s.name, hidden ? h("em", {}, "oculta") : ""), h("span", { class: "nav-item__desc" }, s.desc)));
     });
   }
+  $("#new-post-btn").addEventListener("click", () => { goSection("blog"); createPost(); });
   $("#menu-btn").addEventListener("click", () => document.body.classList.toggle("menu-open"));
 
   /* =========================================================
@@ -405,6 +414,12 @@
         cb.addEventListener("change", () => { obj[f.key] = cb.checked; changed(); if (f.key === "show") renderNav(); });
         return h("label", { class: `toggle ${f.key === "show" ? "toggle--main" : ""}` }, cb, h("span", { class: "toggle__ui" }),
           h("span", { class: "toggle__text" }, f.label, f.help ? h("small", {}, f.help) : ""));
+      }
+      case "first": {
+        // Edita directamente el primer elemento de una lista (p. ej. el único horno)
+        const arr = obj[f.key] || (obj[f.key] = []);
+        if (!arr[0]) arr[0] = f.newItem();
+        return renderFields(f.item, arr[0], `${p}.0`);
       }
       case "image": return renderImage(f, obj);
       case "list": return renderList(f, obj, p);
@@ -605,6 +620,15 @@
   const fmtDate = (d) => d ? new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : "Sin fecha";
   const CATS = ["Noticia", "Anuncio", "Aviso", "Evento", "Receta"];
 
+  function createPost() {
+    const id = "p" + Date.now().toString(36);
+    blogData().posts.unshift({ id, slug: "", title: "", category: "Noticia", date: today(), cover: "", excerpt: "", body: "", published: false, pinned: false });
+    changed();
+    openPost(id);
+    renderNav();
+    setTimeout(() => $(".input-title")?.focus(), 50);
+  }
+
   function openPost(id) {
     state.blogPost = id;
     renderEditor();
@@ -614,12 +638,7 @@
   function renderBlogList(ed, sec) {
     const B = blogData();
     const posts = [...B.posts].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || String(b.date).localeCompare(String(a.date)));
-    const newPost = () => {
-      const id = "p" + Date.now().toString(36);
-      B.posts.unshift({ id, slug: "", title: "", category: "Noticia", date: today(), cover: "", excerpt: "", body: "", published: false, pinned: false });
-      changed();
-      openPost(id);
-    };
+    const newPost = createPost;
     const search = h("input", { type: "search", class: "list__search", placeholder: "Buscar noticia…" });
     const list = h("div", { class: "posts" });
     const draw = () => {
@@ -660,7 +679,7 @@
           h("span", {}, post.published === false ? "No se ve en la web hasta que la publiques y guardes." : "Visible en la web al guardar los cambios.")),
         h("button", { type: "button", class: `btn btn--small ${post.published === false ? "btn--primary" : ""}`, onclick: () => {
           post.published = post.published === false;
-          drawStatus(); changed();
+          drawStatus(); changed(); renderNav();
           if (post.published) toast("Lista para publicar. Pulsa «Guardar cambios» para que aparezca en la web.");
         } }, post.published === false ? "Publicar" : "Pasar a borrador"));
     };
@@ -706,7 +725,7 @@
           h("button", { type: "button", class: "btn btn--danger", onclick: () => {
             if (!confirm(`¿Borrar la noticia «${post.title || "sin título"}»? Podrás recuperarla desde Copias de seguridad si ya estaba guardada.`)) return;
             B.posts.splice(B.posts.indexOf(post), 1);
-            state.blogPost = null; changed(); renderEditor();
+            state.blogPost = null; changed(); renderEditor(); renderNav();
             toast("Noticia borrada. Pulsa «Guardar cambios» para aplicarlo.");
           } }, "Borrar esta noticia"))),
     );

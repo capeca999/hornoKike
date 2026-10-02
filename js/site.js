@@ -93,6 +93,27 @@
       </div>
     </a>`;
 
+  /* ---------- Mapas de Google (sin clave de API) ----------
+     El campo "map" admite: coordenadas ("39.4857, -0.3689"), un enlace de Google Maps con @lat,lng,
+     el código de "Insertar un mapa" de Google, o nada (entonces se usa la dirección). */
+  const coordsOf = (v) => { const m = String(v || "").match(/(-?\d{1,2}\.\d{3,})\s*,\s*(-?\d{1,3}\.\d{3,})/); return m ? `${m[1]},${m[2]}` : ""; };
+  const mapSrc = (st) => {
+    let v = String(st.map || "").trim();
+    const iframe = v.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+    if (iframe) v = iframe[1].replace(/&amp;/g, "&");
+    if (/^https:\/\/(www\.)?google\.[a-z.]+\/maps\/embed/i.test(v) || /[?&]output=embed/.test(v)) return v;
+    const q = coordsOf(v) || (v && !/^https?:/i.test(v) ? v : `${st.name}, ${st.address}`);
+    return `https://www.google.com/maps?q=${encodeURIComponent(q)}&z=17&hl=es&output=embed`;
+  };
+  const directionsUrl = (st) => {
+    if (st.mapsUrl) return st.mapsUrl;
+    const c = coordsOf(st.map);
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c || `${st.name}, ${st.address}`)}`;
+  };
+
+  // El formulario de encargos no existe en esta versión: los enlaces antiguos a él llevan a "Dónde estamos"
+  const fixLink = (l) => (l === "#contacto" ? "#tiendas" : l);
+
   const DAYS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
   const groupSchedule = (sch = []) => {
     const out = [];
@@ -134,7 +155,7 @@
                 ${sl.eyebrow ? `<p class="eyebrow">${esc(sl.eyebrow)}</p>` : ""}
                 ${i === 0 ? `<h1>${lines(sl.title)}</h1>` : `<h2 class="h1">${lines(sl.title)}</h2>`}
                 ${sl.text ? `<p class="slide__lead">${lines(sl.text)}</p>` : ""}
-                ${sl.button ? `<a href="${esc(sl.link || "#productos")}" class="btn btn--light">${esc(sl.button)}</a>` : ""}
+                ${sl.button ? `<a href="${esc(fixLink(sl.link || "#productos"))}" class="btn btn--light">${esc(sl.button)}</a>` : ""}
               </div>
             </article>`).join("")}
         </div>
@@ -215,13 +236,13 @@
     },
 
     cta: (s) => `
-      <section class="cta" id="banner-encargos" style="--img:url('${esc(s.image)}')">
+      <section class="cta" id="banner" style="--img:url('${esc(s.image)}')">
         <div class="container cta__inner reveal">
           ${s.eyebrow ? `<p class="eyebrow">${esc(s.eyebrow)}</p>` : ""}
           <h2>${lines(s.title)}</h2>
           ${s.text ? `<p>${lines(s.text)}</p>` : ""}
           <div class="cta__actions">
-            ${s.button ? `<a href="#contacto" class="btn btn--light">${esc(s.button)}</a>` : ""}
+            ${s.button ? `<a href="${esc(fixLink(s.link || "#tiendas"))}" class="btn btn--light">${esc(s.button)}</a>` : ""}
             ${C.general.whatsapp ? `<a href="${waLink(C.general.whatsapp)}" class="btn btn--ghost" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>` : ""}
           </div>
         </div>
@@ -249,72 +270,41 @@
         </div>
       </section>`,
 
-    stores: (s) => `
+    stores: (s) => {
+      // Un solo horno: se usa la primera ficha
+      const st = (s.items || [])[0];
+      if (!st) return "";
+      const open = isOpen(st.schedule), withMap = st.showMap !== false;
+      return `
       <section class="stores section" id="tiendas">
         <div class="container">
           ${head(s)}
-          <div class="stores__grid">
-            ${(s.items || []).map((st, i) => {
-              const open = isOpen(st.schedule);
-              return `
-              <article class="store reveal" ${delay(i)}>
-                <div class="store__head">
-                  <h3>${esc(st.name)}</h3>
-                  <span class="store__status ${open ? "is-open" : "is-closed"}">${open ? "Abierto ahora" : "Cerrado ahora"}</span>
-                </div>
-                <p class="store__addr">${lines(st.address)}</p>
-                <dl class="hours">${groupSchedule(st.schedule).map((g) => `<div><dt>${g.label}</dt><dd>${g.val}</dd></div>`).join("")}</dl>
-                <div class="store__actions">
-                  ${st.phone ? `<a href="${telLink(st.phone)}" class="link">${esc(st.phone)}</a>` : ""}
-                  ${st.mapsUrl ? `<a href="${esc(st.mapsUrl)}" target="_blank" rel="noopener" class="link">Cómo llegar →</a>` : ""}
-                </div>
-              </article>`;
-            }).join("")}
-          </div>
-        </div>
-      </section>`,
-
-    contact: (s) => {
-      const g = C.general;
-      const stores = (C.stores?.items || []);
-      return `
-      <section class="contact section section--cream" id="contacto">
-        <div class="container contact__grid">
-          <div class="reveal">
-            ${s.eyebrow ? `<p class="eyebrow eyebrow--dark">${esc(s.eyebrow)}</p>` : ""}
-            <h2>${title(s.title, s.titleAccent)}</h2>
-            ${paras(s.text)}
-            <ul class="contact__info">
-              ${g.phone ? `<li><span>Teléfono</span><a href="${telLink(g.phone)}">${esc(g.phone)}</a></li>` : ""}
-              ${g.whatsapp ? `<li><span>WhatsApp</span><a href="${waLink(g.whatsapp)}" target="_blank" rel="noopener">${esc(g.whatsapp)}</a></li>` : ""}
-              ${g.email ? `<li><span>Email</span><a href="mailto:${esc(g.email)}">${esc(g.email)}</a></li>` : ""}
-            </ul>
-          </div>
-          <form class="form reveal" id="order-form" novalidate>
-            <div class="form__row">
-              <label>Nombre<input name="nombre" required autocomplete="name" /></label>
-              <label>Teléfono<input name="telefono" type="tel" required autocomplete="tel" /></label>
+          <article class="location ${withMap ? "" : "location--nomap"} reveal">
+            ${withMap ? `<div class="location__map"><iframe src="${esc(mapSrc(st))}" title="Mapa: ${esc(st.name)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>` : ""}
+            <div class="location__info">
+              <span class="store__status ${open ? "is-open" : "is-closed"}">${open ? "Abierto ahora" : "Cerrado ahora"}</span>
+              <h3>${esc(st.name)}</h3>
+              <p class="store__addr">${lines(st.address)}</p>
+              <dl class="hours">${groupSchedule(st.schedule).map((g) => `<div><dt>${g.label}</dt><dd>${g.val}</dd></div>`).join("")}</dl>
+              <div class="store__actions">
+                <a href="${esc(directionsUrl(st))}" target="_blank" rel="noopener" class="btn">Cómo llegar</a>
+                ${st.phone ? `<a href="${telLink(st.phone)}" class="link">${esc(st.phone)}</a>` : ""}
+              </div>
+              <ul class="location__contact">
+                ${C.general.whatsapp ? `<li><span>WhatsApp</span><a href="${waLink(C.general.whatsapp)}" target="_blank" rel="noopener">${esc(C.general.whatsapp)}</a></li>` : ""}
+                ${C.general.email ? `<li><span>Email</span><a href="mailto:${esc(C.general.email)}">${esc(C.general.email)}</a></li>` : ""}
+              </ul>
             </div>
-            <div class="form__row">
-              <label>Tipo de encargo
-                <select name="tipo">${(s.orderTypes || []).map((o) => `<option>${esc(o.text)}</option>`).join("")}</select>
-              </label>
-              <label>Fecha de recogida<input name="fecha" type="date" required /></label>
-            </div>
-            ${stores.length > 1 ? `<label>Tienda<select name="tienda">${stores.map((st) => `<option>${esc(st.name)}</option>`).join("")}</select></label>` : ""}
-            <label>¿Qué necesitas?<textarea name="mensaje" rows="4" placeholder="Ej.: Tarta de chocolate para 10 personas con «Felicidades Lucía»" required></textarea></label>
-            <label class="check"><input type="checkbox" name="privacidad" required /> <span>Acepto la <a href="${esc(C.footer?.legal?.[0]?.url || "#")}">política de privacidad</a></span></label>
-            <button class="btn" type="submit">Enviar encargo</button>
-            <p class="form__msg" role="status"></p>
-          </form>
+          </article>
         </div>
       </section>`;
     },
+
   };
 
   const footer = () => {
     const g = C.general, f = C.footer || {};
-    const navItems = [["products", "/#productos", "Productos"], ["blog", "/blog", "Novedades"], ["workshop", "/#obrador", "Obrador"], ["history", "/#historia", "Nuestra historia"], ["contact", "/#contacto", "Encargos"]]
+    const navItems = [["products", "/#productos", "Productos"], ["blog", "/blog", "Novedades"], ["workshop", "/#obrador", "Obrador"], ["history", "/#historia", "Nuestra historia"], ["stores", "/#tiendas", "Dónde estamos"]]
       .filter(([k]) => k === "blog" || C[k]?.show !== false);
     const icon = {
       ig: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>`,
@@ -334,7 +324,7 @@
         </div>
         <div>
           <h4>Visítanos</h4>
-          <p>${(C.stores?.items || []).map((s) => lines(s.address)).join("<br/>")}</p>
+          <p>${lines(C.stores?.items?.[0]?.address || "")}</p>
           ${g.phone ? `<p><a href="${telLink(g.phone)}">${esc(g.phone)}</a></p>` : ""}
         </div>
         <div>
@@ -352,7 +342,7 @@
       </div>`;
   };
 
-  const ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "workshop", "history", "stores", "contact"];
+  const ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "workshop", "history", "stores"];
   let C = null;
 
   function render(content, { keepScroll = false } = {}) {
@@ -362,7 +352,6 @@
     if (g.siteTitle) document.title = g.siteTitle;
     if (g.siteDescription) $('meta[name="description"]')?.setAttribute("content", g.siteDescription);
     $$("[data-logo]").forEach((el) => (el.src = g.logo || "/img/logo.png"));
-    $$("[data-header-btn]").forEach((el) => (el.textContent = g.headerButton || "Haz tu encargo"));
     $$("[data-sec]").forEach((el) => (el.hidden = el.dataset.sec === "blog" ? false : C[el.dataset.sec]?.show === false));
     const wa = $("[data-wa]");
     wa.hidden = !g.whatsapp; wa.href = waLink(g.whatsapp);
@@ -559,7 +548,6 @@
             ${p.desc ? `<p>${lines(p.desc)}</p>` : ""}
             <div class="product__foot">
               <strong>${esc(p.price)}</strong>
-              ${C.contact?.show !== false ? `<a href="#contacto" class="product__add" data-product="${esc(p.name)}">Encargar +</a>` : ""}
             </div>
           </div>
         </article>`;
@@ -572,40 +560,9 @@
         b.classList.add("is-active"); b.setAttribute("aria-selected", "true");
         draw(b.dataset.filter);
       }));
-      grid.addEventListener("click", (e) => {
-        const a = e.target.closest(".product__add");
-        const form = $("#order-form");
-        if (!a || !form) return;
-        form.mensaje.value = `Me gustaría encargar: ${a.dataset.product}\nCantidad: `;
-        setTimeout(() => form.nombre.focus({ preventScroll: true }), 700);
-      });
       draw("all");
     }
 
-    /* Formulario → WhatsApp */
-    const form = $("#order-form");
-    if (form) {
-      const min = new Date(); min.setDate(min.getDate() + (Number(C.contact.minDays) || 0));
-      form.fecha.min = min.toISOString().split("T")[0];
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const msg = $(".form__msg", form);
-        if (!form.checkValidity()) {
-          msg.textContent = "Revisa los campos marcados, por favor.";
-          msg.className = "form__msg is-error";
-          form.classList.add("was-validated");
-          return;
-        }
-        const f = Object.fromEntries(new FormData(form));
-        const text = `Hola, soy ${f.nombre} (${f.telefono}).\nEncargo: ${f.tipo || ""}\nRecogida: ${f.fecha}${f.tienda ? ` en ${f.tienda}` : ""}\n\n${f.mensaje}`;
-        const num = C.general.whatsapp;
-        if (num) window.open(waLink(num, text), "_blank", "noopener");
-        else location.href = `mailto:${C.general.email}?subject=${encodeURIComponent("Encargo web")}&body=${encodeURIComponent(text)}`;
-        msg.textContent = "¡Gracias! Te hemos abierto WhatsApp con tu encargo listo para enviar.";
-        msg.className = "form__msg is-ok";
-        form.reset(); form.classList.remove("was-validated");
-      });
-    }
   }
 
   /* Cookies */
