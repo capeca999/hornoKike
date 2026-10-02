@@ -8,7 +8,9 @@
     "whatsapp": "+34 600 000 000",
     "email": "hola@fornalmenar.com",
     "instagram": "https://instagram.com/",
-    "facebook": "https://facebook.com/"
+    "facebook": "https://facebook.com/",
+    "legalName": "",
+    "taxId": ""
   },
   "hero": {
     "show": true,
@@ -366,25 +368,7 @@
   },
   "footer": {
     "text": "Un horno de barrio con más de 70 años de oficio. Pan, bollería y pastelería artesana hecha cada mañana.",
-    "legal": [
-      {
-        "label": "Política de privacidad",
-        "url": "#"
-      },
-      {
-        "label": "Política de cookies",
-        "url": "#"
-      },
-      {
-        "label": "Condiciones de uso",
-        "url": "#"
-      },
-      {
-        "label": "Alérgenos",
-        "url": "#"
-      }
-    ],
-    "cookiesText": "Usamos cookies propias para que la web funcione bien."
+    "cookiesText": "Usamos una cookie propia para recordar tu elección. El mapa de Google solo se carga si aceptas."
   },
   "blog": {
     "show": true,
@@ -430,6 +414,38 @@
         "published": true,
         "excerpt": "Lleva décadas viva y la alimentamos cada día. Te contamos el secreto de nuestro pan.",
         "body": "<p>La masa madre es un fermento natural de harina y agua. La nuestra lleva <strong>décadas</strong> viva y la alimentamos cada mañana, antes de encender el horno.</p><h2>¿Por qué masa madre?</h2><p>Porque fermenta despacio. Eso hace que el pan tenga más sabor, una miga más jugosa y que aguante tierno varios días.</p><h3>Nuestros tres básicos</h3><ol><li>Harina de molino de piedra.</li><li>Agua y sal, nada más.</li><li>Tiempo: hasta 48 horas de fermentación.</li></ol><p>Si quieres ver cómo trabajamos, pregúntanos en tienda: nos encanta enseñarlo.</p>"
+      }
+    ]
+  },
+  "legal": {
+    "pages": [
+      {
+        "id": "l1",
+        "slug": "aviso-legal",
+        "title": "Aviso legal y condiciones de uso",
+        "label": "Aviso legal",
+        "body": "<p>En cumplimiento de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), te informamos de los datos del titular de esta web.</p>\n<h2>Datos del titular</h2>\n<ul><li><strong>Titular:</strong> {{titular}}</li><li><strong>NIF/CIF:</strong> {{nif}}</li><li><strong>Domicilio:</strong> {{direccion}}</li><li><strong>Email:</strong> {{email}}</li><li><strong>Teléfono:</strong> {{telefono}}</li><li><strong>Sitio web:</strong> {{web}}</li></ul>\n<h2>Objeto</h2>\n<p>Esta web tiene como finalidad dar a conocer el horno, sus productos, su historia y sus novedades. La información sobre productos y precios es orientativa y puede variar según la temporada y la disponibilidad del día.</p>\n<h2>Condiciones de uso</h2>\n<p>El acceso a esta web es gratuito y supone la aceptación de estas condiciones. Te comprometes a hacer un uso adecuado de los contenidos y a no utilizarlos para actividades ilícitas o que puedan dañar la web o a terceros.</p>\n<h2>Propiedad intelectual</h2>\n<p>Los textos, fotografías, logotipos y diseño de esta web pertenecen a {{titular}} o se usan con autorización. No está permitida su reproducción, distribución o modificación sin permiso expreso.</p>\n<h2>Responsabilidad</h2>\n<p>Hacemos lo posible por que la información sea correcta y esté actualizada, pero no podemos garantizar la ausencia de errores. Tampoco nos hacemos responsables del contenido de las webs externas a las que se enlace desde aquí.</p>\n<h2>Legislación aplicable</h2>\n<p>Estas condiciones se rigen por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales que correspondan conforme a la ley.</p>"
+      },
+      {
+        "id": "l2",
+        "slug": "politica-de-privacidad",
+        "title": "Política de privacidad",
+        "label": "Política de privacidad",
+        "body": "<p>En esta página te explicamos cómo tratamos tus datos personales, de acuerdo con el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>\n<h2>Responsable del tratamiento</h2>\n<ul><li><strong>Responsable:</strong> {{titular}}</li><li><strong>NIF/CIF:</strong> {{nif}}</li><li><strong>Dirección:</strong> {{direccion}}</li><li><strong>Email de contacto:</strong> {{email}}</li></ul>\n<h2>¿Qué datos tratamos?</h2>\n<p>Esta web <strong>no tiene formularios ni zona de clientes</strong>: no recogemos datos personales a través de ella. Solo tratamos los datos que tú nos facilites voluntariamente si nos escribes por email, WhatsApp o nos llamas por teléfono (por ejemplo, tu nombre, teléfono o email).</p>\n<h2>¿Para qué los usamos?</h2>\n<p>Únicamente para responder a tu consulta. No los usamos para enviarte publicidad ni los cedemos a terceros, salvo obligación legal.</p>\n<h2>Legitimación</h2>\n<p>La base legal es tu consentimiento, al contactar con nosotros, y nuestro interés legítimo en atender tu consulta.</p>\n<h2>¿Cuánto tiempo los conservamos?</h2>\n<p>El tiempo necesario para atender tu consulta y, después, durante los plazos que exija la ley.</p>\n<h2>Proveedores</h2>\n<p>Para que la web funcione usamos proveedores tecnológicos que pueden tratar datos técnicos de navegación (como la dirección IP): Vercel (alojamiento de la web), Cloudflare (almacenamiento de imágenes y contenido) y Google (mapa y tipografías). Estos proveedores cumplen con la normativa europea de protección de datos.</p>\n<h2>Tus derechos</h2>\n<p>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad escribiendo a <strong>{{email}}</strong>. Si consideras que no hemos tratado tus datos correctamente, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).</p>"
+      },
+      {
+        "id": "l3",
+        "slug": "politica-de-cookies",
+        "title": "Política de cookies",
+        "label": "Política de cookies",
+        "body": "<p>Una cookie es un pequeño archivo que una web guarda en tu navegador. Aquí te contamos cuáles se usan en {{web}}.</p>\n<h2>Cookies propias</h2>\n<p>Solo guardamos en tu navegador si has aceptado o rechazado este aviso de cookies, para no volver a preguntártelo. Es imprescindible para que la web funcione correctamente y no sirve para identificarte.</p>\n<h2>Cookies de terceros</h2>\n<p><strong>Google Maps:</strong> el mapa de la sección «Dónde estamos» lo ofrece Google, que puede instalar sus propias cookies para su funcionamiento y con fines analíticos o publicitarios. Por eso, <strong>el mapa solo se carga si aceptas las cookies</strong> o si pulsas el botón para verlo.</p>\n<p>No usamos cookies de análisis ni de publicidad propias.</p>\n<h2>¿Cómo cambiar tu elección?</h2>\n<p>Puedes borrar o bloquear las cookies desde la configuración de tu navegador. Si borras los datos de esta web, te volveremos a mostrar el aviso para que elijas de nuevo.</p>\n<h2>Más información</h2>\n<p>Si tienes dudas, escríbenos a {{email}}.</p>"
+      },
+      {
+        "id": "l4",
+        "slug": "alergenos",
+        "title": "Información sobre alérgenos",
+        "label": "Alérgenos",
+        "body": "<p>De acuerdo con el Reglamento (UE) 1169/2011, te informamos de que en nuestro obrador se elaboran productos que contienen o pueden contener los siguientes <strong>alérgenos</strong>:</p>\n<ol><li>Cereales con gluten (trigo, centeno, cebada, avena, espelta…)</li><li>Crustáceos</li><li>Huevos</li><li>Pescado</li><li>Cacahuetes</li><li>Soja</li><li>Leche (incluida la lactosa)</li><li>Frutos de cáscara (almendras, avellanas, nueces, pistachos…)</li><li>Apio</li><li>Mostaza</li><li>Granos de sésamo</li><li>Dióxido de azufre y sulfitos</li><li>Altramuces</li><li>Moluscos</li></ol>\n<h2>Información de cada producto</h2>\n<p>Tienes a tu disposición la información detallada de alérgenos de cada producto <strong>en el propio horno</strong>. Pregunta a nuestro personal antes de comprar.</p>\n<h2>Trazas</h2>\n<p>Al tratarse de un obrador artesano donde se trabaja con harinas, frutos secos, huevo y leche, <strong>no podemos garantizar la ausencia total de trazas</strong> en ninguno de nuestros productos.</p>\n<p>Si tienes alguna alergia o intolerancia, llámanos al {{telefono}} o escríbenos a {{email}} y te asesoramos.</p>"
       }
     ]
   }

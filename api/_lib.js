@@ -186,3 +186,23 @@ export const handle = (methods, fn) => async (req, res) => {
     send(res, status, { error: e.status ? e.message : "Error del servidor. Inténtalo de nuevo en un momento." }, { "Cache-Control": "no-store" });
   }
 };
+
+/* ------------------------------------------------------------------
+   Captcha: Cloudflare Turnstile. Si no hay TURNSTILE_SECRET_KEY, no se exige.
+------------------------------------------------------------------ */
+export async function verifyCaptcha(token, req) {
+  const secret = env.TURNSTILE_SECRET_KEY;
+  if (!secret) return;
+  if (!token) throw new HttpError(400, "Marca la casilla de verificación antes de entrar.");
+  const body = new URLSearchParams({ secret, response: String(token) });
+  const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim();
+  if (ip) body.set("remoteip", ip);
+  let data = {};
+  try {
+    const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body });
+    data = await r.json();
+  } catch {
+    throw new HttpError(503, "No se ha podido comprobar la verificación. Inténtalo de nuevo.");
+  }
+  if (!data.success) throw new HttpError(400, "La verificación ha fallado o ha caducado. Vuelve a marcar la casilla.");
+}

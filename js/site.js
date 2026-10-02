@@ -11,7 +11,7 @@
   const PAGE = document.body.dataset.page || "home"; // home | blog | post
 
   /* ---------- La cabecera y el menú están en el HTML. Aquí: marcar "Novedades" y añadir WhatsApp + cookies ---------- */
-  if (PAGE !== "home") $$('[data-sec="blog"]').forEach((a) => a.setAttribute("aria-current", "page"));
+  if (PAGE === "blog" || PAGE === "post") $$('[data-sec="blog"]').forEach((a) => a.setAttribute("aria-current", "page"));
   document.body.insertAdjacentHTML("beforeend", `
     <a class="wa-float" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" data-wa hidden>
       <svg viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.8L4 20Z"/><path d="M9 9.5c.3 2 2.3 4.2 4.8 4.8l1-1.1 1.6.8c-.2 1.1-1 1.7-2 1.7-3.3-.3-6.4-3.4-6.6-6.6 0-1 .6-1.8 1.7-2l.8 1.6-1.3.8Z" fill="currentColor" stroke="none"/></svg>
@@ -96,19 +96,21 @@
   /* ---------- Mapas de Google (sin clave de API) ----------
      El campo "map" admite: coordenadas ("39.4857, -0.3689"), un enlace de Google Maps con @lat,lng,
      el código de "Insertar un mapa" de Google, o nada (entonces se usa la dirección). */
+  const cleanAddr = (a) => String(a || "").replace(/\s*[·•|]\s*|\s*\n+\s*/g, ", ").replace(/,\s*,/g, ",").trim();
   const coordsOf = (v) => { const m = String(v || "").match(/(-?\d{1,2}\.\d{3,})\s*,\s*(-?\d{1,3}\.\d{3,})/); return m ? `${m[1]},${m[2]}` : ""; };
   const mapSrc = (st) => {
     let v = String(st.map || "").trim();
     const iframe = v.match(/<iframe[^>]+src=["']([^"']+)["']/i);
     if (iframe) v = iframe[1].replace(/&amp;/g, "&");
     if (/^https:\/\/(www\.)?google\.[a-z.]+\/maps\/embed/i.test(v) || /[?&]output=embed/.test(v)) return v;
-    const q = coordsOf(v) || (v && !/^https?:/i.test(v) ? v : `${st.name}, ${st.address}`);
+    // Sin ubicación: se busca solo la dirección (sin "·" ni saltos de línea, que confunden a Google)
+    const q = coordsOf(v) || (v && !/^https?:/i.test(v) ? v : cleanAddr(st.address));
     return `https://www.google.com/maps?q=${encodeURIComponent(q)}&z=17&hl=es&output=embed`;
   };
   const directionsUrl = (st) => {
     if (st.mapsUrl) return st.mapsUrl;
     const c = coordsOf(st.map);
-    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c || `${st.name}, ${st.address}`)}`;
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(c || cleanAddr(st.address))}`;
   };
 
   // El formulario de encargos no existe en esta versión: los enlaces antiguos a él llevan a "Dónde estamos"
@@ -280,7 +282,13 @@
         <div class="container">
           ${head(s)}
           <article class="location ${withMap ? "" : "location--nomap"} reveal">
-            ${withMap ? `<div class="location__map"><iframe src="${esc(mapSrc(st))}" title="Mapa: ${esc(st.name)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>` : ""}
+            ${withMap ? `<div class="location__map" data-map-src="${esc(mapSrc(st))}" data-map-title="Mapa: ${esc(st.name)}">
+              <div class="map-consent">
+                <span class="map-consent__pin" aria-hidden="true"></span>
+                <p>El mapa lo ofrece Google, que puede usar cookies.</p>
+                <button type="button" class="btn btn--small" data-load-map>Ver el mapa</button>
+              </div>
+            </div>` : ""}
             <div class="location__info">
               <span class="store__status ${open ? "is-open" : "is-closed"}">${open ? "Abierto ahora" : "Cerrado ahora"}</span>
               <h3>${esc(st.name)}</h3>
@@ -333,7 +341,7 @@
         </div>
         <div>
           <h4>Aviso legal</h4>
-          <ul>${(f.legal || []).map((l) => `<li><a href="${esc(l.url || "#")}">${esc(l.label)}</a></li>`).join("")}</ul>
+          <ul>${legalPages().map((l) => `<li><a href="${legalUrl(l)}">${esc(l.label || l.title)}</a></li>`).join("")}</ul>
         </div>
       </div>
       <div class="footer__bottom container">
@@ -356,10 +364,12 @@
     const wa = $("[data-wa]");
     wa.hidden = !g.whatsapp; wa.href = waLink(g.whatsapp);
     $("[data-cookies-text]").textContent = C.footer?.cookiesText || "";
-    $("[data-cookies-link]").href = C.footer?.legal?.[1]?.url || "#";
+    const ck = legalPages().find((p) => /cookie/i.test(p.slug + p.title));
+    $("[data-cookies-link]").href = ck ? legalUrl(ck) : "#";
 
     if (PAGE === "blog") $("#main").innerHTML = blogPage();
     else if (PAGE === "post") $("#main").innerHTML = postPage();
+    else if (PAGE === "legal") $("#main").innerHTML = legalPage();
     else $("#main").innerHTML = ORDER.filter((k) => C[k] && C[k].show !== false && S[k]).map((k) => S[k](C[k])).join("");
     $("#footer").innerHTML = footer();
     initSection();
@@ -395,6 +405,46 @@
           </div>
         </div>
       </section>`;
+  }
+
+  const legalPages = () => ((C.legal && C.legal.pages) || []).filter((p) => p.title);
+  const legalUrl = (p) => `/legal/${encodeURIComponent(p.slug || p.id)}`;
+  // Sustituye {{titular}}, {{nif}}… por los datos de «Datos generales»
+  function fillTokens(html) {
+    const g = C.general || {}, st = (C.stores?.items || [])[0] || {};
+    const val = {
+      titular: g.legalName, nif: g.taxId, email: g.email, telefono: g.phone || st.phone,
+      direccion: String(st.address || "").replace(/\s*\n\s*/g, ", "), web: location.host,
+    };
+    return html.replace(/\{\{\s*(\w+)\s*\}\}/g, (m, k) => {
+      if (!(k in val)) return m;
+      return val[k] ? esc(val[k]) : `<mark class="todo">[falta: ${k}]</mark>`;
+    });
+  }
+  let previewPageId = null;
+  function legalPage() {
+    const all = legalPages();
+    const slug = decodeURIComponent(location.pathname.split("/")[2] || "");
+    const p = isPreview && previewPageId ? all.find((x) => x.id === previewPageId) : all.find((x) => x.slug === slug || x.id === slug);
+    if (!p) {
+      document.title = `Página no encontrada · ${siteName()}`;
+      return `<section class="page-head page-head--center"><div class="container">
+        <h1>Página no encontrada</h1><p class="page-head__lead">Puede que se haya movido.</p><a href="/" class="btn">Volver al inicio</a></div></section>`;
+    }
+    document.title = `${p.title} · ${siteName()}`;
+    return `
+      <section class="page-head page-head--legal">
+        <div class="container container--narrow">
+          <p class="eyebrow eyebrow--dark">Información legal</p>
+          <h1>${esc(p.title)}</h1>
+        </div>
+      </section>
+      <article class="legal section">
+        <div class="prose container container--narrow">${fillTokens(sanitize(p.body))}</div>
+        ${all.length > 1 ? `<nav class="legal__nav container container--narrow" aria-label="Otras páginas legales">
+          ${all.filter((x) => x.id !== p.id).map((x) => `<a href="${legalUrl(x)}" class="share-btn">${esc(x.label || x.title)}</a>`).join("")}
+        </nav>` : ""}
+      </article>`;
   }
 
   function postPage() {
@@ -497,6 +547,7 @@
     }
 
     observe($$(".reveal"));
+    if (isPreview || cookieChoice() === "accept") loadMaps();
 
     /* Blog: filtros y copiar enlace */
     $$("[data-blog-filter]").forEach((b) => b.addEventListener("click", () => {
@@ -565,6 +616,16 @@
 
   }
 
+  /* Mapa: solo se carga con permiso (cookies de Google) */
+  const cookieChoice = () => { try { return localStorage.getItem("fa-cookies"); } catch { return null; } };
+  function loadMaps() {
+    $$("[data-map-src]").forEach((box) => {
+      if ($("iframe", box)) return;
+      box.innerHTML = `<iframe src="${box.dataset.mapSrc}" title="${box.dataset.mapTitle}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`;
+    });
+  }
+  document.addEventListener("click", (e) => { if (e.target.closest("[data-load-map]")) loadMaps(); });
+
   /* Cookies */
   function initCookies() {
     if (isPreview) return;
@@ -574,6 +635,7 @@
     if (!consent) setTimeout(() => { box.hidden = false; requestAnimationFrame(() => box.classList.add("is-in")); }, 1200);
     $$("[data-cookies]", box).forEach((b) => b.addEventListener("click", () => {
       try { localStorage.setItem("fa-cookies", b.dataset.cookies); } catch {}
+      if (b.dataset.cookies === "accept") loadMaps();
       box.classList.remove("is-in");
       setTimeout(() => (box.hidden = true), 400);
     }));
@@ -591,7 +653,7 @@
     const defaultsP = fetch("/content/default.json").then((r) => r.json());
     let saved = null;
     try {
-      const r = await fetch("/api/content");
+      const r = await fetch("/api/content", { cache: "no-cache" });
       if (r.ok) { const d = await r.json(); saved = d && d.content; }
     } catch {}
     const defaults = await defaultsP;
@@ -609,6 +671,7 @@
       if (e.origin !== location.origin || !e.data) return;
       if (e.data.type === "preview") {
         previewPostId = e.data.postId || null;
+        previewPageId = e.data.pageId || null;
         render(e.data.content, { keepScroll: !first });
         if (first) { first = false; done(); }
       }

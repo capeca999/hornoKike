@@ -49,6 +49,11 @@
           { key: "logo", label: "Logo (fondo claro)", type: "image", ratio: "logo", maxSize: 1200, keepPng: true },
           { key: "logoLight", label: "Logo para el pie (fondo granate)", type: "image", ratio: "logo", maxSize: 1200, keepPng: true, dark: true },
         ]},
+        { type: "group", label: "Datos legales del titular", fields: [
+          { key: "legalName", label: "Titular (nombre y apellidos o razón social)", type: "text", placeholder: "Forn Almenar, S.L." },
+          { key: "taxId", label: "NIF / CIF", type: "text", placeholder: "B12345678" },
+          { type: "note", text: "Se rellenan solos en el aviso legal y la política de privacidad. La dirección, el email y el teléfono se toman de «Dónde estamos» y de Contacto." },
+        ]},
         { type: "group", label: "Google y buscadores", fields: [
           { key: "siteTitle", label: "Título de la pestaña", type: "text", help: "Lo que se ve en la pestaña del navegador y en Google." },
           { key: "siteDescription", label: "Descripción para Google", type: "textarea", rows: 3 },
@@ -207,11 +212,10 @@
       fields: [
         { key: "text", label: "Texto del pie", type: "textarea", rows: 3 },
         { key: "cookiesText", label: "Aviso de cookies", type: "textarea", rows: 2 },
-        { key: "legal", label: "Enlaces legales", type: "list", addLabel: "Añadir enlace", inline: true,
-          newItem: () => ({ label: "", url: "" }),
-          item: [{ key: "label", label: "Texto", type: "text" }, { key: "url", label: "Enlace", type: "text", placeholder: "https://…" }] },
+        { type: "note", text: "Los enlaces legales del pie salen solos de la sección «Textos legales»." },
       ],
     },
+    { id: "legal", name: "Textos legales", desc: "Aviso legal, privacidad, cookies, alérgenos", special: true },
     { id: "backups", name: "Copias de seguridad", desc: "Volver a una versión anterior", special: true },
   ];
 
@@ -229,6 +233,7 @@
     previewReady: false,
     previewPath: "/",
     blogPost: null,
+    legalPage: null,
   };
 
   /* ---------- API ---------- */
@@ -255,22 +260,54 @@
   /* =========================================================
      LOGIN
      ========================================================= */
+  // Captcha (Cloudflare Turnstile): solo aparece si está configurado en Vercel
+  const captcha = { enabled: false, token: "", widget: null };
+  async function setupCaptcha() {
+    if (captcha.widget !== null || captcha.loading) return;
+    captcha.loading = true;
+    try {
+      const { turnstileSiteKey } = await (await fetch("/api/config")).json();
+      if (!turnstileSiteKey) return;
+      captcha.enabled = true;
+      await new Promise((resolve, reject) => {
+        const s = h("script", { src: "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit", async: true });
+        s.onload = resolve; s.onerror = reject;
+        document.head.append(s);
+      });
+      const box = $("#captcha");
+      box.hidden = false;
+      captcha.widget = window.turnstile.render(box, {
+        sitekey: turnstileSiteKey, language: "es", theme: "light",
+        callback: (t) => { captcha.token = t; $(".login__error").textContent = ""; },
+        "expired-callback": () => { captcha.token = ""; },
+        "error-callback": () => { captcha.token = ""; },
+      });
+    } catch {
+      $(".login__error").textContent = "No se ha podido cargar la verificación. Recarga la página.";
+    } finally { captcha.loading = false; }
+  }
+  const resetCaptcha = () => { if (captcha.widget !== null && window.turnstile) { window.turnstile.reset(captcha.widget); captcha.token = ""; } };
+
   $("#login-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const f = e.target, err = $(".login__error", f), btn = $("button", f);
+    const f = e.target, err = $(".login__error", f), btn = $("button[type=submit]", f);
+    if (captcha.enabled && !captcha.token) { err.textContent = "Marca la casilla de verificación antes de entrar."; return; }
     err.textContent = ""; btn.disabled = true; btn.textContent = "Entrando…";
     try {
-      const { token } = await api("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: f.password.value }) });
+      const { token } = await api("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: f.password.value, captcha: captcha.token }) });
       state.token = token; sessionStorage.setItem("fa-token", token);
       f.reset();
       start();
     } catch (ex) { err.textContent = ex.message; }
+    resetCaptcha(); // cada token de Turnstile solo sirve una vez
     btn.disabled = false; btn.textContent = "Entrar";
   });
 
+  function showLogin() { $("#login").hidden = false; setupCaptcha(); }
+
   function logout(expired) {
     state.token = ""; sessionStorage.removeItem("fa-token");
-    $("#app").hidden = true; $("#login").hidden = false;
+    $("#app").hidden = true; showLogin();
     if (expired) $(".login__error").textContent = "La sesión ha caducado. Vuelve a entrar (tus cambios sin guardar siguen aquí).";
   }
   $("#logout-btn").addEventListener("click", () => {
@@ -306,7 +343,7 @@
      ========================================================= */
   function goSection(id) {
     const s = SECTIONS.find((x) => x.id === id);
-    state.section = id; state.search = ""; state.blogPost = null;
+    state.section = id; state.search = ""; state.blogPost = null; state.legalPage = null;
     history.replaceState(null, "", "#" + id);
     renderNav(); renderEditor();
     $("#editor").scrollTop = 0;
@@ -346,10 +383,13 @@
     const sec = SECTIONS.find((s) => s.id === state.section);
     const ed = $("#editor");
     ed.innerHTML = "";
-    setPreviewPath(sec.id === "blog" ? (state.blogPost ? "/blog/_preview" : "/blog") : "/");
+    setPreviewPath(sec.id === "blog" ? (state.blogPost ? "/blog/_preview" : "/blog")
+      : sec.id === "legal" ? "/legal/_preview" : "/");
     if (sec.id === "blog" && state.blogPost) return renderPostEditor(ed);
+    if (sec.id === "legal" && state.legalPage) return renderLegalEditor(ed);
     ed.append(h("div", { class: "editor__head" }, h("h1", {}, sec.name), h("p", {}, sec.desc)));
     if (sec.id === "blog") return renderBlogList(ed, sec);
+    if (sec.id === "legal") return renderLegalList(ed);
     if (sec.special) return renderBackups(ed);
     const obj = state.content[sec.id] || (state.content[sec.id] = {});
     ed.append(renderFields(sec.fields, obj, sec.id));
@@ -415,6 +455,8 @@
         return h("label", { class: `toggle ${f.key === "show" ? "toggle--main" : ""}` }, cb, h("span", { class: "toggle__ui" }),
           h("span", { class: "toggle__text" }, f.label, f.help ? h("small", {}, f.help) : ""));
       }
+      case "note":
+        return h("p", { class: "note" }, f.text);
       case "first": {
         // Edita directamente el primer elemento de una lista (p. ej. el único horno)
         const arr = obj[f.key] || (obj[f.key] = []);
@@ -731,6 +773,53 @@
     );
   }
 
+  /* =========================================================
+     TEXTOS LEGALES
+     ========================================================= */
+  const legalData = () => state.content.legal || (state.content.legal = { pages: [] });
+  function renderLegalList(ed) {
+    const L = legalData();
+    ed.append(
+      h("p", { class: "lead" }, "Son las páginas enlazadas en el pie de la web. Están redactadas con un modelo base: revísalas (o que las revise vuestro asesor) y completa los datos del titular en «Datos generales»."),
+      h("div", { class: "posts" }, L.pages.map((p) => h("button", { type: "button", class: "post-row", onclick: () => { state.legalPage = p.id; renderEditor(); $("#editor").scrollTop = 0; } },
+        h("span", { class: "legal-icon", "aria-hidden": "true" }, "§"),
+        h("span", { class: "post-row__main" }, h("strong", {}, p.title || "Sin título"), h("small", {}, `/legal/${p.slug}`)),
+        /\{\{\s*(titular|nif)\s*\}\}/.test(p.body) && (!state.content.general.legalName || !state.content.general.taxId)
+          ? h("span", { class: "badge badge--draft" }, "Faltan datos") : h("span", { class: "badge badge--ok" }, "Lista"),
+        h("span", { class: "post-row__go", "aria-hidden": "true" }, "›")))),
+      h("button", { type: "button", class: "btn btn--add", onclick: () => {
+        const id = "l" + Date.now().toString(36);
+        L.pages.push({ id, slug: "", title: "", label: "", body: "", autoSlug: true });
+        state.legalPage = id; changed(); renderEditor();
+      } }, "+ Añadir otra página legal"));
+  }
+  function renderLegalEditor(ed) {
+    const L = legalData();
+    const page = L.pages.find((p) => p.id === state.legalPage);
+    if (!page) { state.legalPage = null; return renderEditor(); }
+    const titleInput = h("input", { type: "text", class: "input-title", value: page.title, placeholder: "Título de la página" });
+    titleInput.addEventListener("input", () => {
+      page.title = titleInput.value;
+      if (page.autoSlug) page.slug = slugify(page.title); // solo en páginas nuevas: las existentes mantienen su dirección
+      changed();
+    });
+    const tokens = ["titular", "nif", "direccion", "email", "telefono", "web"];
+    ed.append(
+      h("button", { type: "button", class: "back-link", onclick: () => { state.legalPage = null; renderEditor(); } }, "← Todos los textos legales"),
+      h("div", { class: "editor__head" }, h("h1", {}, page.title || "Nueva página")),
+      h("label", { class: "field" }, h("span", { class: "field__label" }, "Título"), titleInput),
+      renderField({ key: "label", label: "Texto del enlace en el pie", type: "text", placeholder: "Política de cookies", help: "Si lo dejas vacío, se usa el título." }, page, "legal"),
+      h("div", { class: "field" }, h("span", { class: "field__label" }, "Texto"), richEditor(page),
+        h("span", { class: "field__help" }, "Puedes escribir estas palabras entre llaves y se sustituyen solas por los datos reales: ",
+          ...tokens.map((t) => h("code", {}, `{{${t}}}`)))),
+      page.id.startsWith("l") && !["l1", "l2", "l3", "l4"].includes(page.id)
+        ? h("button", { type: "button", class: "btn btn--danger", onclick: () => {
+            if (!confirm(`¿Borrar la página «${page.title || "sin título"}»?`)) return;
+            L.pages.splice(L.pages.indexOf(page), 1); state.legalPage = null; changed(); renderEditor();
+          } }, "Borrar esta página") : "",
+    );
+  }
+
   // Editor de texto enriquecido (Quill)
   function richEditor(post) {
     const wrapEl = h("div", { class: "rich" });
@@ -854,7 +943,8 @@
   const frame = $("#preview-frame");
   const postPreview = (msg) => frame.contentWindow?.postMessage(msg, location.origin);
   const sendPreview = () => {
-    if (state.previewReady && state.content) postPreview({ type: "preview", content: state.content, postId: state.section === "blog" ? state.blogPost : null });
+    if (state.previewReady && state.content) postPreview({ type: "preview", content: state.content, postId: state.section === "blog" ? state.blogPost : null,
+      pageId: state.section === "legal" ? (state.legalPage || state.content.legal?.pages?.[0]?.id) : null });
   };
   function setPreviewPath(path) {
     if (state.previewPath === path) return;
@@ -892,5 +982,5 @@
   $("#preview-toggle").addEventListener("click", () => { document.body.classList.toggle("show-preview"); setTimeout(fit, 50); });
 
   /* ---------- Inicio ---------- */
-  if (state.token) start(); else $("#login").hidden = false;
+  if (state.token) start(); else showLogin();
 })();

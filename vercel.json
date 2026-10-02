@@ -28,6 +28,10 @@
     {
       "source": "/blog/:slug",
       "destination": "/blog/post"
+    },
+    {
+      "source": "/legal/:slug",
+      "destination": "/legal/page"
     }
   ]
 }

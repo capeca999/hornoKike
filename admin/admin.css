@@ -331,3 +331,10 @@ h1 { font: 900 2.2rem/1 var(--f-display); text-transform: uppercase; color: var(
 .blog-card__new:active { transform: translateY(1px); }
 .nav-label { margin: 6px 12px 6px; font-size: .68rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--wheat-dark); }
 .nav-label:not(:first-of-type) { margin-top: 18px; }
+
+/* Captcha */
+.captcha { display: flex; justify-content: center; margin: 4px 0 16px; min-height: 65px; }
+
+.note { background: var(--cream); border-radius: 10px; padding: 10px 12px; font-size: .82rem; color: var(--muted); margin: 0 0 16px; }
+.legal-icon { width: 48px; height: 48px; border-radius: 10px; background: var(--cream); color: var(--burgundy); display: grid; place-items: center; font: 900 1.4rem/1 var(--f-display); flex: none; }
+.field__help code { background: var(--cream); border-radius: 5px; padding: .1em .35em; margin: 0 2px; font-size: .78rem; color: var(--burgundy); }

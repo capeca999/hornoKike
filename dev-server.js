@@ -25,7 +25,8 @@ http.createServer(async (req, res) => {
       else if (!st) {
         const html = await fs.stat(file + ".html").catch(() => null);
         // /blog/<slug> → blog/post.html (igual que la regla de vercel.json)
-        file = html ? file + ".html" : /^\/blog\/[^/]+$/.test(url.pathname) ? path.join(ROOT, "blog/post.html") : file;
+        file = html ? file + ".html" : /^\/blog\/[^/]+$/.test(url.pathname) ? path.join(ROOT, "blog/post.html")
+          : /^\/legal\/[^/]+$/.test(url.pathname) ? path.join(ROOT, "legal/page.html") : file;
       }
     }
     const data = await fs.readFile(file);

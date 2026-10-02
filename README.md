@@ -41,8 +41,16 @@ Vercel → tu proyecto → *Settings* → *Environment Variables* (ver `.env.exa
 | `R2_SECRET_ACCESS_KEY` | Secret Access Key del token de R2 |
 | `R2_BUCKET` | Nombre del bucket |
 | `R2_PUBLIC_URL` | URL pública del bucket (sin `/` final) |
+| `TURNSTILE_SITE_KEY` | (Opcional) Clave pública del captcha del login |
+| `TURNSTILE_SECRET_KEY` | (Opcional) Clave secreta del captcha del login |
 
 Después: *Deployments* → *Redeploy*. Las claves nunca llegan al navegador; solo las usan las funciones de `/api`.
+
+### Captcha del login (opcional)
+
+Cloudflare → *Turnstile* → *Add widget* → nombre `Forn Almenar admin`, añade tus dominios
+(p. ej. `fornalmenar.com` y `tu-proyecto.vercel.app`), modo *Managed* → copia **Site Key** y **Secret Key**
+en `TURNSTILE_SITE_KEY` y `TURNSTILE_SECRET_KEY`, y haz *Redeploy*. Sin estas dos variables, el login funciona sin captcha.
 
 ## 3 · Desplegar
 
@@ -63,6 +71,7 @@ ADMIN_PASSWORD=1234 LOCAL_STORAGE_DIR=./.local-storage npm run dev
 | Archivo | Para qué |
 |---|---|
 | `index.html`, `css/styles.css`, `js/site.js` | Web pública; se dibuja a partir del contenido |
+| `legal/page.html` | Páginas legales (`/legal/aviso-legal`, `/legal/politica-de-privacidad`, `/legal/politica-de-cookies`, `/legal/alergenos`), editables en el panel → «Textos legales» |
 | `blog/index.html`, `blog/post.html` | Página `/blog` y página de cada noticia (`vercel.json` redirige `/blog/:slug`) |
 | `admin/vendor/` | Editor de texto enriquecido (Quill 2, licencia BSD) |
 | `content/default.json` | Contenido inicial (se usa hasta el primer guardado) |
