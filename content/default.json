@@ -326,7 +326,7 @@
     "items": [
       {
         "name": "Forn Almenar",
-        "address": "Calle Mayor, 12 · 46000 Valencia",
+        "address": "C/ de Molinell, 10 · La Saïdia\n46010 València",
         "phone": "+34 960 000 000",
         "mapsUrl": "https://www.google.com/maps?ftid=0xd6048a9dfd2ab29:0x6e5b0c74dcd02521",
         "schedule": [
@@ -360,7 +360,7 @@
           }
         ],
         "showMap": true,
-        "map": "39.48570, -0.36891"
+        "map": "C/ de Molinell, 10, 46010 València"
       }
     ]
   },
