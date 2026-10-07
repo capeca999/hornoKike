@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Forn Almenar · Horno artesano desde 1952</title>
+  <meta name="description" content="Forn Almenar, horno artesano desde 1952. Pan de masa madre, bollería y pastelería tradicional." />
+  <meta name="theme-color" content="#561C24" />
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <meta property="og:title" content="Forn Almenar · Horno artesano desde 1952" />
+  <meta property="og:image" content="/img/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <script>addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG")t.style.visibility="hidden"},true);</script>
+</head>
+<body class="is-loading" data-page="home">
+
+  <div class="loader" aria-hidden="true"><img src="/img/favicon.png" alt="" /></div>
+
+  <!-- ============ CABECERA ============ -->
+  <header class="header" id="top">
+    <div class="header__inner">
+      <nav class="nav nav--left" aria-label="Principal">
+        <a href="/#inicio" data-sec="hero">Inicio</a>
+        <a href="/#productos" data-sec="products">Productos</a>
+        <a href="/blog" data-sec="blog">Novedades</a>
+      </nav>
+      <a href="/" class="header__logo" aria-label="Forn Almenar, inicio">
+        <img src="/img/logo.png" alt="Forn Almenar 1952" width="792" height="458" data-logo />
+      </a>
+      <nav class="nav nav--right" aria-label="Secundaria">
+        <a href="/#historia" data-sec="history">Nuestra historia</a>
+        <a href="/#obrador" data-sec="workshop">Obrador</a>
+        <a href="/#tiendas" class="btn btn--small" data-sec="stores">Dónde estamos</a>
+      </nav>
+      <button class="burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="/#inicio" data-sec="hero">Inicio</a>
+    <a href="/#productos" data-sec="products">Productos</a>
+    <a href="/blog" data-sec="blog">Novedades</a>
+    <a href="/#obrador" data-sec="workshop">Obrador</a>
+    <a href="/#historia" data-sec="history">Nuestra historia</a>
+    <a href="/#tiendas" class="btn" data-sec="stores">Dónde estamos</a>
+  </div>
+
+  <!-- Todo el contenido se genera desde content/site.json (editable en /admin) -->
+  <main id="main"></main>
+  <footer class="footer" id="footer"></footer>
+
+  <script src="/js/site.js"></script>
+</body>
+</html>
