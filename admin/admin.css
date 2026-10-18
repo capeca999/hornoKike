@@ -324,7 +324,7 @@ h1 { font: 900 2.2rem/1 var(--f-display); text-transform: uppercase; color: var(
 .blog-card.is-active { box-shadow: 0 0 0 3px var(--burgundy), 0 16px 30px -18px rgba(150, 100, 40, .8); }
 .blog-card__main { display: flex; align-items: center; gap: 12px; width: 100%; border: 0; background: transparent; text-align: left; padding: 10px 8px; cursor: pointer; position: relative; z-index: 1; }
 .blog-card__icon { width: 40px; height: 40px; border-radius: 12px; background: var(--burgundy); color: #f7e3c0; display: grid; place-items: center; font-size: 1.15rem; flex: none; box-shadow: 0 6px 14px -8px rgba(61, 19, 25, .8); }
-.blog-card__main strong { display: block; white-space: nowrap; font: 900 1.15rem/1 var(--f-display); text-transform: uppercase; color: var(--burgundy-900); letter-spacing: .01em; }
+.blog-card__main strong { display: block; font: 900 1.12rem/1.05 var(--f-display); text-transform: uppercase; color: var(--burgundy-900); letter-spacing: .01em; }
 .blog-card__main small { display: block; margin-top: 4px; font-size: .78rem; font-weight: 700; color: rgba(61, 19, 25, .72); }
 .blog-card__new { width: 100%; border: 0; border-radius: 11px; padding: .75em; background: var(--burgundy); color: #fff; font-weight: 700; font-size: .9rem; cursor: pointer; position: relative; z-index: 1; transition: background .2s, transform .15s; }
 .blog-card__new:hover { background: var(--burgundy-700); }
@@ -338,3 +338,12 @@ h1 { font: 900 2.2rem/1 var(--f-display); text-transform: uppercase; color: var(
 .note { background: var(--cream); border-radius: 10px; padding: 10px 12px; font-size: .82rem; color: var(--muted); margin: 0 0 16px; }
 .legal-icon { width: 48px; height: 48px; border-radius: 10px; background: var(--cream); color: var(--burgundy); display: grid; place-items: center; font: 900 1.4rem/1 var(--f-display); flex: none; }
 .field__help code { background: var(--cream); border-radius: 5px; padding: .1em .35em; margin: 0 2px; font-size: .78rem; color: var(--burgundy); }
+
+/* Aviso de actualización */
+.update-bar { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  background: linear-gradient(135deg, #fff4df, #f6e3c3); border: 1px solid #e8cc9c; border-radius: 14px; padding: 14px 16px; margin-bottom: 22px;
+  box-shadow: 0 14px 30px -24px rgba(150, 100, 40, .8); }
+.update-bar strong { display: block; color: var(--burgundy); margin-bottom: 4px; }
+.update-bar span { display: block; font-size: .84rem; color: var(--muted); }
+.update-bar > div:first-child { flex: 1 1 260px; }
+.update-bar__actions { display: flex; gap: 8px; }

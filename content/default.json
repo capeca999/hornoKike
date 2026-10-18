@@ -17,27 +17,39 @@
     "slides": [
       {
         "eyebrow": "Desde 1952",
+        "title": "Horno, pastelería\ny café",
+        "text": "Pan de masa madre, bollería recién hecha y un rincón para quedarse en La Saïdia.",
+        "button": "Ver productos",
+        "link": "#productos",
+        "image": "/img/fotos/portada-local.webp",
+        "pos": "80% center"
+      },
+      {
+        "eyebrow": "Hecho cada mañana",
         "title": "Pan de verdad,\ncomo siempre",
         "text": "Masa madre, harinas de molino y horas de reposo. Sin prisas, sin atajos.",
-        "button": "Ver productos",
-        "link": "#productos",
-        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1920&q=80"
+        "button": "Nuestro obrador",
+        "link": "#obrador",
+        "image": "/img/fotos/portada-pan.webp",
+        "pos": "center"
       },
       {
-        "eyebrow": "Recién salido del horno",
-        "title": "Bollería\nde mantequilla",
-        "text": "Croissants, ensaïmadas y napolitanas que salen del obrador cada mañana.",
-        "button": "Descúbrela",
+        "eyebrow": "Pastelería",
+        "title": "Pequeños\ncaprichos",
+        "text": "Mousses, milhojas y hojaldres que se hacen a mano en nuestro obrador.",
+        "button": "Descúbrelos",
         "link": "#productos",
-        "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1920&q=80"
+        "image": "/img/fotos/portada-pasteleria.webp",
+        "pos": "center"
       },
       {
-        "eyebrow": "Para compartir",
-        "title": "Tartas para\ntus momentos",
-        "text": "Cumpleaños, celebraciones o un domingo cualquiera. Ven a ver lo que tenemos hoy.",
-        "button": "Ver productos",
-        "link": "#productos",
-        "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1920&q=80"
+        "eyebrow": "Ven a vernos",
+        "title": "Un rincón\npara quedarse",
+        "text": "Café, algo dulce y una buena mesa. Te esperamos en C/ de Molinell, 10.",
+        "button": "Dónde estamos",
+        "link": "#tiendas",
+        "image": "/img/fotos/portada-salon.webp",
+        "pos": "center"
       }
     ]
   },
@@ -68,8 +80,8 @@
     "titleAccent": "con las manos",
     "text1": "Creemos en el oficio de siempre. Por eso trabajamos con masa madre propia, harinas de molinos cercanos y largas fermentaciones que dan al pan su sabor, su miga y su corteza.",
     "text2": "No usamos conservantes ni mejorantes. Cada receta se elabora a diario en nuestro obrador, igual que lo hacía el abuelo cuando encendió el horno por primera vez en 1952.",
-    "image1": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=900&q=80",
-    "image2": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=900&q=80",
+    "image1": "/img/fotos/nosotros-familia.webp",
+    "image2": "/img/fotos/nosotros-semillas.webp",
     "stats": [
       {
         "value": 74,
@@ -95,19 +107,19 @@
     "titleAccent": "son irresistibles",
     "items": [
       {
-        "name": "Croissant de mantequilla",
-        "text": "Hojaldre laminado a mano durante tres días. Crujiente por fuera, tierno por dentro.",
-        "image": "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=700&q=80"
+        "name": "Croissant relleno",
+        "text": "Mantequilla, crema pastelera y fruta fresca. El favorito de la casa.",
+        "image": "/img/fotos/destacado-croissant.webp"
       },
       {
-        "name": "Hogaza de masa madre",
-        "text": "Nuestro pan insignia: 48 horas de fermentación y corteza tostada al horno de piedra.",
-        "image": "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=700&q=80"
+        "name": "Milhojas",
+        "text": "Capas de hojaldre crujiente, crema y un buen golpe de azúcar glas.",
+        "image": "/img/fotos/destacado-milhojas.webp"
       },
       {
-        "name": "Pastas de la abuela",
-        "text": "La receta original de 1952: almendra, mantequilla y un toque de canela.",
-        "image": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=700&q=80"
+        "name": "Mousse de frutos rojos",
+        "text": "Suave, fresca y con el brillo de una buena cobertura de frutos rojos.",
+        "image": "/img/fotos/destacado-mousse.webp"
       }
     ]
   },
@@ -130,8 +142,8 @@
         "name": "Pastelería"
       },
       {
-        "id": "salado",
-        "name": "Salado"
+        "id": "cafeteria",
+        "name": "Cafetería"
       }
     ],
     "items": [
@@ -140,108 +152,189 @@
         "name": "Hogaza de masa madre",
         "cat": "pan",
         "price": "4,20 €",
-        "desc": "48 h de fermentación, corteza crujiente.",
-        "image": "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=600&q=80",
+        "desc": "48 h de fermentación, miga abierta y corteza crujiente.",
+        "image": "/img/fotos/p-hogaza.webp",
         "tag": "Estrella"
       },
       {
         "visible": true,
-        "name": "Barra de leña",
+        "name": "Pan de semillas",
         "cat": "pan",
-        "price": "1,30 €",
-        "desc": "La de toda la vida, cocida en horno de piedra.",
-        "image": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=600&q=80",
+        "price": "3,90 €",
+        "desc": "Cubierto de pipas de calabaza y semillas tostadas.",
+        "image": "/img/fotos/p-pan-semillas.webp",
         "tag": ""
       },
       {
         "visible": true,
-        "name": "Pan integral de espelta",
+        "name": "Barra rústica",
         "cat": "pan",
-        "price": "3,80 €",
-        "desc": "100% espelta integral con semillas.",
-        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80",
+        "price": "1,40 €",
+        "desc": "Alargada, harinada y con mucha corteza.",
+        "image": "/img/fotos/p-barra.webp",
         "tag": ""
       },
       {
         "visible": true,
-        "name": "Pan de centeno",
-        "cat": "pan",
-        "price": "3,50 €",
-        "desc": "Miga densa y aromática, ideal para tostar.",
-        "image": "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=600&q=80",
-        "tag": ""
-      },
-      {
-        "visible": true,
-        "name": "Croissant de mantequilla",
+        "name": "Croissant relleno de crema y fruta",
         "cat": "bolleria",
-        "price": "1,60 €",
-        "desc": "Laminado a mano durante tres días.",
-        "image": "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=600&q=80",
+        "price": "3,50 €",
+        "desc": "Croissant de mantequilla, crema pastelera y fruta fresca.",
+        "image": "/img/fotos/p-croissant-crema.webp",
         "tag": "Favorito"
       },
       {
         "visible": true,
-        "name": "Napolitana de chocolate",
+        "name": "Croissant de nata y fresas",
         "cat": "bolleria",
-        "price": "1,70 €",
-        "desc": "Hojaldre y chocolate negro del bueno.",
-        "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80",
+        "price": "3,50 €",
+        "desc": "Relleno de nata montada y coronado con fruta.",
+        "image": "/img/fotos/p-croissant-nata.webp",
         "tag": ""
       },
       {
         "visible": true,
-        "name": "Ensaïmada",
+        "name": "Croissant de pistacho",
         "cat": "bolleria",
-        "price": "1,90 €",
-        "desc": "Esponjosa, con azúcar glas por encima.",
-        "image": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=600&q=80",
-        "tag": ""
-      },
-      {
-        "visible": true,
-        "name": "Tarta de chocolate",
-        "cat": "pasteleria",
-        "price": "24 €",
-        "desc": "Bizcocho húmedo y ganache. 8 raciones.",
-        "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80",
-        "tag": "Para compartir"
-      },
-      {
-        "visible": true,
-        "name": "Pastas de la abuela",
-        "cat": "pasteleria",
-        "price": "14 €/kg",
-        "desc": "Receta original de 1952 con almendra.",
-        "image": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600&q=80",
-        "tag": ""
-      },
-      {
-        "visible": true,
-        "name": "Coca de llanda",
-        "cat": "pasteleria",
-        "price": "6,50 €",
-        "desc": "El clásico valenciano para el almuerzo.",
-        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80",
-        "tag": ""
-      },
-      {
-        "visible": true,
-        "name": "Coca de verduras",
-        "cat": "salado",
         "price": "3,20 €",
-        "desc": "Pimiento, cebolla y tomate asados.",
-        "image": "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=600&q=80",
+        "desc": "Con crema y pistacho por encima.",
+        "image": "/img/fotos/p-croissant-pistacho.webp",
+        "tag": "Novedad"
+      },
+      {
+        "visible": true,
+        "name": "Hojaldre de frutas",
+        "cat": "bolleria",
+        "price": "3,20 €",
+        "desc": "Hojaldre, crema y fruta de temporada.",
+        "image": "/img/fotos/p-hojaldre-frutas.webp",
         "tag": ""
       },
       {
         "visible": true,
-        "name": "Empanadilla de pisto",
-        "cat": "salado",
-        "price": "1,80 €",
-        "desc": "Masa casera y relleno de pisto con atún.",
-        "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80",
+        "name": "Hojaldre de manzana",
+        "cat": "bolleria",
+        "price": "2,80 €",
+        "desc": "Láminas de manzana sobre hojaldre crujiente.",
+        "image": "/img/fotos/p-hojaldre-manzana.webp",
         "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Muffins",
+        "cat": "bolleria",
+        "price": "2,50 €",
+        "desc": "Esponjosos, de varios sabores cada día.",
+        "image": "/img/fotos/p-muffins.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Muffin de chocolate",
+        "cat": "bolleria",
+        "price": "2,60 €",
+        "desc": "Doble chocolate, para los más golosos.",
+        "image": "/img/fotos/p-muffin-chocolate.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Milhojas",
+        "cat": "pasteleria",
+        "price": "3,80 €",
+        "desc": "Hojaldre, crema y azúcar glas.",
+        "image": "/img/fotos/p-milhojas.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Mousse de frutos rojos",
+        "cat": "pasteleria",
+        "price": "4,50 €",
+        "desc": "Individual, suave y con cobertura brillante.",
+        "image": "/img/fotos/p-mousse-frutos.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Mousse de chocolate",
+        "cat": "pasteleria",
+        "price": "4,50 €",
+        "desc": "Base crujiente y mousse de chocolate.",
+        "image": "/img/fotos/p-mousse-chocolate.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Tarta Sacher",
+        "cat": "pasteleria",
+        "price": "4,20 €",
+        "desc": "Bizcocho de chocolate, mermelada y cobertura.",
+        "image": "/img/fotos/p-sacher.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Tarta de galleta",
+        "cat": "pasteleria",
+        "price": "4,20 €",
+        "desc": "Capas de crema y galleta caramelizada.",
+        "image": "/img/fotos/p-tarta-lotus.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Bizcocho de pistacho",
+        "cat": "pasteleria",
+        "price": "3,20 €",
+        "desc": "Tierno y con pistacho troceado por encima.",
+        "image": "/img/fotos/p-bizcocho-pistacho.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Bizcocho de chocolate",
+        "cat": "pasteleria",
+        "price": "3,20 €",
+        "desc": "Jugoso, intenso y con trocitos crujientes.",
+        "image": "/img/fotos/p-brownie.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Tartaleta de merengue",
+        "cat": "pasteleria",
+        "price": "3,50 €",
+        "desc": "Base de masa quebrada y merengue tostado.",
+        "image": "/img/fotos/p-tartaleta.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Capuchino",
+        "cat": "cafeteria",
+        "price": "2,20 €",
+        "desc": "Espresso con leche cremosa y cacao.",
+        "image": "/img/fotos/p-capuchino.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Iced latte",
+        "cat": "cafeteria",
+        "price": "3,20 €",
+        "desc": "Café con leche y mucho hielo.",
+        "image": "/img/fotos/p-iced-latte.webp",
+        "tag": ""
+      },
+      {
+        "visible": true,
+        "name": "Iced matcha latte",
+        "cat": "cafeteria",
+        "price": "3,90 €",
+        "desc": "Té matcha con leche fría.",
+        "image": "/img/fotos/p-matcha.webp",
+        "tag": "Novedad"
       }
     ]
   },
@@ -251,7 +344,7 @@
     "title": "Ven a\nconocernos",
     "text": "Pan recién hecho cada mañana, a la vuelta de la esquina.",
     "button": "Dónde estamos",
-    "image": "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=1920&q=80",
+    "image": "/img/fotos/banner-salon.webp",
     "link": "#tiendas"
   },
   "workshop": {
@@ -279,16 +372,16 @@
     ],
     "gallery": [
       {
-        "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80"
+        "image": "/img/fotos/obrador-corte.webp"
       },
       {
-        "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80"
+        "image": "/img/fotos/obrador-semillas.webp"
       },
       {
-        "image": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=800&q=80"
+        "image": "/img/fotos/obrador-barra.webp"
       },
       {
-        "image": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80"
+        "image": "/img/fotos/obrador-cafe.webp"
       }
     ]
   },
@@ -381,39 +474,39 @@
     "posts": [
       {
         "id": "p1",
-        "slug": "ya-estan-aqui-los-panellets",
-        "title": "Ya están aquí los panellets",
-        "category": "Anuncio",
-        "date": "2026-09-28",
-        "cover": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=1600&q=80",
+        "slug": "asi-es-nuestro-horno-por-dentro",
+        "title": "Así es nuestro horno por dentro",
+        "category": "Noticia",
+        "date": "2026-10-10",
+        "cover": "/img/fotos/blog-local.webp",
         "pinned": true,
         "published": true,
-        "excerpt": "Piñones, almendra, coco y boniato: este año preparamos cuatro variedades. Ya los tienes en el mostrador.",
-        "body": "<p>Como cada otoño, el obrador huele a almendra tostada. <strong>Ya tenemos panellets</strong> y este año preparamos cuatro variedades:</p><ul><li>Piñones (el clásico de siempre)</li><li>Almendra y limón</li><li>Coco</li><li>Boniato y canela</li></ul><h2>Dónde encontrarlos</h2><p>Los tendrás cada día en el mostrador hasta <strong>Todos los Santos</strong>. Ven pronto, que los de piñones vuelan.</p><blockquote>«La receta de los panellets de piñones es la misma que usaba el abuelo en 1952.»</blockquote><p>¡Te esperamos!</p>"
+        "excerpt": "Un croissant gigante en la pared, sofás para quedarse y el logo encendido al fondo. Te enseñamos nuestro espacio.",
+        "body": "<p>Hemos querido que el horno sea un sitio para comprar el pan… <strong>y también para quedarse</strong>. Un lugar donde tomar un café tranquilo, quedar con alguien o simplemente sentarse un rato.</p><p><img src=\"/img/fotos/blog-in-salon.webp\" alt=\"Zona de sofás del horno\"></p><h2>Un rincón para cada momento</h2><p>Junto a la entrada tienes los sofás verdes, perfectos para un desayuno sin prisas. Al fondo, el salón con mesas de mármol y nuestro logo encendido, donde cabe toda la familia.</p><p><img src=\"/img/fotos/blog-in-croissant.webp\" alt=\"El croissant gigante de la pared\"></p><p>Y sí: el croissant gigante de la pared se ha convertido en la foto favorita de quien nos visita.</p><h2>Ven a conocernos</h2><p>Estamos en <strong>C/ de Molinell, 10</strong>, en La Saïdia. ¡Te esperamos!</p>"
       },
       {
         "id": "p2",
-        "slug": "horario-especial-12-de-octubre",
-        "title": "Horario especial el 12 de octubre",
-        "category": "Aviso",
-        "date": "2026-09-22",
-        "cover": "https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=1600&q=80",
+        "slug": "del-obrador-a-tu-mesa",
+        "title": "Del obrador a tu mesa: nuestra pastelería",
+        "category": "Noticia",
+        "date": "2026-10-03",
+        "cover": "/img/fotos/blog-pasteleria.webp",
         "pinned": false,
         "published": true,
-        "excerpt": "El día del Pilar abrimos por la mañana. Así queda el horario.",
-        "body": "<p>El <strong>lunes 12 de octubre</strong> es festivo, pero no te quedarás sin pan. Abrimos con horario de domingo: <strong>de 07:30 a 14:00</strong>.</p><p>Por la tarde estaremos cerrados. ¡Gracias por vuestra comprensión!</p>"
+        "excerpt": "Milhojas, mousses, hojaldres de fruta y croissants rellenos. Así es la vitrina dulce de Forn Almenar.",
+        "body": "<p>Cada mañana, antes de abrir, el obrador ya huele a mantequilla y azúcar. De ahí sale toda nuestra pastelería, <strong>hecha a mano</strong> y en pequeñas cantidades para que siempre esté recién hecha.</p><p><img src=\"/img/fotos/blog-in-mesa.webp\" alt=\"Pasteles sobre una mesa de mármol\"></p><h2>Lo que más os gusta</h2><ul><li>El <strong>milhojas</strong>, crujiente y con mucha crema.</li><li>Las <strong>mousses individuales</strong> de frutos rojos y de chocolate.</li><li>Los <strong>croissants rellenos</strong> de crema y fruta fresca.</li></ul><p><img src=\"/img/fotos/blog-in-bebidas.webp\" alt=\"Cafés fríos con pasteles\"></p><h2>Y para acompañar…</h2><p>Un capuchino, un iced latte o un matcha frío. Pregúntanos por las combinaciones favoritas del equipo.</p>"
       },
       {
         "id": "p3",
         "slug": "asi-cuidamos-nuestra-masa-madre",
         "title": "Así cuidamos nuestra masa madre",
         "category": "Noticia",
-        "date": "2026-09-10",
-        "cover": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=1600&q=80",
+        "date": "2026-09-20",
+        "cover": "/img/fotos/blog-masa-madre.webp",
         "pinned": false,
         "published": true,
         "excerpt": "Lleva décadas viva y la alimentamos cada día. Te contamos el secreto de nuestro pan.",
-        "body": "<p>La masa madre es un fermento natural de harina y agua. La nuestra lleva <strong>décadas</strong> viva y la alimentamos cada mañana, antes de encender el horno.</p><h2>¿Por qué masa madre?</h2><p>Porque fermenta despacio. Eso hace que el pan tenga más sabor, una miga más jugosa y que aguante tierno varios días.</p><h3>Nuestros tres básicos</h3><ol><li>Harina de molino de piedra.</li><li>Agua y sal, nada más.</li><li>Tiempo: hasta 48 horas de fermentación.</li></ol><p>Si quieres ver cómo trabajamos, pregúntanos en tienda: nos encanta enseñarlo.</p>"
+        "body": "<p>La masa madre es un fermento natural de harina y agua. La nuestra lleva <strong>décadas</strong> viva y la alimentamos cada mañana, antes de encender el horno.</p><p><img src=\"/img/fotos/blog-in-corte.webp\" alt=\"Cortando una hogaza de masa madre\"></p><h2>¿Por qué masa madre?</h2><p>Porque fermenta despacio. Eso hace que el pan tenga más sabor, una miga más jugosa y que aguante tierno varios días.</p><h3>Nuestros tres básicos</h3><ol><li>Harina de molino.</li><li>Agua y sal, nada más.</li><li>Tiempo: hasta 48 horas de fermentación.</li></ol><p><img src=\"/img/fotos/blog-in-semillas.webp\" alt=\"Pan de semillas recién hecho\"></p><p>Si quieres saber más, pregúntanos en el horno: nos encanta contarlo.</p>"
       }
     ]
   },
@@ -446,6 +539,46 @@
         "title": "Información sobre alérgenos",
         "label": "Alérgenos",
         "body": "<p>De acuerdo con el Reglamento (UE) 1169/2011, te informamos de que en nuestro obrador se elaboran productos que contienen o pueden contener los siguientes <strong>alérgenos</strong>:</p>\n<ol><li>Cereales con gluten (trigo, centeno, cebada, avena, espelta…)</li><li>Crustáceos</li><li>Huevos</li><li>Pescado</li><li>Cacahuetes</li><li>Soja</li><li>Leche (incluida la lactosa)</li><li>Frutos de cáscara (almendras, avellanas, nueces, pistachos…)</li><li>Apio</li><li>Mostaza</li><li>Granos de sésamo</li><li>Dióxido de azufre y sulfitos</li><li>Altramuces</li><li>Moluscos</li></ol>\n<h2>Información de cada producto</h2>\n<p>Tienes a tu disposición la información detallada de alérgenos de cada producto <strong>en el propio horno</strong>. Pregunta a nuestro personal antes de comprar.</p>\n<h2>Trazas</h2>\n<p>Al tratarse de un obrador artesano donde se trabaja con harinas, frutos secos, huevo y leche, <strong>no podemos garantizar la ausencia total de trazas</strong> en ninguno de nuestros productos.</p>\n<p>Si tienes alguna alergia o intolerancia, llámanos al {{telefono}} o escríbenos a {{email}} y te asesoramos.</p>"
+      }
+    ]
+  },
+  "contentVersion": 2,
+  "team": {
+    "show": true,
+    "eyebrow": "Las manos detrás del mostrador",
+    "title": "Nuestro",
+    "titleAccent": "equipo",
+    "text": "Panaderos, pasteleros y baristas que cada día ponen el mismo cariño que en 1952.",
+    "items": [
+      {
+        "image": "/img/fotos/equipo-1.webp",
+        "name": "",
+        "role": ""
+      },
+      {
+        "image": "/img/fotos/equipo-2.webp",
+        "name": "",
+        "role": ""
+      },
+      {
+        "image": "/img/fotos/equipo-3.webp",
+        "name": "",
+        "role": ""
+      },
+      {
+        "image": "/img/fotos/equipo-4.webp",
+        "name": "",
+        "role": ""
+      },
+      {
+        "image": "/img/fotos/equipo-5.webp",
+        "name": "",
+        "role": ""
+      },
+      {
+        "image": "/img/fotos/equipo-6.webp",
+        "name": "",
+        "role": ""
       }
     ]
   }

@@ -152,7 +152,7 @@
       <section class="hero" id="inicio" aria-roledescription="carrusel">
         <div class="hero__slides">
           ${(s.slides || []).map((sl, i) => `
-            <article class="slide ${i === 0 ? "is-active" : ""}" style="--img:url('${esc(sl.image)}')">
+            <article class="slide ${i === 0 ? "is-active" : ""}" style="--img:url('${esc(sl.image)}');--pos:${esc(sl.pos || "center")}">
               <div class="slide__content">
                 ${sl.eyebrow ? `<p class="eyebrow">${esc(sl.eyebrow)}</p>` : ""}
                 ${i === 0 ? `<h1>${lines(sl.title)}</h1>` : `<h2 class="h1">${lines(sl.title)}</h2>`}
@@ -261,6 +261,25 @@
         </div>
       </section>`,
 
+    team: (s) => {
+      const items = (s.items || []).filter((m) => m.image);
+      if (!items.length) return "";
+      return `
+      <section class="team section" id="equipo">
+        <div class="container">
+          ${head(s)}
+          ${s.text ? `<p class="team__lead reveal">${lines(s.text)}</p>` : ""}
+          <div class="team__grid">
+            ${items.map((m, i) => `
+              <figure class="member reveal" ${delay(i % 3)}>
+                <div class="member__img">${img(m.image, m.name || "Equipo de Forn Almenar")}</div>
+                ${m.name || m.role ? `<figcaption>${m.name ? `<strong>${esc(m.name)}</strong>` : ""}${m.role ? `<span>${esc(m.role)}</span>` : ""}</figcaption>` : ""}
+              </figure>`).join("")}
+          </div>
+        </div>
+      </section>`;
+    },
+
     history: (s) => `
       <section class="history section section--cream" id="historia">
         <div class="container">
@@ -350,7 +369,7 @@
       </div>`;
   };
 
-  const ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "workshop", "history", "stores"];
+  const ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "workshop", "team", "history", "stores"];
   let C = null;
 
   function render(content, { keepScroll = false } = {}) {
@@ -659,7 +678,7 @@
     const defaults = await defaultsP;
     if (!saved) return defaults;
     // Si lo guardado es de una versión anterior (p. ej. sin blog), completa lo que falte
-    for (const k of Object.keys(defaults)) if (!(k in saved)) saved[k] = defaults[k];
+    for (const k of Object.keys(defaults)) if (k !== "contentVersion" && !(k in saved)) saved[k] = defaults[k];
     return saved;
   }
 

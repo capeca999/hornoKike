@@ -68,6 +68,8 @@
         newItem: () => ({ eyebrow: "", title: "Nuevo título", text: "", button: "Ver productos", link: "#productos", image: "" }),
         item: [
           { key: "image", label: "Foto de fondo", type: "image", ratio: "wide", maxSize: 2200, help: "Mejor en horizontal y con buena luz." },
+          { key: "pos", label: "En el móvil, ¿qué parte de la foto se ve?", type: "select",
+            options: () => [["center", "El centro"], ["20% center", "La parte izquierda"], ["80% center", "La parte derecha"]] },
           { key: "eyebrow", label: "Antetítulo", type: "text" },
           { key: "title", label: "Título", type: "textarea", rows: 2, help: "Pulsa Intro para partir el título en dos líneas." },
           { key: "text", label: "Texto", type: "textarea", rows: 2 },
@@ -159,6 +161,20 @@
           item: [{ key: "title", label: "Título", type: "text" }, { key: "text", label: "Texto", type: "textarea", rows: 2 }] },
         { key: "gallery", label: "Galería de fotos", type: "list", addLabel: "Añadir foto", grid: true, max: 8,
           newItem: () => ({ image: "" }), item: [{ key: "image", label: "", type: "image", ratio: "tall" }] },
+      ],
+    },
+    {
+      id: "team", name: "Equipo", desc: "Fotos y nombres del equipo", anchor: "equipo",
+      fields: [show, ...head(),
+        { key: "text", label: "Texto", type: "textarea", rows: 2 },
+        { key: "items", label: "Personas", type: "list", addLabel: "Añadir persona", grid: true, max: 12,
+          help: "El nombre y el puesto son opcionales: si los dejas vacíos, solo se ve la foto.",
+          newItem: () => ({ image: "", name: "", role: "" }),
+          item: [
+            { key: "image", label: "", type: "image", ratio: "tall" },
+            { key: "name", label: "Nombre", type: "text" },
+            { key: "role", label: "Puesto", type: "text", placeholder: "Maestro panadero, barista…" },
+          ] },
       ],
     },
     {
@@ -323,10 +339,11 @@
     if (!state.content) {
       try {
         const { content } = await api("/api/content?fresh=" + Date.now());
-        const defaults = await (await fetch("/content/default.json")).json();
+        const defaults = await (await fetch("/content/default.json", { cache: "no-cache" })).json();
+        state.defaults = defaults;
         state.content = content || defaults;
         // Si el contenido guardado es de una versión anterior, añade las secciones nuevas
-        for (const k of Object.keys(defaults)) if (!(k in state.content)) state.content[k] = defaults[k];
+        for (const k of Object.keys(defaults)) if (k !== "contentVersion" && !(k in state.content)) state.content[k] = defaults[k];
       } catch (e) {
         toast("No se ha podido cargar el contenido: " + e.message, "error", 8000);
         state.content = await (await fetch("/content/default.json")).json();
@@ -336,6 +353,52 @@
     const hash = location.hash.slice(1);
     if (SECTIONS.some((s) => s.id === hash)) state.section = hash;
     renderNav(); renderEditor(); updateStatus(); sendPreview();
+    offerUpdate();
+  }
+
+  /* =========================================================
+     ACTUALIZACIÓN DE CONTENIDO (p. ej. las fotos reales del horno)
+     ========================================================= */
+  const UPDATES = {
+    2: {
+      title: "Hay fotos nuevas del horno preparadas para la web",
+      text: "Portada, Sobre nosotros, Destacados, todos los productos (con su foto), Banner, Obrador, Equipo y las noticias de ejemplo. No se tocan la dirección, el horario, los datos de contacto, los textos legales ni las noticias que hayáis escrito vosotros.",
+      apply(c, d) {
+        c.hero.slides = clone(d.hero.slides);
+        c.intro.image1 = d.intro.image1; c.intro.image2 = d.intro.image2;
+        c.featured.items = clone(d.featured.items);
+        c.products.categories = clone(d.products.categories);
+        c.products.items = clone(d.products.items);
+        c.cta.image = d.cta.image;
+        c.workshop.gallery = clone(d.workshop.gallery);
+        c.team = clone(d.team);
+        const samples = new Set(["p1", "p2", "p3"]);
+        const own = (c.blog?.posts || []).filter((p) => !samples.has(p.id));
+        c.blog = c.blog || clone(d.blog);
+        c.blog.posts = [...clone(d.blog.posts), ...own];
+      },
+    },
+  };
+  const clone = (x) => JSON.parse(JSON.stringify(x));
+  function offerUpdate() {
+    const d = state.defaults; if (!d) return;
+    const from = Number(state.content.contentVersion) || 1, to = Number(d.contentVersion) || 1;
+    if (from >= to || $(".update-bar")) return;
+    const pending = Object.keys(UPDATES).map(Number).filter((v) => v > from && v <= to);
+    if (!pending.length) return;
+    const u = UPDATES[pending[pending.length - 1]];
+    const bar = h("div", { class: "update-bar", role: "status" },
+      h("div", {}, h("strong", {}, "✨ " + u.title), h("span", {}, u.text)),
+      h("div", { class: "update-bar__actions" },
+        h("button", { class: "btn btn--small btn--ghost", onclick: () => bar.remove() }, "Ahora no"),
+        h("button", { class: "btn btn--small btn--primary", onclick: () => {
+          pending.forEach((v) => UPDATES[v].apply(state.content, d));
+          state.content.contentVersion = to;
+          bar.remove();
+          changed({ rerender: true }); renderNav(); sendPreview();
+          toast("Fotos puestas. Revisa la vista previa y pulsa «Guardar cambios» para publicarlas.", "ok", 7000);
+        } }, "Poner las fotos nuevas")));
+    $("#editor").prepend(bar);
   }
 
   /* =========================================================
@@ -382,7 +445,9 @@
   function renderEditor() {
     const sec = SECTIONS.find((s) => s.id === state.section);
     const ed = $("#editor");
+    const keepBar = $(".update-bar", ed);
     ed.innerHTML = "";
+    if (keepBar) ed.append(keepBar);
     setPreviewPath(sec.id === "blog" ? (state.blogPost ? "/blog/_preview" : "/blog")
       : sec.id === "legal" ? "/legal/_preview" : "/");
     if (sec.id === "blog" && state.blogPost) return renderPostEditor(ed);

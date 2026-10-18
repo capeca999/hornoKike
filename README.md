@@ -74,6 +74,7 @@ ADMIN_PASSWORD=1234 LOCAL_STORAGE_DIR=./.local-storage npm run dev
 | `legal/page.html` | Páginas legales (`/legal/aviso-legal`, `/legal/politica-de-privacidad`, `/legal/politica-de-cookies`, `/legal/alergenos`), editables en el panel → «Textos legales» |
 | `blog/index.html`, `blog/post.html` | Página `/blog` y página de cada noticia (`vercel.json` redirige `/blog/:slug`) |
 | `admin/vendor/` | Editor de texto enriquecido (Quill 2, licencia BSD) |
+| `img/fotos/` | Fotos reales del horno, ya recortadas y optimizadas (WebP). Se sirven desde Vercel |
 | `content/default.json` | Contenido inicial (se usa hasta el primer guardado) |
 | `admin/` | Panel: formularios, subida de fotos, vista previa en directo, copias |
 | `api/content.js` | `GET` contenido (caché de 5 s en Vercel) |
