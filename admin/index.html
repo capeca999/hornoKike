@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/admin/vendor/quill.snow.css" />
-  <link rel="stylesheet" href="/admin/admin.css?v=7" />
+  <link rel="stylesheet" href="/admin/admin.css?v=8" />
   <script>addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG")t.style.visibility="hidden"},true);</script>
 </head>
 <body>
@@ -38,6 +38,12 @@
       <button class="icon-btn topbar__menu" id="menu-btn" aria-label="Secciones">☰</button>
       <a href="/" target="_blank" class="topbar__brand"><img src="/img/favicon.png" alt="" /><span>Forn Almenar <small>Panel</small></span></a>
       <span class="status" id="status" data-state="saved">Todo guardado</span>
+      <div class="langbar" id="langbar" role="group" aria-label="Idioma que estás editando" title="Idioma de los textos que estás editando">
+        <span class="langbar__label">Editando en</span>
+        <button type="button" data-lang="es" class="is-active" aria-pressed="true" title="Castellano">ES</button>
+        <button type="button" data-lang="va" aria-pressed="false" title="Valenciano">VA</button>
+        <button type="button" data-lang="en" aria-pressed="false" title="Inglés">EN</button>
+      </div>
       <div class="topbar__actions">
         <button class="btn btn--gold" id="new-post-btn" title="Escribir una noticia nueva">+ <span class="hide-xs">Nueva </span>noticia</button>
         <button class="btn btn--ghost topbar__preview-toggle" id="preview-toggle"><span class="hide-xs">Vista previa</span><span class="show-xs">Ver</span></button>
@@ -74,6 +80,6 @@
   <div class="toasts" id="toasts" aria-live="polite"></div>
 
   <script src="/admin/vendor/quill.js"></script>
-  <script src="/admin/admin.js?v=7"></script>
+  <script src="/admin/admin.js?v=8"></script>
 </body>
 </html>

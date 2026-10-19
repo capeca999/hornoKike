@@ -74,6 +74,7 @@ ADMIN_PASSWORD=1234 LOCAL_STORAGE_DIR=./.local-storage npm run dev
 | `legal/page.html` | Páginas legales (`/legal/aviso-legal`, `/legal/politica-de-privacidad`, `/legal/politica-de-cookies`, `/legal/alergenos`), editables en el panel → «Textos legales» |
 | `blog/index.html`, `blog/post.html` | Página `/blog` y página de cada noticia (`vercel.json` redirige `/blog/:slug`) |
 | `admin/vendor/` | Editor de texto enriquecido (Quill 2, licencia BSD) |
+| `img/fotos/visita/` | Fotos del recorrido virtual «Visita el horno» (escenas y miniaturas) |
 | `img/fotos/` | Fotos reales del horno, ya recortadas y optimizadas (WebP). Se sirven desde Vercel |
 | `content/default.json` | Contenido inicial (se usa hasta el primer guardado) |
 | `admin/` | Panel: formularios, subida de fotos, vista previa en directo, copias |
@@ -82,6 +83,26 @@ ADMIN_PASSWORD=1234 LOCAL_STORAGE_DIR=./.local-storage npm run dev
 | `api/save.js` | Guarda el contenido y crea copia de seguridad |
 | `api/upload.js` | Sube fotos a R2 (se comprimen antes en el navegador) |
 | `api/history.js` | Lista y restaura copias |
+| `api/sitemap.js`, `api/robots.js` | `/sitemap.xml` (con los 3 idiomas y las noticias publicadas) y `/robots.txt`, generados solos |
+
+**Idiomas (castellano, valenciano e inglés):** cada texto traducible se guarda junto al original con
+sufijo: `title`, `title_va`, `title_en`. Si falta la traducción, se muestra el castellano. La web elige
+el idioma por `?lang=va|en`, la última elección del visitante o el idioma del navegador; los buscadores
+ven siempre la versión principal en castellano y las alternativas por `hreflang`. En el panel, el
+selector «Editando en ES · VA · EN» de la barra superior cambia todos los campos y la vista previa.
+
+**Alérgenos:** cada producto puede tener `allergens` y `traces` (ids de los 14 alérgenos del
+Reglamento UE 1169/2011). Si `allergens` no existe, el producto está «sin revisar»: no muestra nada y
+nunca aparece en los filtros «Sin gluten / leche / huevo / frutos secos».
+
+**Temporada:** `season: { on, from: "MM-DD", to: "MM-DD" }` (puede cruzar el año, p. ej. 20/12 → 06/01).
+**Aviso superior:** `notice.items[]` con `active`, `text`, `link`, `from`, `to` (fechas opcionales, hora de Madrid).
+**Google:** la web añade los datos estructurados `Bakery` (dirección, coordenadas, horario, teléfono, fotos)
+y `BlogPosting` en cada noticia.
+
+**Diseño:** en el panel → «Diseño y colores» se cambian colores (6 paletas o a medida), tipo de letra, esquinas,
+botones, oscuridad de las fotos de portada, orden y fondo de cada sección y textos del menú. Todo se guarda en
+`content.design`; si no existe, la web usa el diseño original de `css/styles.css`.
 
 Las noticias se guardan dentro del mismo `content/site.json`, así que también entran en las copias de seguridad.
 Una noticia nueva empieza como **borrador** y no se ve en la web hasta que se pulsa «Publicar» y se guarda.

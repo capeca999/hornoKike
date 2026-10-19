@@ -18,6 +18,66 @@
   };
   const uid = () => Math.random().toString(36).slice(2, 9);
 
+  /* ---------- Idiomas: los textos traducidos se guardan como "title_va", "title_en" ---------- */
+  const LANGS = { es: "Castellano", va: "Valencià", en: "English" };
+  const LANG_FLAG = { es: "ES", va: "VA", en: "EN" };
+  // Campos que son iguales en todos los idiomas (teléfonos, enlaces, precios…)
+  const NO_TR = new Set(["phone", "whatsapp", "email", "instagram", "facebook", "legalName", "taxId", "price", "suffix", "map", "mapsUrl", "address", "link", "pos", "slug", "from", "to"]);
+  const isTr = (f) => f.tr !== false && !NO_TR.has(f.key) && ["text", "textarea"].includes(f.type);
+  const keyFor = (f) => (state.lang !== "es" && isTr(f) ? `${f.key}_${state.lang}` : f.key);
+  const short = (t, n = 140) => { const x = String(t || "").replace(/\s+/g, " ").trim(); return x.length > n ? x.slice(0, n) + "…" : x; };
+
+  // Completa traducciones que falten con las del contenido de ejemplo (si el texto en castellano no ha cambiado)
+  function fillTranslations(target, defaults) {
+    const dict = new Map();
+    const collect = (o) => {
+      if (Array.isArray(o)) return o.forEach(collect);
+      if (!o || typeof o !== "object") return;
+      for (const [k, v] of Object.entries(o)) {
+        if (typeof v === "string" && (o[k + "_va"] || o[k + "_en"]) && !dict.has(v)) dict.set(v, { va: o[k + "_va"], en: o[k + "_en"] });
+        else if (typeof v === "object") collect(v);
+      }
+    };
+    collect(defaults);
+    const fill = (o) => {
+      if (Array.isArray(o)) return o.forEach(fill);
+      if (!o || typeof o !== "object") return;
+      for (const [k, v] of Object.entries(o)) {
+        if (typeof v === "string" && !/_(va|en)$/.test(k) && dict.has(v)) {
+          const d = dict.get(v);
+          for (const l of ["va", "en"]) if (d[l] && !(k + "_" + l in o)) o[k + "_" + l] = d[l];
+        } else if (typeof v === "object") fill(v);
+      }
+    };
+    fill(target);
+  }
+
+  /* ---------- Alérgenos, temporada y fechas ---------- */
+  const ALLERGENS = [
+    ["gluten", "🌾", "Gluten"], ["leche", "🥛", "Leche"], ["huevo", "🥚", "Huevo"], ["frutos", "🌰", "Frutos de cáscara"],
+    ["cacahuetes", "🥜", "Cacahuetes"], ["soja", "🫘", "Soja"], ["sesamo", "⚪", "Sésamo"], ["sulfitos", "🍷", "Sulfitos"],
+    ["mostaza", "🟡", "Mostaza"], ["apio", "🥬", "Apio"], ["altramuces", "🌼", "Altramuces"], ["pescado", "🐟", "Pescado"],
+    ["crustaceos", "🦐", "Crustáceos"], ["moluscos", "🐚", "Moluscos"],
+  ];
+  const MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+  const madridDate = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  const mmddText = (v) => { const [m, d] = String(v || "").split("-").map(Number); return m && d ? `${d} de ${MONTHS[m - 1]}` : "—"; };
+  const dateText = (v) => v ? new Date(v + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" }) : "";
+  const inSeason = (se) => {
+    if (!se || !se.on || !se.from || !se.to) return true;
+    const d = madridDate().slice(5);
+    return se.from <= se.to ? d >= se.from && d <= se.to : d >= se.from || d <= se.to;
+  };
+  const noticeState = (n, N) => {
+    const today = madridDate();
+    if (N && N.show === false) return ["off", "Avisos apagados"];
+    if (n.active === false) return ["off", "Apagado"];
+    if (!String(n.text || "").trim()) return ["off", "Sin texto"];
+    if (n.from && n.from > today) return ["soon", `Programado: desde el ${dateText(n.from)}`];
+    if (n.to && n.to < today) return ["past", `Terminó el ${dateText(n.to)}`];
+    return ["on", n.to ? `Se ve ahora, hasta el ${dateText(n.to)}` : "Se ve ahora"];
+  };
+
   /* =========================================================
      ESQUEMA: qué se puede editar y cómo
      ========================================================= */
@@ -57,7 +117,29 @@
         { type: "group", label: "Google y buscadores", fields: [
           { key: "siteTitle", label: "Título de la pestaña", type: "text", help: "Lo que se ve en la pestaña del navegador y en Google." },
           { key: "siteDescription", label: "Descripción para Google", type: "textarea", rows: 3 },
+          { type: "note", text: "La web ya le da a Google la ficha del horno (dirección, horario, ubicación del mapa, teléfono, fotos y redes) y un mapa del sitio en los tres idiomas. Para salir mejor en Google Maps, dad de alta o reclamad el horno en Google Business Profile con la misma dirección y teléfono." },
         ]},
+      ],
+    },
+    {
+      id: "notice", name: "Aviso arriba", desc: "Mensaje corto en la franja de arriba, con fechas", anchor: "top",
+      fields: [
+        { key: "show", label: "Mostrar avisos en la web", type: "toggle", help: "Apágalo para quitar todos los avisos de golpe." },
+        { type: "note", text: "Se ve el primer aviso de la lista que esté encendido y dentro de sus fechas. Si pones fechas, aparece y desaparece solo (por ejemplo, «Cerrado el 24 por la tarde» del 20 al 24). Las fechas son opcionales." },
+        { key: "items", label: "Avisos", type: "list", addLabel: "Añadir aviso", addOnTop: true, max: 12,
+          itemTitle: (s) => short(s.text, 70) || "Aviso sin texto",
+          itemMeta: (s, c) => noticeState(s, c.notice)[1],
+          itemClass: (s, c) => "notice-" + noticeState(s, c.notice)[0],
+          newItem: () => ({ active: true, text: "", link: "", from: "", to: "" }),
+          item: [
+            { key: "active", label: "Encendido", type: "toggle" },
+            { key: "text", label: "Texto del aviso", type: "textarea", rows: 2, placeholder: "Ej.: Este sábado abrimos hasta las 15:00", help: "Corto, de una línea. Puedes poner un emoji al principio: 🎄 🎉 ⚠️" },
+            { key: "link", label: "Al pulsarlo lleva a… (opcional)", type: "select", options: () => [["", "No lleva a ningún sitio"], ...ANCHORS, ["/blog", "Página de Novedades"]] },
+            { type: "row", fields: [
+              { key: "from", label: "Se ve desde (opcional)", type: "date" },
+              { key: "to", label: "Hasta (incluido)", type: "date" },
+            ]},
+          ] },
       ],
     },
     {
@@ -121,7 +203,9 @@
       fields: [show,
         { key: "items", label: "Productos", type: "list", addLabel: "Añadir producto", searchable: true, addOnTop: true,
           itemTitle: (s) => s.name, itemImage: (s) => s.image,
-          itemMeta: (s, c) => [s.price, (c.products.categories.find((x) => x.id === s.cat) || {}).name, s.visible === false ? "Oculto" : ""].filter(Boolean).join(" · "),
+          itemMeta: (s, c) => [s.price, (c.products.categories.find((x) => x.id === s.cat) || {}).name, s.visible === false ? "Oculto" : "",
+            s.season && s.season.on ? (inSeason(s.season) ? "De temporada · se ve ahora" : `Temporada desde el ${mmddText(s.season.from)}`) : "",
+            Array.isArray(s.allergens) ? "Alérgenos ✓" : ""].filter(Boolean).join(" · "),
           newItem: (c) => ({ name: "Nuevo producto", cat: c.products.categories[0]?.id || "", price: "", desc: "", image: "", tag: "", visible: true }),
           item: [
             { key: "visible", label: "Mostrar en la web", type: "toggle", help: "Desactívalo si hoy no hay (sin borrarlo)." },
@@ -133,6 +217,8 @@
             { key: "desc", label: "Descripción corta", type: "textarea", rows: 2 },
             { key: "tag", label: "Etiqueta (opcional)", type: "text", placeholder: "Novedad, Favorito, De temporada…" },
             { key: "image", label: "Foto", type: "image", ratio: "photo" },
+            { key: "season", label: "Temporada", type: "season" },
+            { key: "allergens", label: "Alérgenos", type: "allergens" },
           ] },
         { key: "categories", label: "Categorías", type: "list", addLabel: "Añadir categoría", inline: true, rerender: true,
           help: "Son los botones para filtrar. Si borras una categoría, sus productos no se borran: cámbialos de categoría.",
@@ -189,7 +275,7 @@
           newItem: () => ({ image: "", name: "", role: "" }),
           item: [
             { key: "image", label: "", type: "image", ratio: "tall" },
-            { key: "name", label: "Nombre", type: "text" },
+            { key: "name", label: "Nombre", type: "text", tr: false },
             { key: "role", label: "Puesto", type: "text", placeholder: "Maestro panadero, barista…" },
           ] },
       ],
@@ -215,7 +301,7 @@
         key: "items", type: "first",
         newItem: () => ({ name: "Forn Almenar", address: "", phone: "", showMap: true, map: "", mapsUrl: "", schedule: Array.from({ length: 7 }, () => ({ open: "", close: "" })) }),
         item: [
-          { key: "name", label: "Nombre", type: "text" },
+          { key: "name", label: "Nombre", type: "text", tr: false },
           { key: "address", label: "Dirección", type: "textarea", rows: 2 },
           { key: "phone", label: "Teléfono", type: "text" },
           { key: "schedule", label: "Horario", type: "schedule" },
@@ -268,6 +354,7 @@
     previewPath: "/",
     blogPost: null,
     legalPage: null,
+    lang: "es",
   };
 
   /* ---------- API ---------- */
@@ -362,6 +449,8 @@
         state.content = content || defaults;
         // Si el contenido guardado es de una versión anterior, añade las secciones nuevas
         for (const k of Object.keys(defaults)) if (k !== "contentVersion" && !(k in state.content)) state.content[k] = defaults[k];
+        // Traducciones al valenciano y al inglés de los textos que siguen siendo los de ejemplo
+        fillTranslations(state.content, defaults);
       } catch (e) {
         toast("No se ha podido cargar el contenido: " + e.message, "error", 8000);
         state.content = await (await fetch("/content/default.json")).json();
@@ -396,26 +485,40 @@
         c.blog.posts = [...clone(d.blog.posts), ...own];
       },
     },
+    3: {
+      title: "Nuevo: productos de temporada que aparecen solos",
+      text: "Añade 4 ejemplos (roscón de Reyes, buñuelos, mona de Pascua y panellets) con sus fechas. Se añaden OCULTOS: revisa precio, foto y alérgenos y enciéndelos cuando queráis. No se toca nada más.",
+      button: "Añadir los ejemplos",
+      done: "Ejemplos añadidos al final de «Productos y precios». Pulsa «Guardar cambios» para guardarlos.",
+      apply(c, d) {
+        const items = c.products.items || (c.products.items = []);
+        (d.products.items || []).filter((p) => p.season && p.season.on).forEach((p) => {
+          if (!items.some((x) => x.id === p.id || x.name === p.name)) items.push({ ...clone(p), visible: false });
+        });
+      },
+    },
   };
   const clone = (x) => JSON.parse(JSON.stringify(x));
   function offerUpdate() {
     const d = state.defaults; if (!d) return;
     const from = Number(state.content.contentVersion) || 1, to = Number(d.contentVersion) || 1;
     if (from >= to || $(".update-bar")) return;
-    const pending = Object.keys(UPDATES).map(Number).filter((v) => v > from && v <= to);
-    if (!pending.length) return;
-    const u = UPDATES[pending[pending.length - 1]];
+    // Se ofrecen de una en una, de la más antigua a la más nueva
+    const v = Object.keys(UPDATES).map(Number).sort((a, b) => a - b).find((x) => x > from && x <= to && !state.skipped?.has(x));
+    if (!v) return;
+    const u = UPDATES[v];
     const bar = h("div", { class: "update-bar", role: "status" },
       h("div", {}, h("strong", {}, "✨ " + u.title), h("span", {}, u.text)),
       h("div", { class: "update-bar__actions" },
-        h("button", { class: "btn btn--small btn--ghost", onclick: () => bar.remove() }, "Ahora no"),
+        h("button", { class: "btn btn--small btn--ghost", onclick: () => { (state.skipped = state.skipped || new Set()).add(v); bar.remove(); offerUpdate(); } }, "Ahora no"),
         h("button", { class: "btn btn--small btn--primary", onclick: () => {
-          pending.forEach((v) => UPDATES[v].apply(state.content, d));
-          state.content.contentVersion = to;
+          u.apply(state.content, d);
+          state.content.contentVersion = v;
           bar.remove();
           changed({ rerender: true }); renderNav(); sendPreview();
-          toast("Fotos puestas. Revisa la vista previa y pulsa «Guardar cambios» para publicarlas.", "ok", 7000);
-        } }, "Poner las fotos nuevas")));
+          toast(u.done || "Fotos puestas. Revisa la vista previa y pulsa «Guardar cambios» para publicarlas.", "ok", 7000);
+          offerUpdate();
+        } }, u.button || "Poner las fotos nuevas")));
     $("#editor").prepend(bar);
   }
 
@@ -460,6 +563,17 @@
     });
   }
   $("#new-post-btn").addEventListener("click", () => { goSection("blog"); createPost(); });
+
+  /* ---------- Idioma que se está editando ---------- */
+  function setLang(l) {
+    if (!LANGS[l] || state.lang === l) return;
+    state.lang = l;
+    document.body.dataset.lang = l;
+    $$("#langbar [data-lang]").forEach((b) => { b.classList.toggle("is-active", b.dataset.lang === l); b.setAttribute("aria-pressed", b.dataset.lang === l); });
+    const y = $("#editor").scrollTop; renderEditor(); $("#editor").scrollTop = y;
+    sendPreview();
+  }
+  $$("#langbar [data-lang]").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.lang)));
   $("#menu-btn").addEventListener("click", () => document.body.classList.toggle("menu-open"));
 
   /* =========================================================
@@ -473,6 +587,10 @@
     if (keepBar) ed.append(keepBar);
     setPreviewPath(sec.id === "blog" ? (state.blogPost ? "/blog/_preview" : "/blog")
       : sec.id === "legal" ? "/legal/_preview" : "/");
+    schedulePreview(); // la vista previa sigue a la noticia o página legal abierta
+    if (state.lang !== "es") ed.append(h("div", { class: `lang-banner lang-banner--${state.lang}` },
+      h("strong", {}, `Estás editando la versión en ${LANGS[state.lang].toLowerCase() === "valencià" ? "valenciano" : "inglés"}`),
+      h("span", {}, "Los campos con la etiqueta ", h("b", {}, LANG_FLAG[state.lang]), " son la traducción. Si dejas uno vacío, en la web se verá el texto en castellano. Las fotos, precios, horarios y enlaces son los mismos en todos los idiomas.")));
     if (sec.id === "blog" && state.blogPost) return renderPostEditor(ed);
     if (sec.id === "legal" && state.legalPage) return renderLegalEditor(ed);
     ed.append(h("div", { class: "editor__head" }, h("h1", {}, sec.name), h("p", {}, sec.desc)));
@@ -496,10 +614,33 @@
     return frag;
   }
 
-  function wrap(f, input, extraClass = "") {
-    return h("label", { class: `field ${f.small ? "field--small" : ""} ${extraClass}` },
-      f.label ? h("span", { class: "field__label" }, f.label) : "",
-      input,
+  // Si cambias el texto en castellano y ya había traducciones, avisa de que hay que revisarlas
+  function flagStale(input) {
+    const field = input.closest(".field");
+    const done = field ? $$(".tr-dot.is-done", field) : [];
+    if (!done.length || $(".field__stale", field)) return;
+    done.forEach((d) => { d.classList.add("is-stale"); d.title = "Has cambiado el castellano: revisa esta traducción"; });
+    input.after(h("span", { class: "field__stale" }, `✏️ Has cambiado el texto en castellano: revisa también la traducción (${done.map((d) => d.textContent).join(" · ")}). Pulsa en las etiquetas de arriba para ir a ella.`));
+  }
+  function wrap(f, input, extraClass = "", obj = null) {
+    const tr = obj && isTr(f), other = state.lang !== "es";
+    let badge = "", hint = "";
+    if (tr && other) {
+      badge = h("span", { class: `tr-badge tr-badge--${state.lang}`, title: `Traducción al ${state.lang === "va" ? "valenciano" : "inglés"}` }, LANG_FLAG[state.lang]);
+      if (String(obj[f.key] || "").trim()) hint = h("span", { class: "field__orig" }, h("b", {}, "En castellano: "), short(obj[f.key], 220));
+    } else if (obj && other && ["text", "textarea"].includes(f.type)) {
+      badge = h("span", { class: "tr-badge tr-badge--common", title: "Este dato es igual en todos los idiomas" }, "común");
+    } else if (tr && !other && String(obj[f.key] || "").trim()) {
+      // En castellano: indica si ya hay traducciones (y lleva a ellas)
+      badge = h("span", { class: "tr-dots" }, ...["va", "en"].map((l) => h("button", {
+        type: "button", class: `tr-dot ${String(obj[`${f.key}_${l}`] || "").trim() ? "is-done" : ""}`,
+        title: String(obj[`${f.key}_${l}`] || "").trim() ? `Traducido al ${l === "va" ? "valenciano" : "inglés"}: ${short(obj[`${f.key}_${l}`], 90)}` : `Falta la traducción al ${l === "va" ? "valenciano" : "inglés"}`,
+        onclick: (e) => { e.preventDefault(); setLang(l); },
+      }, LANG_FLAG[l])));
+    }
+    return h("label", { class: `field ${f.small ? "field--small" : ""} ${extraClass} ${tr && other ? "field--tr" : ""}` },
+      f.label || badge ? h("span", { class: "field__label" }, f.label, badge) : "",
+      input, hint,
       f.help ? h("span", { class: "field__help" }, f.help) : "");
   }
 
@@ -520,17 +661,26 @@
       }
       case "text":
       case "number": {
-        const input = h("input", { type: f.type === "number" ? "number" : "text", value: obj[f.key] ?? "", placeholder: f.placeholder || "" });
-        input.addEventListener("input", () => { obj[f.key] = f.type === "number" ? Number(input.value) || 0 : input.value; changed(); });
+        const k = keyFor(f), tr = k !== f.key;
+        const input = h("input", { type: f.type === "number" ? "number" : "text", value: obj[k] ?? "", placeholder: tr ? short(obj[f.key], 90) : f.placeholder || "" });
+        input.addEventListener("input", () => {
+          if (tr && !input.value.trim()) delete obj[k];
+          else obj[k] = f.type === "number" ? Number(input.value) || 0 : input.value;
+          if (!tr) flagStale(input);
+          changed();
+        });
         if (f.rerender) input.addEventListener("change", () => changed({ rerender: true }));
-        return wrap(f, input);
+        return wrap(f, input, "", obj);
       }
       case "textarea": {
-        const ta = h("textarea", { rows: f.rows || 3, placeholder: f.placeholder || "" });
-        ta.value = obj[f.key] ?? "";
-        ta.addEventListener("input", () => { obj[f.key] = ta.value; changed(); });
-        return wrap(f, ta);
+        const k = keyFor(f), tr = k !== f.key;
+        const ta = h("textarea", { rows: f.rows || 3, placeholder: tr ? short(obj[f.key], 90) : f.placeholder || "" });
+        ta.value = obj[k] ?? "";
+        ta.addEventListener("input", () => { if (tr && !ta.value.trim()) delete obj[k]; else obj[k] = ta.value; if (!tr) flagStale(ta); changed(); });
+        return wrap(f, ta, "", obj);
       }
+      case "season": return renderSeason(f, obj);
+      case "allergens": return renderAllergens(f, obj);
       case "select": {
         const opts = f.options(state.content);
         const sel = h("select", {}, opts.map(([v, l]) => h("option", { value: v, selected: obj[f.key] === v }, l)));
@@ -679,7 +829,7 @@
       const title = (f.itemTitle && f.itemTitle(it, state.content, i)) || "Sin título";
       const thumb = f.itemImage ? f.itemImage(it) : null;
       const meta = f.itemMeta ? f.itemMeta(it, state.content) : "";
-      const det = h("details", { class: `item ${it.visible === false ? "is-off" : ""}`, open: state.open.has(key), "data-search": `${title} ${meta}`.toLowerCase() },
+      const det = h("details", { class: `item ${it.visible === false ? "is-off" : ""} ${f.itemClass ? f.itemClass(it, state.content) : ""}`, open: state.open.has(key), "data-search": `${title} ${meta}`.toLowerCase() },
         h("summary", {},
           f.itemImage ? h("span", { class: "item__thumb" }, thumb ? h("img", { src: thumb, alt: "" }) : "") : "",
           h("span", { class: "item__title" }, title, meta ? h("small", {}, meta) : ""),
@@ -722,8 +872,9 @@
       });
       box.append(pic);
       list.forEach((p, i) => {
-        const label = h("input", { type: "text", value: p.label || "", placeholder: "Texto del punto (p. ej. «El salón»)" });
-        label.addEventListener("input", () => { p.label = label.value; changed(); });
+        const lk = state.lang === "es" ? "label" : `label_${state.lang}`;
+        const label = h("input", { type: "text", value: p[lk] || "", placeholder: state.lang === "es" ? "Texto del punto (p. ej. «El salón»)" : `${LANG_FLAG[state.lang]} · ${p.label || ""}` });
+        label.addEventListener("input", () => { if (lk !== "label" && !label.value.trim()) delete p[lk]; else p[lk] = label.value; changed(); });
         const opts = others();
         const to = h("select", {}, h("option", { value: "" }, "— ¿A qué sala lleva? —"), ...opts.map((o) => h("option", { value: o.id, selected: p.to === o.id }, o.name || "Sala sin nombre")));
         to.addEventListener("change", () => { p.to = to.value; changed(); });
@@ -738,6 +889,82 @@
     draw();
     return h("div", { class: "field" }, h("span", { class: "field__label" }, f.label), box,
       h("span", { class: "field__help" }, "Cada punto es un círculo en la foto con un texto. Al pulsarlo en la web, te lleva a la sala elegida."));
+  }
+
+  /* ---------- Temporada de un producto ---------- */
+  function renderSeason(f, obj) {
+    const box = h("div", { class: "season" });
+    const draw = () => {
+      box.innerHTML = "";
+      const se = obj.season || {};
+      const cb = h("input", { type: "checkbox", checked: !!se.on });
+      cb.addEventListener("change", () => {
+        obj.season = cb.checked ? { on: true, from: se.from || "12-01", to: se.to || "12-31" } : { ...se, on: false };
+        if (!cb.checked && !obj.season.from) delete obj.season;
+        draw(); changed();
+      });
+      box.append(h("label", { class: "toggle" }, cb, h("span", { class: "toggle__ui" }),
+        h("span", { class: "toggle__text" }, "Solo en su temporada", h("small", {}, "Aparece y desaparece solo cada año entre estas fechas."))));
+      if (!se.on) return;
+      const pick = (which) => {
+        const [m, d] = String(se[which] || "01-01").split("-").map(Number);
+        const day = h("select", { "aria-label": "Día" }, Array.from({ length: 31 }, (_, i) => h("option", { value: i + 1, selected: i + 1 === d }, String(i + 1))));
+        const mon = h("select", { "aria-label": "Mes" }, MONTHS.map((n, i) => h("option", { value: i + 1, selected: i + 1 === m }, n)));
+        const set = () => { obj.season[which] = `${String(mon.value).padStart(2, "0")}-${String(day.value).padStart(2, "0")}`; draw(); changed(); };
+        day.addEventListener("change", set); mon.addEventListener("change", set);
+        return h("span", { class: "season__pick" }, day, h("span", {}, "de"), mon);
+      };
+      const now = inSeason(se);
+      box.append(
+        h("div", { class: "season__range" }, h("span", {}, "Del"), pick("from"), h("span", {}, "al"), pick("to")),
+        h("p", { class: `season__state ${now ? "is-on" : ""}` }, obj.visible === false
+          ? "⚠️ Ahora está oculto: enciende «Mostrar en la web» para que salga en su temporada."
+          : now ? "✅ Hoy está en temporada: se ve en la web." : `🌙 Hoy no se ve. Volverá solo el ${mmddText(se.from)}.`));
+    };
+    draw();
+    return h("div", { class: "field" }, h("span", { class: "field__label" }, f.label), box);
+  }
+
+  /* ---------- Alérgenos de un producto ---------- */
+  function renderAllergens(f, obj) {
+    const box = h("div", { class: "alg-field" });
+    const grid = (key, title) => {
+      const list = obj[key] || (obj[key] = []);
+      return h("div", { class: "alg-group" }, h("span", { class: "alg-group__title" }, title),
+        h("div", { class: "alg-grid" }, ALLERGENS.map(([id, icon, name]) => {
+          const cb = h("input", { type: "checkbox", checked: list.includes(id) });
+          cb.addEventListener("change", () => {
+            const i = list.indexOf(id);
+            if (cb.checked && i < 0) list.push(id); else if (!cb.checked && i >= 0) list.splice(i, 1);
+            changed(); draw();
+          });
+          return h("label", { class: `alg-opt ${list.includes(id) ? "is-on" : ""}` }, cb, h("span", { "aria-hidden": "true" }, icon), name);
+        })));
+    };
+    const draw = () => {
+      box.innerHTML = "";
+      const reviewed = Array.isArray(obj.allergens);
+      const cb = h("input", { type: "checkbox", checked: reviewed });
+      cb.addEventListener("change", () => {
+        if (cb.checked) { obj.allergens = []; obj.traces = obj.traces || []; }
+        else {
+          if ((obj.allergens || []).length && !confirm("¿Quitar los alérgenos marcados de este producto?")) { cb.checked = true; return; }
+          delete obj.allergens; delete obj.traces;
+        }
+        changed(); draw();
+      });
+      box.append(h("label", { class: "toggle" }, cb, h("span", { class: "toggle__ui" }),
+        h("span", { class: "toggle__text" }, "He revisado los alérgenos de este producto",
+          h("small", {}, reviewed ? "Se muestran en la tarjeta y el producto puede salir en los filtros «Sin gluten», «Sin leche»…"
+            : "Mientras no lo marques, no se muestra nada y el producto nunca sale en los filtros «Sin…»."))));
+      if (!reviewed) return;
+      const hasTr = (obj.traces || []).length > 0;
+      box.append(grid("allergens", "Lleva (como ingrediente):"),
+        h("details", { class: "alg-traces", open: hasTr }, h("summary", {}, `Puede contener trazas de… ${hasTr ? `(${obj.traces.length})` : "(opcional)"}`), grid("traces", "Marca solo las que queráis avisar expresamente:")),
+        h("p", { class: "field__help" }, (obj.allergens || []).length || (obj.traces || []).length ? "" : "Si no marcas ninguno, en la web pondrá «Sin ninguno de los 14 alérgenos principales». Asegúrate de que es así."));
+    };
+    draw();
+    return h("div", { class: "field" }, h("span", { class: "field__label" }, f.label), box);
   }
 
   /* ---------- Horario ---------- */
@@ -824,6 +1051,7 @@
           h("small", {}, [p.category, fmtDate(p.date)].filter(Boolean).join(" · "))),
         h("span", { class: "post-row__badges" },
           p.pinned ? h("span", { class: "badge badge--gold" }, "Destacada") : "",
+          ...["va", "en"].map((l) => h("span", { class: `tr-dot tr-dot--static ${p["title_" + l] && p["body_" + l] ? "is-done" : ""}`, title: p["title_" + l] && p["body_" + l] ? `Traducida al ${l === "va" ? "valenciano" : "inglés"}` : `Sin traducir al ${l === "va" ? "valenciano" : "inglés"} (se verá en castellano)` }, LANG_FLAG[l])),
           h("span", { class: `badge ${p.published === false ? "badge--draft" : "badge--ok"}` }, p.published === false ? "Borrador" : "Publicada")),
         h("span", { class: "post-row__go", "aria-hidden": "true" }, "›"))));
     };
@@ -857,11 +1085,13 @@
     drawStatus();
 
     // Título (actualiza la dirección mientras no se haya cambiado a mano)
-    const titleInput = h("input", { type: "text", class: "input-title", value: post.title, placeholder: "Título de la noticia" });
+    const L = state.lang, sfx = L === "es" ? "" : "_" + L;
+    const titleInput = h("input", { type: "text", class: "input-title", value: post["title" + sfx] || "", placeholder: sfx ? short(post.title, 90) || "Título de la noticia" : "Título de la noticia" });
     const slugInput = h("input", { type: "text", value: post.slug });
     const slugPreview = h("span", { class: "field__help" });
     const drawSlug = () => { slugPreview.textContent = `Dirección: ${location.origin}/blog/${post.slug || "…"}`; };
     titleInput.addEventListener("input", () => {
+      if (sfx) { if (titleInput.value.trim()) post["title" + sfx] = titleInput.value; else delete post["title" + sfx]; changed(); return; }
       post.title = titleInput.value;
       if (!post.slugEdited) { post.slug = uniqueSlug(slugify(post.title), post.id); slugInput.value = post.slug; drawSlug(); }
       changed();
@@ -873,22 +1103,25 @@
     // Categoría con sugerencias
     const listId = "cats-" + post.id;
     const usedCats = [...new Set([...CATS, ...B.posts.map((p) => p.category).filter(Boolean)])];
-    const catInput = h("input", { type: "text", value: post.category || "", list: listId, placeholder: "Noticia, Anuncio, Aviso…" });
-    catInput.addEventListener("input", () => { post.category = catInput.value; changed(); });
+    const catInput = h("input", { type: "text", value: post["category" + sfx] || "", list: sfx ? null : listId, placeholder: sfx ? post.category || "" : "Noticia, Anuncio, Aviso…" });
+    catInput.addEventListener("input", () => { if (sfx && !catInput.value.trim()) delete post["category" + sfx]; else post["category" + sfx] = catInput.value; changed(); });
+    const flag = () => (sfx ? h("span", { class: `tr-badge tr-badge--${L}` }, LANG_FLAG[L]) : "");
 
     ed.append(
       back,
       h("div", { class: "editor__head" }, h("h1", {}, post.title ? "Editar noticia" : "Nueva noticia")),
       statusBox,
-      h("label", { class: "field" }, h("span", { class: "field__label" }, "Título"), titleInput),
+      h("label", { class: `field ${sfx ? "field--tr" : ""}` }, h("span", { class: "field__label" }, "Título", flag()), titleInput,
+        sfx && post.title ? h("span", { class: "field__orig" }, h("b", {}, "En castellano: "), post.title) : ""),
       h("div", { class: "row" },
-        h("label", { class: "field" }, h("span", { class: "field__label" }, "Tipo"), catInput,
+        h("label", { class: `field ${sfx ? "field--tr" : ""}` }, h("span", { class: "field__label" }, "Tipo", flag()), catInput,
           h("datalist", { id: listId }, usedCats.map((c) => h("option", { value: c })))),
         renderField({ key: "date", label: "Fecha", type: "date", small: true }, post, "post")),
       renderField({ key: "pinned", label: "Destacar", type: "toggle", help: "Sale la primera y más grande en el blog y en la portada." }, post, "post"),
       renderField({ key: "cover", label: "Foto de portada", type: "image", ratio: "wide", maxSize: 2000 }, post, "post"),
       renderField({ key: "excerpt", label: "Resumen", type: "textarea", rows: 2, help: "Una o dos frases para la tarjeta. Si lo dejas vacío se usa el principio del texto." }, post, "post"),
-      h("div", { class: "field" }, h("span", { class: "field__label" }, "Texto de la noticia"), richEditor(post),
+      h("div", { class: `field ${sfx ? "field--tr" : ""}` }, h("span", { class: "field__label" }, "Texto de la noticia", flag()), richEditor(post, "body" + sfx),
+        sfx && !post["body" + sfx] && post.body ? h("button", { type: "button", class: "btn btn--small btn--ghost copy-es", onclick: () => { post["body" + sfx] = post.body; changed(); renderEditor(); } }, "Copiar el texto en castellano para traducirlo encima") : "",
         h("span", { class: "field__help" }, "Selecciona texto para ponerlo en negrita, hacer un título, una lista o un enlace. Con el botón de imagen puedes meter fotos dentro del texto.")),
       h("details", { class: "group" }, h("summary", {}, "Opciones avanzadas"),
         h("div", { class: "group__body" },
@@ -926,8 +1159,11 @@
     const L = legalData();
     const page = L.pages.find((p) => p.id === state.legalPage);
     if (!page) { state.legalPage = null; return renderEditor(); }
-    const titleInput = h("input", { type: "text", class: "input-title", value: page.title, placeholder: "Título de la página" });
+    const LG = state.lang, sfx = LG === "es" ? "" : "_" + LG;
+    const flag = () => (sfx ? h("span", { class: `tr-badge tr-badge--${LG}` }, LANG_FLAG[LG]) : "");
+    const titleInput = h("input", { type: "text", class: "input-title", value: page["title" + sfx] || "", placeholder: sfx ? page.title || "" : "Título de la página" });
     titleInput.addEventListener("input", () => {
+      if (sfx) { if (titleInput.value.trim()) page["title" + sfx] = titleInput.value; else delete page["title" + sfx]; changed(); return; }
       page.title = titleInput.value;
       if (page.autoSlug) page.slug = slugify(page.title); // solo en páginas nuevas: las existentes mantienen su dirección
       changed();
@@ -936,9 +1172,10 @@
     ed.append(
       h("button", { type: "button", class: "back-link", onclick: () => { state.legalPage = null; renderEditor(); } }, "← Todos los textos legales"),
       h("div", { class: "editor__head" }, h("h1", {}, page.title || "Nueva página")),
-      h("label", { class: "field" }, h("span", { class: "field__label" }, "Título"), titleInput),
+      h("label", { class: `field ${sfx ? "field--tr" : ""}` }, h("span", { class: "field__label" }, "Título", flag()), titleInput),
       renderField({ key: "label", label: "Texto del enlace en el pie", type: "text", placeholder: "Política de cookies", help: "Si lo dejas vacío, se usa el título." }, page, "legal"),
-      h("div", { class: "field" }, h("span", { class: "field__label" }, "Texto"), richEditor(page),
+      h("div", { class: `field ${sfx ? "field--tr" : ""}` }, h("span", { class: "field__label" }, "Texto", flag()), richEditor(page, "body" + sfx),
+        sfx && !page["body" + sfx] && page.body ? h("button", { type: "button", class: "btn btn--small btn--ghost copy-es", onclick: () => { page["body" + sfx] = page.body; changed(); renderEditor(); } }, "Copiar el texto en castellano para traducirlo encima") : "",
         h("span", { class: "field__help" }, "Puedes escribir estas palabras entre llaves y se sustituyen solas por los datos reales: ",
           ...tokens.map((t) => h("code", {}, `{{${t}}}`)))),
       page.id.startsWith("l") && !["l1", "l2", "l3", "l4"].includes(page.id)
@@ -950,7 +1187,7 @@
   }
 
   // Editor de texto enriquecido (Quill)
-  function richEditor(post) {
+  function richEditor(post, key = "body") {
     const wrapEl = h("div", { class: "rich" });
     const area = h("div", {});
     wrapEl.append(area);
@@ -984,11 +1221,12 @@
         },
       },
     });
-    if (post.body) quill.clipboard.dangerouslyPasteHTML(post.body, "silent");
+    if (post[key]) quill.clipboard.dangerouslyPasteHTML(post[key], "silent");
     quill.on("text-change", (_d, _o, source) => {
       if (source !== "user") return;
       const empty = quill.getText().trim() === "" && !quill.root.querySelector("img");
-      post.body = empty ? "" : quill.getSemanticHTML().replace(/&nbsp;/g, " ");
+      const html = empty ? "" : quill.getSemanticHTML().replace(/&nbsp;/g, " ");
+      if (key !== "body" && !html) delete post[key]; else post[key] = html;
       changed();
     });
     // Ayudas en español para los botones
@@ -1023,6 +1261,10 @@
     blog: "Novedades (blog)", cta: "Banner con foto", tour: "Visita el horno", workshop: "Obrador", team: "Equipo", history: "Nuestra historia", stores: "Dónde estamos" };
   const DEFAULT_ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "tour", "workshop", "team", "history", "stores"];
   const DEFAULT_TONE = { marquee: "Dorado", intro: "Claro", featured: "Crema", products: "Claro", blog: "Claro", tour: "Oscuro", workshop: "Oscuro", team: "Claro", history: "Crema", stores: "Claro" };
+  const NAV_TR = {
+    va: { hero: "Inici", products: "Productes", blog: "Novetats", history: "La nostra història", workshop: "Obrador", stores: "On som" },
+    en: { hero: "Home", products: "Products", blog: "News", history: "Our story", workshop: "Bakehouse", stores: "Find us" },
+  };
   const NAV_ITEMS = [["hero", "Inicio"], ["products", "Productos"], ["blog", "Novedades"], ["history", "Nuestra historia"], ["workshop", "Obrador"], ["stores", "Dónde estamos"]];
 
   // Contraste (WCAG) entre dos colores
@@ -1142,11 +1384,13 @@
     const nav = D.nav || {};
     ed.append(h("section", { class: "dgroup" },
       h("h2", { class: "subhead" }, "Textos del menú"),
-      h("p", { class: "field__help" }, "Los nombres de los enlaces de arriba. Déjalo vacío para usar el original."),
+      h("p", { class: "field__help" }, state.lang === "es" ? "Los nombres de los enlaces de arriba. Déjalo vacío para usar el original."
+        : `Nombres del menú en ${state.lang === "va" ? "valenciano" : "inglés"}. Si lo dejas vacío, se usa la traducción de siempre.`),
       h("div", { class: "nav-labels" }, NAV_ITEMS.map(([k, def]) => {
-        const inp = h("input", { type: "text", value: nav[k] || "", placeholder: def });
-        inp.addEventListener("input", () => { D.nav = { ...(D.nav || {}), [k]: inp.value }; if (!inp.value.trim()) delete D.nav[k]; changed(); });
-        return h("label", { class: "field" }, h("span", { class: "field__label" }, def), inp);
+        const nk = state.lang === "es" ? k : `${k}_${state.lang}`;
+        const inp = h("input", { type: "text", value: nav[nk] || "", placeholder: state.lang === "es" ? def : NAV_TR[state.lang][k] });
+        inp.addEventListener("input", () => { D.nav = { ...(D.nav || {}), [nk]: inp.value }; if (!inp.value.trim()) delete D.nav[nk]; changed(); });
+        return h("label", { class: "field" }, h("span", { class: "field__label" }, def, state.lang === "es" ? "" : h("span", { class: `tr-badge tr-badge--${state.lang}` }, LANG_FLAG[state.lang])), inp);
       }))));
 
     /* --- Restaurar --- */
@@ -1231,7 +1475,7 @@
   const frame = $("#preview-frame");
   const postPreview = (msg) => frame.contentWindow?.postMessage(msg, location.origin);
   const sendPreview = () => {
-    if (state.previewReady && state.content) postPreview({ type: "preview", content: state.content, postId: state.section === "blog" ? state.blogPost : null,
+    if (state.previewReady && state.content) postPreview({ type: "preview", lang: state.lang, content: state.content, postId: state.section === "blog" ? state.blogPost : null,
       pageId: state.section === "legal" ? (state.legalPage || state.content.legal?.pages?.[0]?.id) : null });
   };
   function setPreviewPath(path) {

@@ -10,6 +10,9 @@ const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "
 http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://localhost");
   try {
+    // /sitemap.xml y /robots.txt se generan en /api (igual que las reglas de vercel.json)
+    if (url.pathname === "/sitemap.xml") return (await import("./api/sitemap.js")).default(req, res);
+    if (url.pathname === "/robots.txt") return (await import("./api/robots.js")).default(req, res);
     if (url.pathname.startsWith("/api/")) {
       const name = url.pathname.slice(5).replace(/[^a-z]/g, "");
       const mod = await import(`./api/${name}.js`);

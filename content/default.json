@@ -10,7 +10,11 @@
     "instagram": "https://instagram.com/",
     "facebook": "https://facebook.com/",
     "legalName": "",
-    "taxId": ""
+    "taxId": "",
+    "siteTitle_va": "Forn Almenar · Forn artesà des de 1952",
+    "siteTitle_en": "Forn Almenar · Artisan bakery since 1952",
+    "siteDescription_va": "Forn Almenar, forn artesà des de 1952. Pa de massa mare, bolleria i pastisseria tradicional elaborada cada matí al nostre obrador.",
+    "siteDescription_en": "Forn Almenar, an artisan bakery since 1952. Sourdough bread, pastries and traditional cakes baked every morning in our own bakehouse."
   },
   "hero": {
     "show": true,
@@ -22,7 +26,15 @@
         "button": "Ver productos",
         "link": "#productos",
         "image": "/img/fotos/portada-local.webp",
-        "pos": "80% center"
+        "pos": "80% center",
+        "eyebrow_va": "Des de 1952",
+        "eyebrow_en": "Since 1952",
+        "title_va": "Forn, pastisseria\ni café",
+        "title_en": "Bakery, pastries\n& coffee",
+        "text_va": "Pa de massa mare, bolleria acabada de fer i un racó per a quedar-se a la Saïdia.",
+        "text_en": "Sourdough bread, freshly baked pastries and a cosy spot to stay a while in La Saïdia.",
+        "button_va": "Veure productes",
+        "button_en": "See our products"
       },
       {
         "eyebrow": "Hecho cada mañana",
@@ -31,7 +43,15 @@
         "button": "Nuestro obrador",
         "link": "#obrador",
         "image": "/img/fotos/portada-pan.webp",
-        "pos": "center"
+        "pos": "center",
+        "eyebrow_va": "Fet cada matí",
+        "eyebrow_en": "Baked every morning",
+        "title_va": "Pa de veritat,\ncom sempre",
+        "title_en": "Real bread,\nas it should be",
+        "text_va": "Massa mare, farines de molí i hores de repòs. Sense presses, sense dreceres.",
+        "text_en": "Sourdough, stone-milled flour and hours of rest. No rush, no shortcuts.",
+        "button_va": "El nostre obrador",
+        "button_en": "Our bakehouse"
       },
       {
         "eyebrow": "Pastelería",
@@ -40,7 +60,15 @@
         "button": "Descúbrelos",
         "link": "#productos",
         "image": "/img/fotos/portada-pasteleria.webp",
-        "pos": "center"
+        "pos": "center",
+        "eyebrow_va": "Pastisseria",
+        "eyebrow_en": "Pâtisserie",
+        "title_va": "Xicotets\ncapricis",
+        "title_en": "Little\ntreats",
+        "text_va": "Mousses, milfulls i fullats que fem a mà al nostre obrador.",
+        "text_en": "Mousses, mille-feuilles and puff pastries made by hand in our bakehouse.",
+        "button_va": "Descobreix-los",
+        "button_en": "Discover them"
       },
       {
         "eyebrow": "Ven a vernos",
@@ -49,7 +77,15 @@
         "button": "Dónde estamos",
         "link": "#tiendas",
         "image": "/img/fotos/portada-salon.webp",
-        "pos": "center"
+        "pos": "center",
+        "eyebrow_va": "Vine a veure'ns",
+        "eyebrow_en": "Come and see us",
+        "title_va": "Un racó\nper a quedar-se",
+        "title_en": "A place\nto stay a while",
+        "text_va": "Café, alguna cosa dolça i una bona taula. T'esperem al C/ de Molinell, 10.",
+        "text_en": "Coffee, something sweet and a good table. Find us at C/ de Molinell, 10.",
+        "button_va": "On som",
+        "button_en": "Find us"
       }
     ]
   },
@@ -57,19 +93,29 @@
     "show": true,
     "items": [
       {
-        "text": "Masa madre"
+        "text": "Masa madre",
+        "text_va": "Massa mare",
+        "text_en": "Sourdough"
       },
       {
-        "text": "Hecho a mano"
+        "text": "Hecho a mano",
+        "text_va": "Fet a mà",
+        "text_en": "Handmade"
       },
       {
-        "text": "Sin conservantes"
+        "text": "Sin conservantes",
+        "text_va": "Sense conservants",
+        "text_en": "No preservatives"
       },
       {
-        "text": "Harina de molino"
+        "text": "Harina de molino",
+        "text_va": "Farina de molí",
+        "text_en": "Stone-milled flour"
       },
       {
-        "text": "Desde 1952"
+        "text": "Desde 1952",
+        "text_va": "Des de 1952",
+        "text_en": "Since 1952"
       }
     ]
   },
@@ -86,19 +132,35 @@
       {
         "value": 74,
         "suffix": "",
-        "label": "años horneando"
+        "label": "años horneando",
+        "label_va": "anys enfornant",
+        "label_en": "years baking"
       },
       {
         "value": 48,
         "suffix": "",
-        "label": "horas de fermentación"
+        "label": "horas de fermentación",
+        "label_va": "hores de fermentació",
+        "label_en": "hours of fermentation"
       },
       {
         "value": 100,
         "suffix": "%",
-        "label": "artesano"
+        "label": "artesano",
+        "label_va": "artesà",
+        "label_en": "handmade"
       }
-    ]
+    ],
+    "eyebrow_va": "Tres generacions de forners",
+    "eyebrow_en": "Three generations of bakers",
+    "title_va": "Ho elaborem tot",
+    "title_en": "We make everything",
+    "titleAccent_va": "amb les mans",
+    "titleAccent_en": "by hand",
+    "text1_va": "Creiem en l'ofici de sempre. Per això treballem amb massa mare pròpia, farines de molins pròxims i fermentacions llargues que donen al pa el seu sabor, la seua molla i la seua crosta.",
+    "text1_en": "We believe in the craft as it has always been. That's why we use our own sourdough starter, flour from nearby mills and long fermentations that give our bread its flavour, crumb and crust.",
+    "text2_va": "No fem servir conservants ni milloradors. Cada recepta s'elabora diàriament al nostre obrador, igual que ho feia l'avi quan va encendre el forn per primera vegada el 1952.",
+    "text2_en": "We use no preservatives or improvers. Every recipe is made daily in our bakehouse, just as Grandad did when he first lit the oven in 1952."
   },
   "featured": {
     "show": true,
@@ -109,19 +171,37 @@
       {
         "name": "Croissant relleno",
         "text": "Mantequilla, crema pastelera y fruta fresca. El favorito de la casa.",
-        "image": "/img/fotos/destacado-croissant.webp"
+        "image": "/img/fotos/destacado-croissant.webp",
+        "name_va": "Croissant farcit",
+        "name_en": "Filled croissant",
+        "text_va": "Mantega, crema pastissera i fruita fresca. El favorit de la casa.",
+        "text_en": "Butter, pastry cream and fresh fruit. The house favourite."
       },
       {
         "name": "Milhojas",
         "text": "Capas de hojaldre crujiente, crema y un buen golpe de azúcar glas.",
-        "image": "/img/fotos/destacado-milhojas.webp"
+        "image": "/img/fotos/destacado-milhojas.webp",
+        "name_va": "Milfulls",
+        "name_en": "Mille-feuille",
+        "text_va": "Capes de fullat cruixent, crema i un bon toc de sucre llustre.",
+        "text_en": "Layers of crisp puff pastry, cream and a generous dusting of icing sugar."
       },
       {
         "name": "Mousse de frutos rojos",
         "text": "Suave, fresca y con el brillo de una buena cobertura de frutos rojos.",
-        "image": "/img/fotos/destacado-mousse.webp"
+        "image": "/img/fotos/destacado-mousse.webp",
+        "name_va": "Mousse de fruits rojos",
+        "name_en": "Red berry mousse",
+        "text_va": "Suau, fresca i amb la brillantor d'una bona cobertura de fruits rojos.",
+        "text_en": "Smooth, fresh and topped with a glossy red berry glaze."
       }
-    ]
+    ],
+    "eyebrow_va": "El que més us agrada",
+    "eyebrow_en": "Your favourites",
+    "title_va": "Les nostres creacions",
+    "title_en": "Our creations",
+    "titleAccent_va": "són irresistibles",
+    "titleAccent_en": "are irresistible"
   },
   "products": {
     "show": true,
@@ -131,19 +211,27 @@
     "categories": [
       {
         "id": "pan",
-        "name": "Pan"
+        "name": "Pan",
+        "name_va": "Pa",
+        "name_en": "Bread"
       },
       {
         "id": "bolleria",
-        "name": "Bollería"
+        "name": "Bollería",
+        "name_va": "Bolleria",
+        "name_en": "Pastries"
       },
       {
         "id": "pasteleria",
-        "name": "Pastelería"
+        "name": "Pastelería",
+        "name_va": "Pastisseria",
+        "name_en": "Cakes"
       },
       {
         "id": "cafeteria",
-        "name": "Cafetería"
+        "name": "Cafetería",
+        "name_va": "Cafeteria",
+        "name_en": "Coffee"
       }
     ],
     "items": [
@@ -154,7 +242,13 @@
         "price": "4,20 €",
         "desc": "48 h de fermentación, miga abierta y corteza crujiente.",
         "image": "/img/fotos/p-hogaza.webp",
-        "tag": "Estrella"
+        "tag": "Estrella",
+        "name_va": "Pa de massa mare",
+        "name_en": "Sourdough loaf",
+        "desc_va": "48 h de fermentació, molla oberta i crosta cruixent.",
+        "desc_en": "48-hour fermentation, open crumb and a crackly crust.",
+        "tag_va": "Estrella",
+        "tag_en": "Star"
       },
       {
         "visible": true,
@@ -163,7 +257,11 @@
         "price": "3,90 €",
         "desc": "Cubierto de pipas de calabaza y semillas tostadas.",
         "image": "/img/fotos/p-pan-semillas.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Pa de llavors",
+        "name_en": "Seeded bread",
+        "desc_va": "Cobert de pipes de carabassa i llavors torrades.",
+        "desc_en": "Covered in pumpkin seeds and toasted seeds."
       },
       {
         "visible": true,
@@ -172,7 +270,11 @@
         "price": "1,40 €",
         "desc": "Alargada, harinada y con mucha corteza.",
         "image": "/img/fotos/p-barra.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Barra rústica",
+        "name_en": "Rustic baguette",
+        "desc_va": "Allargada, enfarinada i amb molta crosta.",
+        "desc_en": "Long, floured and with plenty of crust."
       },
       {
         "visible": true,
@@ -181,7 +283,13 @@
         "price": "3,50 €",
         "desc": "Croissant de mantequilla, crema pastelera y fruta fresca.",
         "image": "/img/fotos/p-croissant-crema.webp",
-        "tag": "Favorito"
+        "tag": "Favorito",
+        "name_va": "Croissant farcit de crema i fruita",
+        "name_en": "Croissant with cream and fruit",
+        "desc_va": "Croissant de mantega, crema pastissera i fruita fresca.",
+        "desc_en": "Butter croissant with pastry cream and fresh fruit.",
+        "tag_va": "Favorit",
+        "tag_en": "Favourite"
       },
       {
         "visible": true,
@@ -190,7 +298,11 @@
         "price": "3,50 €",
         "desc": "Relleno de nata montada y coronado con fruta.",
         "image": "/img/fotos/p-croissant-nata.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Croissant de nata i maduixes",
+        "name_en": "Strawberries & cream croissant",
+        "desc_va": "Farcit de nata muntada i coronat amb fruita.",
+        "desc_en": "Filled with whipped cream and topped with fruit."
       },
       {
         "visible": true,
@@ -199,7 +311,13 @@
         "price": "3,20 €",
         "desc": "Con crema y pistacho por encima.",
         "image": "/img/fotos/p-croissant-pistacho.webp",
-        "tag": "Novedad"
+        "tag": "Novedad",
+        "name_va": "Croissant de pistatxo",
+        "name_en": "Pistachio croissant",
+        "desc_va": "Amb crema i pistatxo per damunt.",
+        "desc_en": "With cream and pistachio on top.",
+        "tag_va": "Novetat",
+        "tag_en": "New"
       },
       {
         "visible": true,
@@ -208,7 +326,11 @@
         "price": "3,20 €",
         "desc": "Hojaldre, crema y fruta de temporada.",
         "image": "/img/fotos/p-hojaldre-frutas.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Fullat de fruites",
+        "name_en": "Fruit puff pastry",
+        "desc_va": "Fullat, crema i fruita de temporada.",
+        "desc_en": "Puff pastry, cream and seasonal fruit."
       },
       {
         "visible": true,
@@ -217,7 +339,11 @@
         "price": "2,80 €",
         "desc": "Láminas de manzana sobre hojaldre crujiente.",
         "image": "/img/fotos/p-hojaldre-manzana.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Fullat de poma",
+        "name_en": "Apple puff pastry",
+        "desc_va": "Làmines de poma sobre fullat cruixent.",
+        "desc_en": "Thin apple slices on crisp puff pastry."
       },
       {
         "visible": true,
@@ -226,7 +352,11 @@
         "price": "2,50 €",
         "desc": "Esponjosos, de varios sabores cada día.",
         "image": "/img/fotos/p-muffins.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Muffins",
+        "name_en": "Muffins",
+        "desc_va": "Esponjosos, de diversos sabors cada dia.",
+        "desc_en": "Fluffy, with different flavours every day."
       },
       {
         "visible": true,
@@ -235,7 +365,11 @@
         "price": "2,60 €",
         "desc": "Doble chocolate, para los más golosos.",
         "image": "/img/fotos/p-muffin-chocolate.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Muffin de xocolate",
+        "name_en": "Chocolate muffin",
+        "desc_va": "Doble xocolate, per als més llepolets.",
+        "desc_en": "Double chocolate, for the sweetest tooth."
       },
       {
         "visible": true,
@@ -244,7 +378,11 @@
         "price": "3,80 €",
         "desc": "Hojaldre, crema y azúcar glas.",
         "image": "/img/fotos/p-milhojas.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Milfulls",
+        "name_en": "Mille-feuille",
+        "desc_va": "Fullat, crema i sucre llustre.",
+        "desc_en": "Puff pastry, cream and icing sugar."
       },
       {
         "visible": true,
@@ -253,7 +391,11 @@
         "price": "4,50 €",
         "desc": "Individual, suave y con cobertura brillante.",
         "image": "/img/fotos/p-mousse-frutos.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Mousse de fruits rojos",
+        "name_en": "Red berry mousse",
+        "desc_va": "Individual, suau i amb cobertura brillant.",
+        "desc_en": "Individual, smooth and with a glossy glaze."
       },
       {
         "visible": true,
@@ -262,7 +404,11 @@
         "price": "4,50 €",
         "desc": "Base crujiente y mousse de chocolate.",
         "image": "/img/fotos/p-mousse-chocolate.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Mousse de xocolate",
+        "name_en": "Chocolate mousse",
+        "desc_va": "Base cruixent i mousse de xocolate.",
+        "desc_en": "Crunchy base and chocolate mousse."
       },
       {
         "visible": true,
@@ -271,7 +417,11 @@
         "price": "4,20 €",
         "desc": "Bizcocho de chocolate, mermelada y cobertura.",
         "image": "/img/fotos/p-sacher.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Pastís Sacher",
+        "name_en": "Sacher cake",
+        "desc_va": "Bescuit de xocolate, melmelada i cobertura.",
+        "desc_en": "Chocolate sponge, jam and chocolate glaze."
       },
       {
         "visible": true,
@@ -280,7 +430,11 @@
         "price": "4,20 €",
         "desc": "Capas de crema y galleta caramelizada.",
         "image": "/img/fotos/p-tarta-lotus.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Pastís de galeta",
+        "name_en": "Biscuit cake",
+        "desc_va": "Capes de crema i galeta caramel·litzada.",
+        "desc_en": "Layers of cream and caramelised biscuit."
       },
       {
         "visible": true,
@@ -289,7 +443,11 @@
         "price": "3,20 €",
         "desc": "Tierno y con pistacho troceado por encima.",
         "image": "/img/fotos/p-bizcocho-pistacho.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Bescuit de pistatxo",
+        "name_en": "Pistachio sponge cake",
+        "desc_va": "Tendre i amb pistatxo trossejat per damunt.",
+        "desc_en": "Soft, topped with chopped pistachios."
       },
       {
         "visible": true,
@@ -298,7 +456,11 @@
         "price": "3,20 €",
         "desc": "Jugoso, intenso y con trocitos crujientes.",
         "image": "/img/fotos/p-brownie.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Bescuit de xocolate",
+        "name_en": "Chocolate sponge cake",
+        "desc_va": "Sucós, intens i amb trossets cruixents.",
+        "desc_en": "Moist, intense and with crunchy bits."
       },
       {
         "visible": true,
@@ -307,7 +469,11 @@
         "price": "3,50 €",
         "desc": "Base de masa quebrada y merengue tostado.",
         "image": "/img/fotos/p-tartaleta.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Tarteta de merenga",
+        "name_en": "Meringue tartlet",
+        "desc_va": "Base de pasta trencada i merenga torrada.",
+        "desc_en": "Shortcrust base and toasted meringue."
       },
       {
         "visible": true,
@@ -316,7 +482,11 @@
         "price": "2,20 €",
         "desc": "Espresso con leche cremosa y cacao.",
         "image": "/img/fotos/p-capuchino.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Caputxino",
+        "name_en": "Cappuccino",
+        "desc_va": "Espresso amb llet cremosa i cacau.",
+        "desc_en": "Espresso with creamy milk and cocoa."
       },
       {
         "visible": true,
@@ -325,7 +495,11 @@
         "price": "3,20 €",
         "desc": "Café con leche y mucho hielo.",
         "image": "/img/fotos/p-iced-latte.webp",
-        "tag": ""
+        "tag": "",
+        "name_va": "Iced latte",
+        "name_en": "Iced latte",
+        "desc_va": "Café amb llet i molt de gel.",
+        "desc_en": "Coffee with milk and plenty of ice."
       },
       {
         "visible": true,
@@ -334,9 +508,97 @@
         "price": "3,90 €",
         "desc": "Té matcha con leche fría.",
         "image": "/img/fotos/p-matcha.webp",
-        "tag": "Novedad"
+        "tag": "Novedad",
+        "name_va": "Iced matcha latte",
+        "name_en": "Iced matcha latte",
+        "desc_va": "Te matcha amb llet freda.",
+        "desc_en": "Matcha tea with cold milk.",
+        "tag_va": "Novetat",
+        "tag_en": "New"
+      },
+      {
+        "visible": false,
+        "price": "",
+        "image": "",
+        "tag": "",
+        "id": "t-roscon",
+        "name": "Roscón de Reyes",
+        "name_va": "Tortell de Reis",
+        "name_en": "Three Kings' cake (Roscón)",
+        "desc": "Masa de brioche con agua de azahar, fruta escarchada y almendra.",
+        "desc_va": "Massa de brioix amb aigua de tarongina, fruita confitada i ametla.",
+        "desc_en": "Brioche dough with orange blossom water, candied fruit and almonds.",
+        "cat": "pasteleria",
+        "season": {
+          "on": true,
+          "from": "12-20",
+          "to": "01-06"
+        }
+      },
+      {
+        "visible": false,
+        "price": "",
+        "image": "",
+        "tag": "",
+        "id": "t-bunuelos",
+        "name": "Buñuelos de calabaza",
+        "name_va": "Bunyols de carabassa",
+        "name_en": "Pumpkin fritters (Bunyols)",
+        "desc": "Los de Fallas, recién fritos.",
+        "desc_va": "Els de Falles, acabats de fregir.",
+        "desc_en": "The Fallas classic, freshly fried.",
+        "cat": "bolleria",
+        "season": {
+          "on": true,
+          "from": "03-01",
+          "to": "03-19"
+        }
+      },
+      {
+        "visible": false,
+        "price": "",
+        "image": "",
+        "tag": "",
+        "id": "t-mona",
+        "name": "Mona de Pascua",
+        "name_va": "Mona de Pasqua",
+        "name_en": "Easter mona",
+        "desc": "Bollo tierno de Pascua, como el de toda la vida.",
+        "desc_va": "Coca tendra de Pasqua, com la de tota la vida.",
+        "desc_en": "Soft traditional Easter brioche.",
+        "cat": "bolleria",
+        "season": {
+          "on": true,
+          "from": "03-25",
+          "to": "04-30"
+        }
+      },
+      {
+        "visible": false,
+        "price": "",
+        "image": "",
+        "tag": "",
+        "id": "t-panellets",
+        "name": "Panellets",
+        "name_va": "Panellets",
+        "name_en": "Panellets",
+        "desc": "Dulces de almendra para Todos los Santos.",
+        "desc_va": "Dolços d'ametla per a Tots Sants.",
+        "desc_en": "Almond sweets for All Saints' Day.",
+        "cat": "pasteleria",
+        "season": {
+          "on": true,
+          "from": "10-20",
+          "to": "11-02"
+        }
       }
-    ]
+    ],
+    "eyebrow_va": "Cada matí al taulell",
+    "eyebrow_en": "Every morning at the counter",
+    "title_va": "Els nostres",
+    "title_en": "Our",
+    "titleAccent_va": "productes",
+    "titleAccent_en": "products"
   },
   "cta": {
     "show": true,
@@ -345,7 +607,15 @@
     "text": "Pan recién hecho cada mañana, a la vuelta de la esquina.",
     "button": "Dónde estamos",
     "image": "/img/fotos/banner-salon.webp",
-    "link": "#tiendas"
+    "link": "#tiendas",
+    "eyebrow_va": "T'esperem",
+    "eyebrow_en": "See you soon",
+    "title_va": "Vine a\nconéixer-nos",
+    "title_en": "Come and\nsay hello",
+    "text_va": "Pa acabat de fer cada matí, a la volta de la cantonada.",
+    "text_en": "Freshly baked bread every morning, just around the corner.",
+    "button_va": "On som",
+    "button_en": "Find us"
   },
   "workshop": {
     "show": true,
@@ -355,19 +625,35 @@
     "steps": [
       {
         "title": "La masa madre",
-        "text": "La alimentamos cada día desde hace décadas. Es el corazón de todo lo que horneamos."
+        "text": "La alimentamos cada día desde hace décadas. Es el corazón de todo lo que horneamos.",
+        "title_va": "La massa mare",
+        "title_en": "The sourdough",
+        "text_va": "L'alimentem cada dia des de fa dècades. És el cor de tot el que enfornem.",
+        "text_en": "We've fed it every day for decades. It's the heart of everything we bake."
       },
       {
         "title": "Amasado lento",
-        "text": "Harinas de molino, agua y sal. Amasamos despacio para respetar el grano."
+        "text": "Harinas de molino, agua y sal. Amasamos despacio para respetar el grano.",
+        "title_va": "Pastat lent",
+        "title_en": "Slow kneading",
+        "text_va": "Farines de molí, aigua i sal. Pastem a poc a poc per a respectar el gra.",
+        "text_en": "Stone-milled flour, water and salt. We knead slowly to respect the grain."
       },
       {
         "title": "Fermentación",
-        "text": "Hasta 48 horas de reposo en frío para lograr aroma, sabor y una miga abierta."
+        "text": "Hasta 48 horas de reposo en frío para lograr aroma, sabor y una miga abierta.",
+        "title_va": "Fermentació",
+        "title_en": "Fermentation",
+        "text_va": "Fins a 48 hores de repòs en fred per a aconseguir aroma, sabor i una molla oberta.",
+        "text_en": "Up to 48 hours of cold resting for aroma, flavour and an open crumb."
       },
       {
         "title": "Horno de piedra",
-        "text": "Cocción a alta temperatura que da esa corteza dorada que cruje al partirla."
+        "text": "Cocción a alta temperatura que da esa corteza dorada que cruje al partirla.",
+        "title_va": "Forn de pedra",
+        "title_en": "Stone oven",
+        "text_va": "Cocció a alta temperatura que dona eixa crosta daurada que cruix en partir-la.",
+        "text_en": "Baked at a high temperature for that golden crust that crackles when you break it."
       }
     ],
     "gallery": [
@@ -383,7 +669,13 @@
       {
         "image": "/img/fotos/obrador-cafe.webp"
       }
-    ]
+    ],
+    "eyebrow_va": "L'obrador",
+    "eyebrow_en": "The bakehouse",
+    "title_va": "Així naix",
+    "title_en": "This is how",
+    "titleAccent_va": "el nostre pa",
+    "titleAccent_en": "our bread is born"
   },
   "history": {
     "show": true,
@@ -394,24 +686,48 @@
       {
         "year": "1952",
         "title": "El primer horno",
-        "text": "El abuelo abre un pequeño horno de leña en Almenar. Pan de cada día para todo el pueblo."
+        "text": "El abuelo abre un pequeño horno de leña en Almenar. Pan de cada día para todo el pueblo.",
+        "title_va": "El primer forn",
+        "title_en": "The first oven",
+        "text_va": "L'avi obri un xicotet forn de llenya a Almenar. Pa de cada dia per a tot el poble.",
+        "text_en": "Grandad opens a small wood-fired bakery in Almenar. Daily bread for the whole village."
       },
       {
         "year": "1978",
         "title": "Llega la pastelería",
-        "text": "La segunda generación incorpora la bollería y las tartas que hoy siguen siendo nuestras favoritas."
+        "text": "La segunda generación incorpora la bollería y las tartas que hoy siguen siendo nuestras favoritas.",
+        "title_va": "Arriba la pastisseria",
+        "title_en": "Along come the cakes",
+        "text_va": "La segona generació incorpora la bolleria i els pastissos que hui continuen sent els nostres favorits.",
+        "text_en": "The second generation adds the pastries and cakes that are still our favourites today."
       },
       {
         "year": "2005",
         "title": "Nuevo obrador",
-        "text": "Ampliamos el obrador sin renunciar a lo esencial: masa madre, tiempo y manos."
+        "text": "Ampliamos el obrador sin renunciar a lo esencial: masa madre, tiempo y manos.",
+        "title_va": "Nou obrador",
+        "title_en": "A new bakehouse",
+        "text_va": "Ampliem l'obrador sense renunciar a l'essencial: massa mare, temps i mans.",
+        "text_en": "We expand the bakehouse without giving up the essentials: sourdough, time and skilled hands."
       },
       {
         "year": "Hoy",
         "title": "La tercera generación",
-        "text": "Seguimos horneando cada madrugada con la misma ilusión, y con nuevas recetas en el mostrador."
+        "text": "Seguimos horneando cada madrugada con la misma ilusión, y con nuevas recetas en el mostrador.",
+        "year_va": "Hui",
+        "year_en": "Today",
+        "title_va": "La tercera generació",
+        "title_en": "The third generation",
+        "text_va": "Continuem enfornant cada matinada amb la mateixa il·lusió, i amb noves receptes al taulell.",
+        "text_en": "We still bake before dawn every day with the same passion, and with new recipes on the counter."
       }
-    ]
+    ],
+    "eyebrow_va": "La nostra història",
+    "eyebrow_en": "Our story",
+    "title_va": "Més de 70 anys",
+    "title_en": "Over 70 years",
+    "titleAccent_va": "encenent el forn",
+    "titleAccent_en": "lighting the oven"
   },
   "stores": {
     "show": true,
@@ -457,11 +773,21 @@
         "showMap": true,
         "map": "C/ de Molinell, 10, 46010 València"
       }
-    ]
+    ],
+    "eyebrow_va": "T'esperem",
+    "eyebrow_en": "Come and visit",
+    "title_va": "On",
+    "title_en": "Where",
+    "titleAccent_va": "som",
+    "titleAccent_en": "to find us"
   },
   "footer": {
     "text": "Un horno de barrio con más de 70 años de oficio. Pan, bollería y pastelería artesana hecha cada mañana.",
-    "cookiesText": "Usamos una cookie propia para recordar tu elección. El mapa de Google solo se carga si aceptas."
+    "cookiesText": "Usamos una cookie propia para recordar tu elección. El mapa de Google solo se carga si aceptas.",
+    "text_va": "Un forn de barri amb més de 70 anys d'ofici. Pa, bolleria i pastisseria artesana feta cada matí.",
+    "text_en": "A neighbourhood bakery with over 70 years of craft. Bread, pastries and cakes handmade every morning.",
+    "cookiesText_va": "Fem servir una galeta pròpia per a recordar la teua elecció. El mapa de Google només es carrega si acceptes.",
+    "cookiesText_en": "We use a single first-party cookie to remember your choice. The Google map only loads if you accept."
   },
   "blog": {
     "show": true,
@@ -482,7 +808,15 @@
         "pinned": true,
         "published": true,
         "excerpt": "Un croissant gigante en la pared, sofás para quedarse y el logo encendido al fondo. Te enseñamos nuestro espacio.",
-        "body": "<p>Hemos querido que el horno sea un sitio para comprar el pan… <strong>y también para quedarse</strong>. Un lugar donde tomar un café tranquilo, quedar con alguien o simplemente sentarse un rato.</p><p><img src=\"/img/fotos/blog-in-salon.webp\" alt=\"Zona de sofás del horno\"></p><h2>Un rincón para cada momento</h2><p>Junto a la entrada tienes los sofás verdes, perfectos para un desayuno sin prisas. Al fondo, el salón con mesas de mármol y nuestro logo encendido, donde cabe toda la familia.</p><p><img src=\"/img/fotos/blog-in-croissant.webp\" alt=\"El croissant gigante de la pared\"></p><p>Y sí: el croissant gigante de la pared se ha convertido en la foto favorita de quien nos visita.</p><h2>Ven a conocernos</h2><p>Estamos en <strong>C/ de Molinell, 10</strong>, en La Saïdia. ¡Te esperamos!</p>"
+        "body": "<p>Hemos querido que el horno sea un sitio para comprar el pan… <strong>y también para quedarse</strong>. Un lugar donde tomar un café tranquilo, quedar con alguien o simplemente sentarse un rato.</p><p><img src=\"/img/fotos/blog-in-salon.webp\" alt=\"Zona de sofás del horno\"></p><h2>Un rincón para cada momento</h2><p>Junto a la entrada tienes los sofás verdes, perfectos para un desayuno sin prisas. Al fondo, el salón con mesas de mármol y nuestro logo encendido, donde cabe toda la familia.</p><p><img src=\"/img/fotos/blog-in-croissant.webp\" alt=\"El croissant gigante de la pared\"></p><p>Y sí: el croissant gigante de la pared se ha convertido en la foto favorita de quien nos visita.</p><h2>Ven a conocernos</h2><p>Estamos en <strong>C/ de Molinell, 10</strong>, en La Saïdia. ¡Te esperamos!</p>",
+        "title_va": "Així és el nostre forn per dins",
+        "title_en": "A look inside our bakery",
+        "excerpt_va": "Un croissant gegant a la paret, sofàs per a quedar-se i el logo encés al fons. T'ensenyem el nostre espai.",
+        "excerpt_en": "A giant croissant on the wall, sofas to linger on and our logo glowing at the back. Come and take a look around.",
+        "body_va": "<p>Hem volgut que el forn siga un lloc per a comprar el pa… <strong>i també per a quedar-se</strong>. Un lloc on prendre un café tranquil, quedar amb algú o simplement seure una estona.</p><p><img src=\"/img/fotos/blog-in-salon.webp\" alt=\"Zona de sofàs del forn\"></p><h2>Un racó per a cada moment</h2><p>Al costat de l'entrada tens els sofàs verds, perfectes per a un esmorzar sense presses. Al fons, el saló amb taules de marbre i el nostre logo encés, on cap tota la família.</p><p><img src=\"/img/fotos/blog-in-croissant.webp\" alt=\"El croissant gegant de la paret\"></p><p>I sí: el croissant gegant de la paret s'ha convertit en la foto preferida de qui ens visita.</p><h2>Vine a conéixer-nos</h2><p>Som al <strong>C/ de Molinell, 10</strong>, a la Saïdia. T'esperem!</p>",
+        "body_en": "<p>We wanted the bakery to be a place to buy your bread… <strong>and also a place to stay</strong>. Somewhere to enjoy a quiet coffee, meet a friend or simply sit down for a while.</p><p><img src=\"/img/fotos/blog-in-salon.webp\" alt=\"The sofa area in the bakery\"></p><h2>A corner for every moment</h2><p>By the entrance you'll find the green sofas, perfect for an unhurried breakfast. At the back, the lounge with marble tables and our glowing logo, with room for the whole family.</p><p><img src=\"/img/fotos/blog-in-croissant.webp\" alt=\"The giant croissant on the wall\"></p><p>And yes: the giant croissant on the wall has become our visitors' favourite photo.</p><h2>Come and say hello</h2><p>You'll find us at <strong>C/ de Molinell, 10</strong>, in La Saïdia. See you soon!</p>",
+        "category_va": "Notícia",
+        "category_en": "News"
       },
       {
         "id": "p2",
@@ -494,7 +828,15 @@
         "pinned": false,
         "published": true,
         "excerpt": "Milhojas, mousses, hojaldres de fruta y croissants rellenos. Así es la vitrina dulce de Forn Almenar.",
-        "body": "<p>Cada mañana, antes de abrir, el obrador ya huele a mantequilla y azúcar. De ahí sale toda nuestra pastelería, <strong>hecha a mano</strong> y en pequeñas cantidades para que siempre esté recién hecha.</p><p><img src=\"/img/fotos/blog-in-mesa.webp\" alt=\"Pasteles sobre una mesa de mármol\"></p><h2>Lo que más os gusta</h2><ul><li>El <strong>milhojas</strong>, crujiente y con mucha crema.</li><li>Las <strong>mousses individuales</strong> de frutos rojos y de chocolate.</li><li>Los <strong>croissants rellenos</strong> de crema y fruta fresca.</li></ul><p><img src=\"/img/fotos/blog-in-bebidas.webp\" alt=\"Cafés fríos con pasteles\"></p><h2>Y para acompañar…</h2><p>Un capuchino, un iced latte o un matcha frío. Pregúntanos por las combinaciones favoritas del equipo.</p>"
+        "body": "<p>Cada mañana, antes de abrir, el obrador ya huele a mantequilla y azúcar. De ahí sale toda nuestra pastelería, <strong>hecha a mano</strong> y en pequeñas cantidades para que siempre esté recién hecha.</p><p><img src=\"/img/fotos/blog-in-mesa.webp\" alt=\"Pasteles sobre una mesa de mármol\"></p><h2>Lo que más os gusta</h2><ul><li>El <strong>milhojas</strong>, crujiente y con mucha crema.</li><li>Las <strong>mousses individuales</strong> de frutos rojos y de chocolate.</li><li>Los <strong>croissants rellenos</strong> de crema y fruta fresca.</li></ul><p><img src=\"/img/fotos/blog-in-bebidas.webp\" alt=\"Cafés fríos con pasteles\"></p><h2>Y para acompañar…</h2><p>Un capuchino, un iced latte o un matcha frío. Pregúntanos por las combinaciones favoritas del equipo.</p>",
+        "title_va": "De l'obrador a la teua taula: la nostra pastisseria",
+        "title_en": "From our bakehouse to your table: our cakes and pastries",
+        "excerpt_va": "Milfulls, mousses, fullats de fruita i croissants farcits. Així és la vitrina dolça de Forn Almenar.",
+        "excerpt_en": "Mille-feuilles, mousses, fruit puff pastries and filled croissants. Welcome to Forn Almenar's sweet counter.",
+        "body_va": "<p>Cada matí, abans d'obrir, l'obrador ja fa olor de mantega i sucre. D'allí ix tota la nostra pastisseria, <strong>feta a mà</strong> i en xicotetes quantitats perquè sempre estiga acabada de fer.</p><p><img src=\"/img/fotos/blog-in-mesa.webp\" alt=\"Pastissos damunt d'una taula de marbre\"></p><h2>El que més us agrada</h2><ul><li>El <strong>milfulls</strong>, cruixent i amb molta crema.</li><li>Les <strong>mousses individuals</strong> de fruits rojos i de xocolate.</li><li>Els <strong>croissants farcits</strong> de crema i fruita fresca.</li></ul><p><img src=\"/img/fotos/blog-in-bebidas.webp\" alt=\"Cafés freds amb pastissos\"></p><h2>I per a acompanyar…</h2><p>Un caputxino, un iced latte o un matcha fred. Pregunta'ns per les combinacions preferides de l'equip.</p>",
+        "body_en": "<p>Every morning, before we open, the bakehouse already smells of butter and sugar. That's where all our cakes and pastries come from, <strong>handmade</strong> in small batches so they're always fresh.</p><p><img src=\"/img/fotos/blog-in-mesa.webp\" alt=\"Cakes on a marble table\"></p><h2>Your favourites</h2><ul><li>The <strong>mille-feuille</strong>, crisp and generously filled with cream.</li><li>The individual <strong>red berry and chocolate mousses</strong>.</li><li>The <strong>filled croissants</strong> with pastry cream and fresh fruit.</li></ul><p><img src=\"/img/fotos/blog-in-bebidas.webp\" alt=\"Iced coffees with cakes\"></p><h2>And to go with them…</h2><p>A cappuccino, an iced latte or a cold matcha. Ask us about the team's favourite pairings.</p>",
+        "category_va": "Notícia",
+        "category_en": "News"
       },
       {
         "id": "p3",
@@ -506,9 +848,27 @@
         "pinned": false,
         "published": true,
         "excerpt": "Lleva décadas viva y la alimentamos cada día. Te contamos el secreto de nuestro pan.",
-        "body": "<p>La masa madre es un fermento natural de harina y agua. La nuestra lleva <strong>décadas</strong> viva y la alimentamos cada mañana, antes de encender el horno.</p><p><img src=\"/img/fotos/blog-in-corte.webp\" alt=\"Cortando una hogaza de masa madre\"></p><h2>¿Por qué masa madre?</h2><p>Porque fermenta despacio. Eso hace que el pan tenga más sabor, una miga más jugosa y que aguante tierno varios días.</p><h3>Nuestros tres básicos</h3><ol><li>Harina de molino.</li><li>Agua y sal, nada más.</li><li>Tiempo: hasta 48 horas de fermentación.</li></ol><p><img src=\"/img/fotos/blog-in-semillas.webp\" alt=\"Pan de semillas recién hecho\"></p><p>Si quieres saber más, pregúntanos en el horno: nos encanta contarlo.</p>"
+        "body": "<p>La masa madre es un fermento natural de harina y agua. La nuestra lleva <strong>décadas</strong> viva y la alimentamos cada mañana, antes de encender el horno.</p><p><img src=\"/img/fotos/blog-in-corte.webp\" alt=\"Cortando una hogaza de masa madre\"></p><h2>¿Por qué masa madre?</h2><p>Porque fermenta despacio. Eso hace que el pan tenga más sabor, una miga más jugosa y que aguante tierno varios días.</p><h3>Nuestros tres básicos</h3><ol><li>Harina de molino.</li><li>Agua y sal, nada más.</li><li>Tiempo: hasta 48 horas de fermentación.</li></ol><p><img src=\"/img/fotos/blog-in-semillas.webp\" alt=\"Pan de semillas recién hecho\"></p><p>Si quieres saber más, pregúntanos en el horno: nos encanta contarlo.</p>",
+        "title_va": "Així cuidem la nostra massa mare",
+        "title_en": "How we look after our sourdough",
+        "excerpt_va": "Fa dècades que està viva i l'alimentem cada dia. Et contem el secret del nostre pa.",
+        "excerpt_en": "It has been alive for decades and we feed it every day. Here's the secret behind our bread.",
+        "body_va": "<p>La massa mare és un ferment natural de farina i aigua. La nostra fa <strong>dècades</strong> que està viva i l'alimentem cada matí, abans d'encendre el forn.</p><p><img src=\"/img/fotos/blog-in-corte.webp\" alt=\"Tallant una fogassa de massa mare\"></p><h2>Per què massa mare?</h2><p>Perquè fermenta a poc a poc. Això fa que el pa tinga més sabor, una molla més sucosa i que aguante tendre diversos dies.</p><h3>Els nostres tres bàsics</h3><ol><li>Farina de molí.</li><li>Aigua i sal, res més.</li><li>Temps: fins a 48 hores de fermentació.</li></ol><p><img src=\"/img/fotos/blog-in-semillas.webp\" alt=\"Pa de llavors acabat de fer\"></p><p>Si en vols saber més, pregunta'ns al forn: ens encanta contar-ho.</p>",
+        "body_en": "<p>Sourdough is a natural ferment made from flour and water. Ours has been alive for <strong>decades</strong>, and we feed it every morning before lighting the oven.</p><p><img src=\"/img/fotos/blog-in-corte.webp\" alt=\"Slicing a sourdough loaf\"></p><h2>Why sourdough?</h2><p>Because it ferments slowly. That gives the bread more flavour, a moister crumb and keeps it soft for several days.</p><h3>Our three basics</h3><ol><li>Stone-milled flour.</li><li>Water and salt, nothing else.</li><li>Time: up to 48 hours of fermentation.</li></ol><p><img src=\"/img/fotos/blog-in-semillas.webp\" alt=\"Freshly baked seeded bread\"></p><p>If you'd like to know more, just ask us at the bakery: we love talking about it.</p>",
+        "category_va": "Notícia",
+        "category_en": "News"
       }
-    ]
+    ],
+    "eyebrow_va": "Novetats",
+    "eyebrow_en": "News",
+    "title_va": "L'últim",
+    "title_en": "Fresh",
+    "titleAccent_va": "del forn",
+    "titleAccent_en": "from the oven",
+    "pageTitle_va": "Novetats",
+    "pageTitle_en": "News",
+    "pageIntro_va": "Anuncis, notícies i tot el que es cou a Forn Almenar.",
+    "pageIntro_en": "Announcements, news and everything that's cooking at Forn Almenar."
   },
   "legal": {
     "pages": [
@@ -517,32 +877,56 @@
         "slug": "aviso-legal",
         "title": "Aviso legal y condiciones de uso",
         "label": "Aviso legal",
-        "body": "<p>En cumplimiento de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), te informamos de los datos del titular de esta web.</p>\n<h2>Datos del titular</h2>\n<ul><li><strong>Titular:</strong> {{titular}}</li><li><strong>NIF/CIF:</strong> {{nif}}</li><li><strong>Domicilio:</strong> {{direccion}}</li><li><strong>Email:</strong> {{email}}</li><li><strong>Teléfono:</strong> {{telefono}}</li><li><strong>Sitio web:</strong> {{web}}</li></ul>\n<h2>Objeto</h2>\n<p>Esta web tiene como finalidad dar a conocer el horno, sus productos, su historia y sus novedades. La información sobre productos y precios es orientativa y puede variar según la temporada y la disponibilidad del día.</p>\n<h2>Condiciones de uso</h2>\n<p>El acceso a esta web es gratuito y supone la aceptación de estas condiciones. Te comprometes a hacer un uso adecuado de los contenidos y a no utilizarlos para actividades ilícitas o que puedan dañar la web o a terceros.</p>\n<h2>Propiedad intelectual</h2>\n<p>Los textos, fotografías, logotipos y diseño de esta web pertenecen a {{titular}} o se usan con autorización. No está permitida su reproducción, distribución o modificación sin permiso expreso.</p>\n<h2>Responsabilidad</h2>\n<p>Hacemos lo posible por que la información sea correcta y esté actualizada, pero no podemos garantizar la ausencia de errores. Tampoco nos hacemos responsables del contenido de las webs externas a las que se enlace desde aquí.</p>\n<h2>Legislación aplicable</h2>\n<p>Estas condiciones se rigen por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales que correspondan conforme a la ley.</p>"
+        "body": "<p>En cumplimiento de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), te informamos de los datos del titular de esta web.</p>\n<h2>Datos del titular</h2>\n<ul><li><strong>Titular:</strong> {{titular}}</li><li><strong>NIF/CIF:</strong> {{nif}}</li><li><strong>Domicilio:</strong> {{direccion}}</li><li><strong>Email:</strong> {{email}}</li><li><strong>Teléfono:</strong> {{telefono}}</li><li><strong>Sitio web:</strong> {{web}}</li></ul>\n<h2>Objeto</h2>\n<p>Esta web tiene como finalidad dar a conocer el horno, sus productos, su historia y sus novedades. La información sobre productos y precios es orientativa y puede variar según la temporada y la disponibilidad del día.</p>\n<h2>Condiciones de uso</h2>\n<p>El acceso a esta web es gratuito y supone la aceptación de estas condiciones. Te comprometes a hacer un uso adecuado de los contenidos y a no utilizarlos para actividades ilícitas o que puedan dañar la web o a terceros.</p>\n<h2>Propiedad intelectual</h2>\n<p>Los textos, fotografías, logotipos y diseño de esta web pertenecen a {{titular}} o se usan con autorización. No está permitida su reproducción, distribución o modificación sin permiso expreso.</p>\n<h2>Responsabilidad</h2>\n<p>Hacemos lo posible por que la información sea correcta y esté actualizada, pero no podemos garantizar la ausencia de errores. Tampoco nos hacemos responsables del contenido de las webs externas a las que se enlace desde aquí.</p>\n<h2>Legislación aplicable</h2>\n<p>Estas condiciones se rigen por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales que correspondan conforme a la ley.</p>",
+        "title_va": "Avís legal i condicions d'ús",
+        "title_en": "Legal notice and terms of use",
+        "label_va": "Avís legal",
+        "label_en": "Legal notice",
+        "body_va": "<p>En compliment de la Llei 34/2002, de serveis de la societat de la informació i de comerç electrònic (LSSI-CE), t'informem de les dades del titular d'aquest web.</p>\n<h2>Dades del titular</h2>\n<ul><li><strong>Titular:</strong> {{titular}}</li><li><strong>NIF/CIF:</strong> {{nif}}</li><li><strong>Domicili:</strong> {{direccion}}</li><li><strong>Correu electrònic:</strong> {{email}}</li><li><strong>Telèfon:</strong> {{telefono}}</li><li><strong>Lloc web:</strong> {{web}}</li></ul>\n<h2>Objecte</h2>\n<p>Aquest web té com a finalitat donar a conéixer el forn, els seus productes, la seua història i les seues novetats. La informació sobre productes i preus és orientativa i pot variar segons la temporada i la disponibilitat del dia.</p>\n<h2>Condicions d'ús</h2>\n<p>L'accés a aquest web és gratuït i suposa l'acceptació d'aquestes condicions. Et comprometes a fer un ús adequat dels continguts i a no utilitzar-los per a activitats il·lícites o que puguen danyar el web o terceres persones.</p>\n<h2>Propietat intel·lectual</h2>\n<p>Els textos, fotografies, logotips i disseny d'aquest web pertanyen a {{titular}} o s'utilitzen amb autorització. No se'n permet la reproducció, distribució o modificació sense permís exprés.</p>\n<h2>Responsabilitat</h2>\n<p>Fem tot el possible perquè la informació siga correcta i estiga actualitzada, però no podem garantir l'absència d'errors. Tampoc ens fem responsables del contingut dels webs externs als quals s'enllace des d'ací.</p>\n<h2>Legislació aplicable</h2>\n<p>Aquestes condicions es regeixen per la legislació espanyola. Per a qualsevol controvèrsia, les parts se sotmeten als jutjats i tribunals que corresponguen d'acord amb la llei.</p>",
+        "body_en": "<p>In accordance with Spanish Law 34/2002 on Information Society Services and Electronic Commerce (LSSI-CE), here are the details of the owner of this website.</p>\n<h2>Owner details</h2>\n<ul><li><strong>Owner:</strong> {{titular}}</li><li><strong>Tax ID (NIF/CIF):</strong> {{nif}}</li><li><strong>Address:</strong> {{direccion}}</li><li><strong>Email:</strong> {{email}}</li><li><strong>Phone:</strong> {{telefono}}</li><li><strong>Website:</strong> {{web}}</li></ul>\n<h2>Purpose</h2>\n<p>This website exists to introduce the bakery, its products, its history and its news. Product and price information is for guidance only and may change depending on the season and daily availability.</p>\n<h2>Terms of use</h2>\n<p>Access to this website is free of charge and implies acceptance of these terms. You agree to make appropriate use of its content and not to use it for unlawful purposes or in any way that could harm the website or third parties.</p>\n<h2>Intellectual property</h2>\n<p>The texts, photographs, logos and design of this website belong to {{titular}} or are used with permission. They may not be reproduced, distributed or modified without express permission.</p>\n<h2>Liability</h2>\n<p>We do our best to keep the information accurate and up to date, but we cannot guarantee that it is error-free. Nor are we responsible for the content of external websites linked from here.</p>\n<h2>Applicable law</h2>\n<p>These terms are governed by Spanish law. Any dispute shall be submitted to the competent courts in accordance with the law.</p>"
       },
       {
         "id": "l2",
         "slug": "politica-de-privacidad",
         "title": "Política de privacidad",
         "label": "Política de privacidad",
-        "body": "<p>En esta página te explicamos cómo tratamos tus datos personales, de acuerdo con el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>\n<h2>Responsable del tratamiento</h2>\n<ul><li><strong>Responsable:</strong> {{titular}}</li><li><strong>NIF/CIF:</strong> {{nif}}</li><li><strong>Dirección:</strong> {{direccion}}</li><li><strong>Email de contacto:</strong> {{email}}</li></ul>\n<h2>¿Qué datos tratamos?</h2>\n<p>Esta web <strong>no tiene formularios ni zona de clientes</strong>: no recogemos datos personales a través de ella. Solo tratamos los datos que tú nos facilites voluntariamente si nos escribes por email, WhatsApp o nos llamas por teléfono (por ejemplo, tu nombre, teléfono o email).</p>\n<h2>¿Para qué los usamos?</h2>\n<p>Únicamente para responder a tu consulta. No los usamos para enviarte publicidad ni los cedemos a terceros, salvo obligación legal.</p>\n<h2>Legitimación</h2>\n<p>La base legal es tu consentimiento, al contactar con nosotros, y nuestro interés legítimo en atender tu consulta.</p>\n<h2>¿Cuánto tiempo los conservamos?</h2>\n<p>El tiempo necesario para atender tu consulta y, después, durante los plazos que exija la ley.</p>\n<h2>Proveedores</h2>\n<p>Para que la web funcione usamos proveedores tecnológicos que pueden tratar datos técnicos de navegación (como la dirección IP): Vercel (alojamiento de la web), Cloudflare (almacenamiento de imágenes y contenido) y Google (mapa y tipografías). Estos proveedores cumplen con la normativa europea de protección de datos.</p>\n<h2>Tus derechos</h2>\n<p>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad escribiendo a <strong>{{email}}</strong>. Si consideras que no hemos tratado tus datos correctamente, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).</p>"
+        "body": "<p>En esta página te explicamos cómo tratamos tus datos personales, de acuerdo con el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>\n<h2>Responsable del tratamiento</h2>\n<ul><li><strong>Responsable:</strong> {{titular}}</li><li><strong>NIF/CIF:</strong> {{nif}}</li><li><strong>Dirección:</strong> {{direccion}}</li><li><strong>Email de contacto:</strong> {{email}}</li></ul>\n<h2>¿Qué datos tratamos?</h2>\n<p>Esta web <strong>no tiene formularios ni zona de clientes</strong>: no recogemos datos personales a través de ella. Solo tratamos los datos que tú nos facilites voluntariamente si nos escribes por email, WhatsApp o nos llamas por teléfono (por ejemplo, tu nombre, teléfono o email).</p>\n<h2>¿Para qué los usamos?</h2>\n<p>Únicamente para responder a tu consulta. No los usamos para enviarte publicidad ni los cedemos a terceros, salvo obligación legal.</p>\n<h2>Legitimación</h2>\n<p>La base legal es tu consentimiento, al contactar con nosotros, y nuestro interés legítimo en atender tu consulta.</p>\n<h2>¿Cuánto tiempo los conservamos?</h2>\n<p>El tiempo necesario para atender tu consulta y, después, durante los plazos que exija la ley.</p>\n<h2>Proveedores</h2>\n<p>Para que la web funcione usamos proveedores tecnológicos que pueden tratar datos técnicos de navegación (como la dirección IP): Vercel (alojamiento de la web), Cloudflare (almacenamiento de imágenes y contenido) y Google (mapa y tipografías). Estos proveedores cumplen con la normativa europea de protección de datos.</p>\n<h2>Tus derechos</h2>\n<p>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad escribiendo a <strong>{{email}}</strong>. Si consideras que no hemos tratado tus datos correctamente, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).</p>",
+        "title_va": "Política de privadesa",
+        "title_en": "Privacy policy",
+        "label_va": "Política de privadesa",
+        "label_en": "Privacy policy",
+        "body_va": "<p>En aquesta pàgina t'expliquem com tractem les teues dades personals, d'acord amb el Reglament (UE) 2016/679 (RGPD) i la Llei orgànica 3/2018 (LOPDGDD).</p>\n<h2>Responsable del tractament</h2>\n<ul><li><strong>Responsable:</strong> {{titular}}</li><li><strong>NIF/CIF:</strong> {{nif}}</li><li><strong>Adreça:</strong> {{direccion}}</li><li><strong>Correu electrònic de contacte:</strong> {{email}}</li></ul>\n<h2>Quines dades tractem?</h2>\n<p>Aquest web <strong>no té formularis ni zona de clients</strong>: no recollim dades personals a través d'ell. Només tractem les dades que ens faciliteu voluntàriament si ens escrius per correu electrònic o WhatsApp o ens telefones (per exemple, el teu nom, telèfon o correu).</p>\n<h2>Per a què les fem servir?</h2>\n<p>Únicament per a respondre la teua consulta. No les fem servir per a enviar-te publicitat ni les cedim a tercers, excepte per obligació legal.</p>\n<h2>Legitimació</h2>\n<p>La base legal és el teu consentiment, en contactar amb nosaltres, i el nostre interés legítim a atendre la teua consulta.</p>\n<h2>Quant de temps les conservem?</h2>\n<p>El temps necessari per a atendre la teua consulta i, després, durant els terminis que exigisca la llei.</p>\n<h2>Proveïdors</h2>\n<p>Perquè el web funcione fem servir proveïdors tecnològics que poden tractar dades tècniques de navegació (com l'adreça IP): Vercel (allotjament del web), Cloudflare (emmagatzematge d'imatges i contingut) i Google (mapa i tipografies). Aquests proveïdors compleixen la normativa europea de protecció de dades.</p>\n<h2>Els teus drets</h2>\n<p>Pots exercir els teus drets d'accés, rectificació, supressió, oposició, limitació del tractament i portabilitat escrivint a <strong>{{email}}</strong>. Si consideres que no hem tractat correctament les teues dades, pots presentar una reclamació davant l'Agència Espanyola de Protecció de Dades (www.aepd.es).</p>",
+        "body_en": "<p>This page explains how we handle your personal data, in accordance with Regulation (EU) 2016/679 (GDPR) and Spanish Organic Law 3/2018 (LOPDGDD).</p>\n<h2>Data controller</h2>\n<ul><li><strong>Controller:</strong> {{titular}}</li><li><strong>Tax ID (NIF/CIF):</strong> {{nif}}</li><li><strong>Address:</strong> {{direccion}}</li><li><strong>Contact email:</strong> {{email}}</li></ul>\n<h2>What data do we process?</h2>\n<p>This website <strong>has no forms or customer area</strong>: we do not collect personal data through it. We only process the data you choose to give us if you email us, message us on WhatsApp or phone us (for example, your name, phone number or email).</p>\n<h2>What do we use it for?</h2>\n<p>Only to answer your enquiry. We do not use it to send you advertising and we do not share it with third parties, unless required by law.</p>\n<h2>Legal basis</h2>\n<p>The legal basis is your consent, when you contact us, and our legitimate interest in answering your enquiry.</p>\n<h2>How long do we keep it?</h2>\n<p>For as long as needed to answer your enquiry and, afterwards, for the periods required by law.</p>\n<h2>Service providers</h2>\n<p>To run the website we use technology providers that may process technical browsing data (such as your IP address): Vercel (website hosting), Cloudflare (image and content storage) and Google (map and fonts). These providers comply with European data protection rules.</p>\n<h2>Your rights</h2>\n<p>You can exercise your rights of access, rectification, erasure, objection, restriction of processing and portability by writing to <strong>{{email}}</strong>. If you believe we have not handled your data correctly, you can file a complaint with the Spanish Data Protection Agency (www.aepd.es).</p>"
       },
       {
         "id": "l3",
         "slug": "politica-de-cookies",
         "title": "Política de cookies",
         "label": "Política de cookies",
-        "body": "<p>Una cookie es un pequeño archivo que una web guarda en tu navegador. Aquí te contamos cuáles se usan en {{web}}.</p>\n<h2>Cookies propias</h2>\n<p>Solo guardamos en tu navegador si has aceptado o rechazado este aviso de cookies, para no volver a preguntártelo. Es imprescindible para que la web funcione correctamente y no sirve para identificarte.</p>\n<h2>Cookies de terceros</h2>\n<p><strong>Google Maps:</strong> el mapa de la sección «Dónde estamos» lo ofrece Google, que puede instalar sus propias cookies para su funcionamiento y con fines analíticos o publicitarios. Por eso, <strong>el mapa solo se carga si aceptas las cookies</strong> o si pulsas el botón para verlo.</p>\n<p>No usamos cookies de análisis ni de publicidad propias.</p>\n<h2>¿Cómo cambiar tu elección?</h2>\n<p>Puedes borrar o bloquear las cookies desde la configuración de tu navegador. Si borras los datos de esta web, te volveremos a mostrar el aviso para que elijas de nuevo.</p>\n<h2>Más información</h2>\n<p>Si tienes dudas, escríbenos a {{email}}.</p>"
+        "body": "<p>Una cookie es un pequeño archivo que una web guarda en tu navegador. Aquí te contamos cuáles se usan en {{web}}.</p>\n<h2>Cookies propias</h2>\n<p>Solo guardamos en tu navegador si has aceptado o rechazado este aviso de cookies, para no volver a preguntártelo, y el idioma que elijas. Es imprescindible para que la web funcione correctamente y no sirve para identificarte.</p>\n<h2>Cookies de terceros</h2>\n<p><strong>Google Maps:</strong> el mapa de la sección «Dónde estamos» lo ofrece Google, que puede instalar sus propias cookies para su funcionamiento y con fines analíticos o publicitarios. Por eso, <strong>el mapa solo se carga si aceptas las cookies</strong> o si pulsas el botón para verlo.</p>\n<p>No usamos cookies de análisis ni de publicidad propias.</p>\n<h2>¿Cómo cambiar tu elección?</h2>\n<p>Puedes borrar o bloquear las cookies desde la configuración de tu navegador. Si borras los datos de esta web, te volveremos a mostrar el aviso para que elijas de nuevo.</p>\n<h2>Más información</h2>\n<p>Si tienes dudas, escríbenos a {{email}}.</p>",
+        "title_va": "Política de cookies",
+        "title_en": "Cookie policy",
+        "label_va": "Política de cookies",
+        "label_en": "Cookie policy",
+        "body_va": "<p>Una cookie (galeta) és un xicotet arxiu que un web guarda en el teu navegador. Ací et contem quines s'utilitzen a {{web}}.</p>\n<h2>Cookies pròpies</h2>\n<p>Només guardem en el teu navegador si has acceptat o rebutjat aquest avís de cookies, per a no tornar a preguntar-t'ho, i l'idioma que tries. És imprescindible perquè el web funcione correctament i no serveix per a identificar-te.</p>\n<h2>Cookies de tercers</h2>\n<p><strong>Google Maps:</strong> el mapa de la secció «On som» l'ofereix Google, que pot instal·lar les seues pròpies cookies per al seu funcionament i amb finalitats analítiques o publicitàries. Per això, <strong>el mapa només es carrega si acceptes les cookies</strong> o si prems el botó per a veure'l.</p>\n<p>No fem servir cookies d'anàlisi ni de publicitat pròpies.</p>\n<h2>Com canviar la teua elecció?</h2>\n<p>Pots esborrar o bloquejar les cookies des de la configuració del teu navegador. Si esborres les dades d'aquest web, et tornarem a mostrar l'avís perquè tries de nou.</p>\n<h2>Més informació</h2>\n<p>Si tens dubtes, escriu-nos a {{email}}.</p>",
+        "body_en": "<p>A cookie is a small file that a website stores in your browser. Here we explain which ones are used on {{web}}.</p>\n<h2>Our own cookies</h2>\n<p>We only store in your browser whether you accepted or declined this cookie notice, so we don't ask you again, and the language you choose. This is essential for the website to work properly and cannot be used to identify you.</p>\n<h2>Third-party cookies</h2>\n<p><strong>Google Maps:</strong> the map in the “Find us” section is provided by Google, which may set its own cookies for its operation and for analytics or advertising purposes. That's why <strong>the map only loads if you accept cookies</strong> or press the button to show it.</p>\n<p>We do not use any analytics or advertising cookies of our own.</p>\n<h2>How to change your choice</h2>\n<p>You can delete or block cookies in your browser settings. If you clear this website's data, we will show you the notice again so you can choose once more.</p>\n<h2>More information</h2>\n<p>If you have any questions, email us at {{email}}.</p>"
       },
       {
         "id": "l4",
         "slug": "alergenos",
         "title": "Información sobre alérgenos",
         "label": "Alérgenos",
-        "body": "<p>De acuerdo con el Reglamento (UE) 1169/2011, te informamos de que en nuestro obrador se elaboran productos que contienen o pueden contener los siguientes <strong>alérgenos</strong>:</p>\n<ol><li>Cereales con gluten (trigo, centeno, cebada, avena, espelta…)</li><li>Crustáceos</li><li>Huevos</li><li>Pescado</li><li>Cacahuetes</li><li>Soja</li><li>Leche (incluida la lactosa)</li><li>Frutos de cáscara (almendras, avellanas, nueces, pistachos…)</li><li>Apio</li><li>Mostaza</li><li>Granos de sésamo</li><li>Dióxido de azufre y sulfitos</li><li>Altramuces</li><li>Moluscos</li></ol>\n<h2>Información de cada producto</h2>\n<p>Tienes a tu disposición la información detallada de alérgenos de cada producto <strong>en el propio horno</strong>. Pregunta a nuestro personal antes de comprar.</p>\n<h2>Trazas</h2>\n<p>Al tratarse de un obrador artesano donde se trabaja con harinas, frutos secos, huevo y leche, <strong>no podemos garantizar la ausencia total de trazas</strong> en ninguno de nuestros productos.</p>\n<p>Si tienes alguna alergia o intolerancia, llámanos al {{telefono}} o escríbenos a {{email}} y te asesoramos.</p>"
+        "body": "<p>De acuerdo con el Reglamento (UE) 1169/2011, te informamos de que en nuestro obrador se elaboran productos que contienen o pueden contener los siguientes <strong>alérgenos</strong>:</p>\n<ol><li>Cereales con gluten (trigo, centeno, cebada, avena, espelta…)</li><li>Crustáceos</li><li>Huevos</li><li>Pescado</li><li>Cacahuetes</li><li>Soja</li><li>Leche (incluida la lactosa)</li><li>Frutos de cáscara (almendras, avellanas, nueces, pistachos…)</li><li>Apio</li><li>Mostaza</li><li>Granos de sésamo</li><li>Dióxido de azufre y sulfitos</li><li>Altramuces</li><li>Moluscos</li></ol>\n<h2>Información de cada producto</h2>\n<p>Tienes a tu disposición la información detallada de alérgenos de cada producto <strong>en el propio horno</strong>. Pregunta a nuestro personal antes de comprar.</p>\n<h2>Trazas</h2>\n<p>Al tratarse de un obrador artesano donde se trabaja con harinas, frutos secos, huevo y leche, <strong>no podemos garantizar la ausencia total de trazas</strong> en ninguno de nuestros productos.</p>\n<p>Si tienes alguna alergia o intolerancia, llámanos al {{telefono}} o escríbenos a {{email}} y te asesoramos.</p>",
+        "title_va": "Informació sobre al·lèrgens",
+        "title_en": "Allergen information",
+        "label_va": "Al·lèrgens",
+        "label_en": "Allergens",
+        "body_va": "<p>D'acord amb el Reglament (UE) 1169/2011, t'informem que al nostre obrador s'elaboren productes que contenen o poden contindre els següents <strong>al·lèrgens</strong>:</p>\n<ol><li>Cereals amb gluten (blat, sègol, ordi, civada, espelta…)</li><li>Crustacis</li><li>Ous</li><li>Peix</li><li>Cacauets</li><li>Soja</li><li>Llet (inclosa la lactosa)</li><li>Fruits de closca (ametles, avellanes, nous, pistatxos…)</li><li>Api</li><li>Mostassa</li><li>Grans de sèsam</li><li>Diòxid de sofre i sulfits</li><li>Tramussos</li><li>Mol·luscs</li></ol>\n<h2>Informació de cada producte</h2>\n<p>Tens a la teua disposició la informació detallada d'al·lèrgens de cada producte <strong>al mateix forn</strong>. Pregunta al nostre personal abans de comprar.</p>\n<h2>Traces</h2>\n<p>Com que és un obrador artesà on es treballa amb farines, fruits secs, ou i llet, <strong>no podem garantir l'absència total de traces</strong> en cap dels nostres productes.</p>\n<p>Si tens alguna al·lèrgia o intolerància, telefona'ns al {{telefono}} o escriu-nos a {{email}} i t'assessorarem.</p>",
+        "body_en": "<p>In accordance with Regulation (EU) 1169/2011, we inform you that our bakehouse makes products that contain or may contain the following <strong>allergens</strong>:</p>\n<ol><li>Cereals containing gluten (wheat, rye, barley, oats, spelt…)</li><li>Crustaceans</li><li>Eggs</li><li>Fish</li><li>Peanuts</li><li>Soy</li><li>Milk (including lactose)</li><li>Tree nuts (almonds, hazelnuts, walnuts, pistachios…)</li><li>Celery</li><li>Mustard</li><li>Sesame seeds</li><li>Sulphur dioxide and sulphites</li><li>Lupin</li><li>Molluscs</li></ol>\n<h2>Information for each product</h2>\n<p>Detailed allergen information for every product is available <strong>at the bakery</strong>. Please ask our staff before buying.</p>\n<h2>Traces</h2>\n<p>As an artisan bakehouse that works with flour, nuts, eggs and milk, <strong>we cannot guarantee the complete absence of traces</strong> in any of our products.</p>\n<p>If you have an allergy or intolerance, call us on {{telefono}} or email us at {{email}} and we'll be happy to advise you.</p>"
       }
     ]
   },
-  "contentVersion": 2,
+  "contentVersion": 3,
   "team": {
     "show": true,
     "eyebrow": "Las manos detrás del mostrador",
@@ -580,7 +964,15 @@
         "name": "",
         "role": ""
       }
-    ]
+    ],
+    "eyebrow_va": "Les mans darrere del taulell",
+    "eyebrow_en": "The hands behind the counter",
+    "title_va": "El nostre",
+    "title_en": "Our",
+    "titleAccent_va": "equip",
+    "titleAccent_en": "team",
+    "text_va": "Forners, pastissers i baristes que cada dia hi posen el mateix afecte que el 1952.",
+    "text_en": "Bakers, pastry chefs and baristas who put the same love into every day as in 1952."
   },
   "tour": {
     "show": true,
@@ -600,27 +992,39 @@
             "x": 40,
             "y": 50,
             "label": "La vitrina",
-            "to": "mostrador"
+            "to": "mostrador",
+            "label_va": "La vitrina",
+            "label_en": "The display counter"
           },
           {
             "x": 68,
             "y": 63,
             "label": "Los sofás",
-            "to": "sofas"
+            "to": "sofas",
+            "label_va": "Els sofàs",
+            "label_en": "The sofas"
           },
           {
             "x": 79,
             "y": 22,
             "label": "El croissant gigante",
-            "to": "croissant"
+            "to": "croissant",
+            "label_va": "El croissant gegant",
+            "label_en": "The giant croissant"
           },
           {
             "x": 4,
             "y": 44,
             "label": "Al fondo, el salón",
-            "to": "salon"
+            "to": "salon",
+            "label_va": "Al fons, el saló",
+            "label_en": "The lounge, at the back"
           }
-        ]
+        ],
+        "name_va": "En entrar",
+        "name_en": "As you walk in",
+        "text_va": "Només creuar la porta: el taulell a l'esquerra i el croissant gegant saludant a la dreta.",
+        "text_en": "Just through the door: the counter on the left and the giant croissant waving on the right."
       },
       {
         "id": "sofas",
@@ -633,21 +1037,31 @@
             "x": 54,
             "y": 27,
             "label": "El croissant gigante",
-            "to": "croissant"
+            "to": "croissant",
+            "label_va": "El croissant gegant",
+            "label_en": "The giant croissant"
           },
           {
             "x": 82,
             "y": 58,
             "label": "El escaparate",
-            "to": "escaparate"
+            "to": "escaparate",
+            "label_va": "L'aparador",
+            "label_en": "The shop window"
           },
           {
             "x": 15,
             "y": 50,
             "label": "La vitrina",
-            "to": "mostrador"
+            "to": "mostrador",
+            "label_va": "La vitrina",
+            "label_en": "The display counter"
           }
-        ]
+        ],
+        "name_va": "El racó dels sofàs",
+        "name_en": "The sofa corner",
+        "text_va": "Un café, alguna cosa dolça i sense presses. El lloc preferit per a esmorzar.",
+        "text_en": "A coffee, something sweet and no rush. Everyone's favourite breakfast spot."
       },
       {
         "id": "escaparate",
@@ -660,21 +1074,31 @@
             "x": 33,
             "y": 22,
             "label": "El croissant gigante",
-            "to": "croissant"
+            "to": "croissant",
+            "label_va": "El croissant gegant",
+            "label_en": "The giant croissant"
           },
           {
             "x": 34,
             "y": 66,
             "label": "Los sofás",
-            "to": "sofas"
+            "to": "sofas",
+            "label_va": "Els sofàs",
+            "label_en": "The sofas"
           },
           {
             "x": 8,
             "y": 44,
             "label": "La vitrina",
-            "to": "mostrador"
+            "to": "mostrador",
+            "label_va": "La vitrina",
+            "label_en": "The display counter"
           }
-        ]
+        ],
+        "name_va": "Al costat de l'aparador",
+        "name_en": "By the shop window",
+        "text_va": "Llum natural, fulles de tardor i la terrassa a l'altre costat del vidre.",
+        "text_en": "Natural light, autumn leaves and the terrace on the other side of the glass."
       },
       {
         "id": "croissant",
@@ -687,15 +1111,23 @@
             "x": 30,
             "y": 84,
             "label": "La vitrina de pasteles",
-            "to": "mostrador"
+            "to": "mostrador",
+            "label_va": "La vitrina de pastissos",
+            "label_en": "The cake display"
           },
           {
             "x": 90,
             "y": 42,
             "label": "El escaparate",
-            "to": "escaparate"
+            "to": "escaparate",
+            "label_va": "L'aparador",
+            "label_en": "The shop window"
           }
-        ]
+        ],
+        "name_va": "El croissant gegant",
+        "name_en": "The giant croissant",
+        "text_va": "Xocolate que regalima per la paret. La foto que tothom s'emporta.",
+        "text_en": "Chocolate dripping down the wall. The photo everyone takes home."
       },
       {
         "id": "mostrador",
@@ -708,15 +1140,23 @@
             "x": 43,
             "y": 45,
             "label": "Hacia el fondo",
-            "to": "rincon"
+            "to": "rincon",
+            "label_va": "Cap al fons",
+            "label_en": "Towards the back"
           },
           {
             "x": 82,
             "y": 80,
             "label": "Los sofás",
-            "to": "sofas"
+            "to": "sofas",
+            "label_va": "Els sofàs",
+            "label_en": "The sofas"
           }
-        ]
+        ],
+        "name_va": "La vitrina",
+        "name_en": "The display counter",
+        "text_va": "Bolleria, pastissos i pa acabat de fer al llarg de tot el taulell.",
+        "text_en": "Pastries, cakes and fresh bread all along the counter."
       },
       {
         "id": "rincon",
@@ -729,15 +1169,23 @@
             "x": 90,
             "y": 36,
             "label": "El salón",
-            "to": "salon"
+            "to": "salon",
+            "label_va": "El saló",
+            "label_en": "The lounge"
           },
           {
             "x": 40,
             "y": 70,
             "label": "Volver a la entrada",
-            "to": "entrada"
+            "to": "entrada",
+            "label_va": "Tornar a l'entrada",
+            "label_en": "Back to the entrance"
           }
-        ]
+        ],
+        "name_va": "Un racó tranquil",
+        "name_en": "A quiet corner",
+        "text_va": "Sofàs al costat de la cortina granat, perfectes per a llegir o xarrar.",
+        "text_en": "Sofas by the burgundy curtain, perfect for reading or chatting."
       },
       {
         "id": "salon",
@@ -750,15 +1198,23 @@
             "x": 92,
             "y": 45,
             "label": "La pared de recuerdos",
-            "to": "recuerdos"
+            "to": "recuerdos",
+            "label_va": "La paret dels records",
+            "label_en": "The memory wall"
           },
           {
             "x": 8,
             "y": 52,
             "label": "Volver a la entrada",
-            "to": "entrada"
+            "to": "entrada",
+            "label_va": "Tornar a l'entrada",
+            "label_en": "Back to the entrance"
           }
-        ]
+        ],
+        "name_va": "El saló",
+        "name_en": "The lounge",
+        "text_va": "Taules de marbre davall del nostre logo encés. Hi cap tota la família.",
+        "text_en": "Marble tables beneath our glowing logo. Room for the whole family."
       },
       {
         "id": "recuerdos",
@@ -771,15 +1227,45 @@
             "x": 20,
             "y": 33,
             "label": "El logo encendido",
-            "to": "salon"
+            "to": "salon",
+            "label_va": "El logo encés",
+            "label_en": "The glowing logo"
           },
           {
             "x": 90,
             "y": 55,
             "label": "Volver a la entrada",
-            "to": "entrada"
+            "to": "entrada",
+            "label_va": "Tornar a l'entrada",
+            "label_en": "Back to the entrance"
           }
-        ]
+        ],
+        "name_va": "La paret dels records",
+        "name_en": "The memory wall",
+        "text_va": "Fotos de la família i del forn des de 1952. Tres generacions penjades a la paret.",
+        "text_en": "Photos of the family and the bakery since 1952. Three generations hanging on the wall."
+      }
+    ],
+    "eyebrow_va": "Visita el forn",
+    "eyebrow_en": "Visit the bakery",
+    "title_va": "Passa,",
+    "title_en": "Come in,",
+    "titleAccent_va": "estàs a casa",
+    "titleAccent_en": "make yourself at home",
+    "text_va": "Recorre el forn sense moure't del sofà: arrossega per a mirar al voltant i prem els punts per a avançar.",
+    "text_en": "Explore the bakery from your sofa: drag to look around and tap the dots to move on."
+  },
+  "notice": {
+    "show": true,
+    "items": [
+      {
+        "active": false,
+        "text": "🎄 Del 20 de diciembre al 6 de enero, roscón de Reyes recién hecho cada mañana.",
+        "text_va": "🎄 Del 20 de desembre al 6 de gener, tortell de Reis acabat de fer cada matí.",
+        "text_en": "🎄 From 20 December to 6 January, freshly baked Three Kings' cake every morning.",
+        "link": "#productos",
+        "from": "2026-12-15",
+        "to": "2027-01-06"
       }
     ]
   }

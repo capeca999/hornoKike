@@ -8,18 +8,175 @@
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const isPreview = new URLSearchParams(location.search).has("preview") && window.parent !== window;
-  const PAGE = document.body.dataset.page || "home"; // home | blog | post
+  const PAGE = document.body.dataset.page || "home"; // home | blog | post | legal
+
+  /* =========================================================
+     IDIOMAS: castellano (es), valenciano (va) e inglés (en)
+     Los textos del panel se guardan como "title", "title_va", "title_en".
+     Si falta la traducción, se usa el castellano.
+     ========================================================= */
+  const LANGS = ["es", "va", "en"];
+  const LANG_LABEL = { es: "ES", va: "VA", en: "EN" };
+  const LANG_NAME = { es: "Castellano", va: "Valencià", en: "English" };
+  const HTML_LANG = { es: "es", va: "ca-ES-valencia", en: "en" };
+  const LOCALE = { es: "es-ES", va: "ca-ES", en: "en-GB" };
+  const detectLang = () => {
+    const q = new URLSearchParams(location.search).get("lang");
+    if (LANGS.includes(q)) return q;
+    // Buscadores (Google…): siempre la versión principal en castellano sin ?lang
+    if (navigator.webdriver || /bot|crawl|spider|slurp|google|bing|yandex|duckduck|baidu|facebookexternal|whatsapp/i.test(navigator.userAgent)) return "es";
+    try { const s = localStorage.getItem("fa-lang"); if (LANGS.includes(s)) return s; } catch {}
+    const first = String((navigator.languages && navigator.languages[0]) || navigator.language || "es").toLowerCase();
+    if (/^(ca|va)/.test(first)) return "va";
+    if (/^(es|gl|eu)/.test(first)) return "es";
+    return "en"; // visitantes de fuera: inglés
+  };
+  let LANG = detectLang();
+
+  const I18N = {
+    es: {
+      more: "Más información", reject: "Rechazar", accept: "Aceptar", waAria: "Escríbenos por WhatsApp", pinned: "Destacado", readMore: "Leer más",
+      closed: "Cerrado", prev: "Anterior", next: "Siguiente", down: "Bajar", filterProducts: "Filtrar productos", all: "Todo", allNews: "Ver todas las novedades",
+      ourWorkshop: "Nuestro obrador", tourRole: "recorrido virtual", tourAria: "Recorrido virtual por el horno. Usa las flechas para cambiar de sala.", go: "Ir",
+      prevRoom: "Sala anterior", nextRoom: "Sala siguiente", full: "Pantalla completa", tourHint: "Arrastra para mirar · pulsa los puntos para avanzar", rooms: "Salas del horno",
+      team: "Equipo de Forn Almenar", mapMsg: "El mapa lo ofrece Google, que puede usar cookies.", showMap: "Ver el mapa", map: "Mapa",
+      openNow: "Abierto ahora", closedNow: "Cerrado ahora", directions: "Cómo llegar", visit: "Visítanos", browse: "Navega", legal: "Aviso legal",
+      backTop: "Volver arriba ↑", since: "Desde 1952", filterNews: "Filtrar novedades", noNews: "Todavía no hay novedades. ¡Vuelve pronto!",
+      legalInfo: "Información legal", notFound: "Página no encontrada", moved: "Puede que se haya movido.", home: "Volver al inicio", otherLegal: "Otras páginas legales",
+      missing: "falta", postNotFoundT: "Noticia no encontrada", postNotFound: "No encontramos esta noticia", postMoved: "Puede que se haya movido o ya no esté publicada.",
+      backNews: "← Todas las novedades", minRead: "min de lectura", share: "Compartir", copy: "Copiar enlace", copied: "¡Enlace copiado!", copyPrompt: "Copia este enlace:",
+      keepReading: "Sigue leyendo", moreNews: "Más <em>novedades</em>", slide: "Diapositiva", menu: "Abrir menú", language: "Idioma",
+      contains: "Contiene", traces: "Puede contener trazas de", noAllergens: "Sin ninguno de los 14 alérgenos principales", freeFrom: "Sin",
+      freeAria: "Filtrar por alérgenos", allergenNote: "Solo aparecen productos revisados que no llevan ese ingrediente. Al ser un obrador artesano puede haber trazas: si tienes una alergia, pregúntanos antes.",
+      allergenLink: "Información sobre alérgenos", noMatch: "Todavía no hay productos revisados que cumplan este filtro. Pregúntanos en el horno.",
+      seasonal: "De temporada", outOfSeason: "Fuera de temporada (solo se ve aquí)", closeNotice: "Cerrar aviso",
+      nav: { hero: "Inicio", products: "Productos", blog: "Novedades", workshop: "Obrador", history: "Nuestra historia", stores: "Dónde estamos" },
+      days: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingos"],
+      dayList: ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"],
+      pair: (a, b) => `${a} y ${b}`, range: (a, b) => `${a} a ${b}`,
+    },
+    va: {
+      more: "Més informació", reject: "Rebutjar", accept: "Acceptar", waAria: "Escriu-nos per WhatsApp", pinned: "Destacat", readMore: "Llegir més",
+      closed: "Tancat", prev: "Anterior", next: "Següent", down: "Baixar", filterProducts: "Filtrar productes", all: "Tot", allNews: "Veure totes les novetats",
+      ourWorkshop: "El nostre obrador", tourRole: "recorregut virtual", tourAria: "Recorregut virtual pel forn. Usa les fletxes per a canviar de sala.", go: "Anar",
+      prevRoom: "Sala anterior", nextRoom: "Sala següent", full: "Pantalla completa", tourHint: "Arrossega per a mirar · prem els punts per a avançar", rooms: "Sales del forn",
+      team: "Equip de Forn Almenar", mapMsg: "El mapa l'ofereix Google, que pot fer servir galetes.", showMap: "Veure el mapa", map: "Mapa",
+      openNow: "Obert ara", closedNow: "Tancat ara", directions: "Com arribar", visit: "Visita'ns", browse: "Navega", legal: "Avís legal",
+      backTop: "Tornar amunt ↑", since: "Des de 1952", filterNews: "Filtrar novetats", noNews: "Encara no hi ha novetats. Torna prompte!",
+      legalInfo: "Informació legal", notFound: "Pàgina no trobada", moved: "Potser s'ha mogut.", home: "Tornar a l'inici", otherLegal: "Altres pàgines legals",
+      missing: "falta", postNotFoundT: "Notícia no trobada", postNotFound: "No trobem aquesta notícia", postMoved: "Potser s'ha mogut o ja no està publicada.",
+      backNews: "← Totes les novetats", minRead: "min de lectura", share: "Compartir", copy: "Copiar l'enllaç", copied: "Enllaç copiat!", copyPrompt: "Copia aquest enllaç:",
+      keepReading: "Continua llegint", moreNews: "Més <em>novetats</em>", slide: "Diapositiva", menu: "Obrir el menú", language: "Idioma",
+      contains: "Conté", traces: "Pot contindre traces de", noAllergens: "Sense cap dels 14 al·lèrgens principals", freeFrom: "Sense",
+      freeAria: "Filtrar per al·lèrgens", allergenNote: "Només apareixen productes revisats que no porten aquest ingredient. En ser un obrador artesà hi pot haver traces: si tens una al·lèrgia, pregunta'ns abans.",
+      allergenLink: "Informació sobre al·lèrgens", noMatch: "Encara no hi ha productes revisats que complisquen aquest filtre. Pregunta'ns al forn.",
+      seasonal: "De temporada", outOfSeason: "Fora de temporada (només es veu ací)", closeNotice: "Tancar l'avís",
+      nav: { hero: "Inici", products: "Productes", blog: "Novetats", workshop: "Obrador", history: "La nostra història", stores: "On som" },
+      days: ["Dilluns", "Dimarts", "Dimecres", "Dijous", "Divendres", "Dissabte", "Diumenges"],
+      dayList: ["dilluns", "dimarts", "dimecres", "dijous", "divendres", "dissabte", "diumenge"],
+      pair: (a, b) => `${a} i ${b}`, range: (a, b) => `${a} a ${b}`,
+    },
+    en: {
+      more: "More info", reject: "Decline", accept: "Accept", waAria: "Message us on WhatsApp", pinned: "Featured", readMore: "Read more",
+      closed: "Closed", prev: "Previous", next: "Next", down: "Scroll down", filterProducts: "Filter products", all: "All", allNews: "See all news",
+      ourWorkshop: "Our bakehouse", tourRole: "virtual tour", tourAria: "Virtual tour of the bakery. Use the arrow keys to change room.", go: "Go",
+      prevRoom: "Previous room", nextRoom: "Next room", full: "Full screen", tourHint: "Drag to look around · tap the dots to move on", rooms: "Rooms of the bakery",
+      team: "The Forn Almenar team", mapMsg: "The map is provided by Google, which may use cookies.", showMap: "Show map", map: "Map",
+      openNow: "Open now", closedNow: "Closed now", directions: "Get directions", visit: "Visit us", browse: "Explore", legal: "Legal",
+      backTop: "Back to top ↑", since: "Since 1952", filterNews: "Filter news", noNews: "No news yet. Check back soon!",
+      legalInfo: "Legal information", notFound: "Page not found", moved: "It may have moved.", home: "Back to home", otherLegal: "Other legal pages",
+      missing: "missing", postNotFoundT: "Post not found", postNotFound: "We can't find this post", postMoved: "It may have moved or been unpublished.",
+      backNews: "← All news", minRead: "min read", share: "Share", copy: "Copy link", copied: "Link copied!", copyPrompt: "Copy this link:",
+      keepReading: "Keep reading", moreNews: "More <em>news</em>", slide: "Slide", menu: "Open menu", language: "Language",
+      contains: "Contains", traces: "May contain traces of", noAllergens: "None of the 14 main allergens", freeFrom: "Free from",
+      freeAria: "Filter by allergens", allergenNote: "Only reviewed products without that ingredient are shown. As an artisan bakehouse we can't rule out traces: if you have an allergy, please ask us first.",
+      allergenLink: "Allergen information", noMatch: "No reviewed products match this filter yet. Please ask us at the bakery.",
+      seasonal: "Seasonal", outOfSeason: "Out of season (only visible here)", closeNotice: "Close notice",
+      nav: { hero: "Home", products: "Products", blog: "News", workshop: "Bakehouse", history: "Our story", stores: "Find us" },
+      days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sundays"],
+      dayList: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      pair: (a, b) => `${a} & ${b}`, range: (a, b) => `${a} to ${b}`,
+    },
+  };
+  const t = (k) => (I18N[LANG] && I18N[LANG][k]) ?? I18N.es[k];
+
+  /* Los 14 alérgenos de declaración obligatoria (Reglamento UE 1169/2011) */
+  const ALLERGENS = {
+    gluten: ["🌾", "Gluten", "Gluten", "Gluten"], crustaceos: ["🦐", "Crustáceos", "Crustacis", "Crustaceans"], huevo: ["🥚", "Huevo", "Ou", "Egg"],
+    pescado: ["🐟", "Pescado", "Peix", "Fish"], cacahuetes: ["🥜", "Cacahuetes", "Cacauets", "Peanuts"], soja: ["🫘", "Soja", "Soja", "Soy"],
+    leche: ["🥛", "Leche", "Llet", "Milk"], frutos: ["🌰", "Frutos de cáscara", "Fruits de closca", "Tree nuts"], apio: ["🥬", "Apio", "Api", "Celery"],
+    mostaza: ["🟡", "Mostaza", "Mostassa", "Mustard"], sesamo: ["⚪", "Sésamo", "Sèsam", "Sesame"], sulfitos: ["🍷", "Sulfitos", "Sulfits", "Sulphites"],
+    altramuces: ["🌼", "Altramuces", "Tramussos", "Lupin"], moluscos: ["🐚", "Moluscos", "Mol·luscs", "Molluscs"],
+  };
+  const allergenName = (id) => (ALLERGENS[id] || [])[1 + LANGS.indexOf(LANG)] || id;
+  // Filtros "Sin…": cada uno excluye uno o varios alérgenos
+  const FREE_FROM = [
+    ["gluten", ["gluten"], { es: "Sin gluten", va: "Sense gluten", en: "Gluten-free" }],
+    ["leche", ["leche"], { es: "Sin leche", va: "Sense llet", en: "Dairy-free" }],
+    ["huevo", ["huevo"], { es: "Sin huevo", va: "Sense ou", en: "Egg-free" }],
+    ["frutos", ["frutos", "cacahuetes"], { es: "Sin frutos secos", va: "Sense fruits secs", en: "Nut-free" }],
+  ];
+
+  // Devuelve una copia del contenido con los textos en el idioma elegido
+  function localize(obj, lang) {
+    if (Array.isArray(obj)) return obj.map((x) => localize(x, lang));
+    if (!obj || typeof obj !== "object") return obj;
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) out[k] = localize(v, lang);
+    if (lang !== "es") for (const k of Object.keys(obj)) {
+      const m = k.match(/^(.+)_(va|en)$/);
+      if (m && m[2] === lang && typeof obj[k] === "string" && obj[k].trim()) out[m[1]] = obj[k];
+    }
+    return out;
+  }
+  // Completa traducciones que falten con las del contenido de ejemplo (si el texto en castellano no ha cambiado)
+  function fillTranslations(target, defaults) {
+    const dict = new Map();
+    const collect = (o) => {
+      if (Array.isArray(o)) return o.forEach(collect);
+      if (!o || typeof o !== "object") return;
+      for (const [k, v] of Object.entries(o)) {
+        if (typeof v === "string" && (o[k + "_va"] || o[k + "_en"]) && !dict.has(v)) dict.set(v, { va: o[k + "_va"], en: o[k + "_en"] });
+        else if (typeof v === "object") collect(v);
+      }
+    };
+    collect(defaults);
+    let n = 0;
+    const fill = (o) => {
+      if (Array.isArray(o)) return o.forEach(fill);
+      if (!o || typeof o !== "object") return;
+      for (const [k, v] of Object.entries(o)) {
+        if (typeof v === "string" && !/_(va|en)$/.test(k) && dict.has(v)) {
+          const d = dict.get(v);
+          for (const l of ["va", "en"]) if (d[l] && !(k + "_" + l in o)) { o[k + "_" + l] = d[l]; n++; }
+        } else if (typeof v === "object") fill(v);
+      }
+    };
+    fill(target);
+    return n;
+  }
 
   /* ---------- La cabecera y el menú están en el HTML. Aquí: marcar "Novedades" y añadir WhatsApp + cookies ---------- */
   if (PAGE === "blog" || PAGE === "post") $$('[data-sec="blog"]').forEach((a) => a.setAttribute("aria-current", "page"));
   document.body.insertAdjacentHTML("beforeend", `
-    <a class="wa-float" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" data-wa hidden>
+    <a class="wa-float" href="#" target="_blank" rel="noopener" aria-label="" data-wa hidden>
       <svg viewBox="0 0 24 24"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.8L4 20Z"/><path d="M9 9.5c.3 2 2.3 4.2 4.8 4.8l1-1.1 1.6.8c-.2 1.1-1 1.7-2 1.7-3.3-.3-6.4-3.4-6.6-6.6 0-1 .6-1.8 1.7-2l.8 1.6-1.3.8Z" fill="currentColor" stroke="none"/></svg>
     </a>
     <div class="cookies" id="cookies" hidden>
-      <p><span data-cookies-text></span> <a href="#" data-cookies-link>Más información</a></p>
-      <div><button class="btn btn--small btn--ghost-dark" data-cookies="reject">Rechazar</button><button class="btn btn--small" data-cookies="accept">Aceptar</button></div>
+      <p><span data-cookies-text></span> <a href="#" data-cookies-link data-t="more"></a></p>
+      <div><button class="btn btn--small btn--ghost-dark" data-cookies="reject" data-t="reject"></button><button class="btn btn--small" data-cookies="accept" data-t="accept"></button></div>
     </div>`);
+  // Selector de idioma (cabecera y menú del móvil)
+  const langLink = (l) => `<a href="?lang=${l}" hreflang="${l === "va" ? "ca" : l}" data-lang="${l}" lang="${HTML_LANG[l]}" title="${LANG_NAME[l]}">${LANG_LABEL[l]}</a>`;
+  const langSwitch = (cls) => `<div class="lang ${cls}" role="group" data-lang-switch>${LANGS.map(langLink).join("")}</div>`;
+  // En el ordenador: el idioma actual y, al pasar el ratón, los otros dos
+  const drawNavLang = () => $$(".lang--nav").forEach((box) => {
+    box.innerHTML = `${langLink(LANG)}<span class="lang__more">${LANGS.filter((l) => l !== LANG).map(langLink).join("")}</span>`;
+  });
+  $(".nav--right")?.insertAdjacentHTML("afterbegin", langSwitch("lang--nav"));
+  $(".header__inner")?.insertAdjacentHTML("beforeend", langSwitch("lang--bar"));
+  // Aviso rápido arriba del todo
+  document.body.insertAdjacentHTML("afterbegin", `<div class="notice" id="notice" role="status" hidden></div>`);
 
   /* ---------- Utilidades ---------- */
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
@@ -42,11 +199,17 @@
   const fmtDate = (d) => {
     if (!d) return "";
     const dt = new Date(d + "T12:00:00");
-    return isNaN(dt) ? "" : dt.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+    return isNaN(dt) ? "" : dt.toLocaleDateString(LOCALE[LANG], { day: "numeric", month: "long", year: "numeric" });
   };
   const stripTags = (html) => { const d = document.createElement("div"); d.innerHTML = String(html || "").replace(/<\/(p|h[1-6]|li|blockquote)>|<br\s*\/?>/gi, " $&"); return (d.textContent || "").replace(/\s+/g, " ").trim(); };
   const excerptOf = (p, n = 150) => p.excerpt || (() => { const t = stripTags(p.body); return t.length > n ? t.slice(0, n).replace(/\s\S*$/, "") + "…" : t; })();
-  const postUrl = (p) => `/blog/${encodeURIComponent(p.slug || p.id)}`;
+  // Enlaces internos que conservan el idioma (?lang=va / ?lang=en)
+  const langHref = (h) => {
+    if (LANG === "es" || !h || !h.startsWith("/")) return h;
+    const [path, hash] = h.split("#");
+    return `${path}${path.includes("?") ? "&" : "?"}lang=${LANG}${hash !== undefined ? "#" + hash : ""}`;
+  };
+  const postUrl = (p) => langHref(`/blog/${encodeURIComponent(p.slug || p.id)}`);
   const publishedPosts = () => ((C.blog && C.blog.posts) || [])
     .filter((p) => p.published !== false && p.title)
     .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || String(b.date).localeCompare(String(a.date)));
@@ -84,12 +247,12 @@
   }
   const postCard = (p, i = 0, big = false) => `
     <a class="post-card ${big ? "post-card--big" : ""} reveal" href="${postUrl(p)}" ${delay(i)}>
-      <div class="post-card__img">${img(p.cover, p.title)}${p.pinned ? '<span class="post-card__pin">Destacado</span>' : ""}</div>
+      <div class="post-card__img">${img(p.cover, p.title)}${p.pinned ? `<span class="post-card__pin">${t("pinned")}</span>` : ""}</div>
       <div class="post-card__body">
         <div class="post-meta">${p.category ? `<span class="post-cat">${esc(p.category)}</span>` : ""}<time datetime="${esc(p.date)}">${fmtDate(p.date)}</time></div>
         <h3>${esc(p.title)}</h3>
         <p>${esc(excerptOf(p))}</p>
-        <span class="post-card__more">Leer más <span aria-hidden="true">→</span></span>
+        <span class="post-card__more">${t("readMore")} <span aria-hidden="true">→</span></span>
       </div>
     </a>`;
 
@@ -105,7 +268,7 @@
     if (/^https:\/\/(www\.)?google\.[a-z.]+\/maps\/embed/i.test(v) || /[?&]output=embed/.test(v)) return v;
     // Sin ubicación: se busca solo la dirección (sin "·" ni saltos de línea, que confunden a Google)
     const q = coordsOf(v) || (v && !/^https?:/i.test(v) ? v : cleanAddr(st.address));
-    return `https://www.google.com/maps?q=${encodeURIComponent(q)}&z=17&hl=es&output=embed`;
+    return `https://www.google.com/maps?q=${encodeURIComponent(q)}&z=17&hl=${LANG === "va" ? "ca" : LANG}&output=embed`;
   };
   const directionsUrl = (st) => {
     if (st.mapsUrl) return st.mapsUrl;
@@ -116,19 +279,19 @@
   // El formulario de encargos no existe en esta versión: los enlaces antiguos a él llevan a "Dónde estamos"
   const fixLink = (l) => (l === "#contacto" ? "#tiendas" : l);
 
-  const DAYS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
   const groupSchedule = (sch = []) => {
     const out = [];
     sch.forEach((d, i) => {
-      const val = d && d.open && d.close ? `${d.open} – ${d.close}` : "Cerrado";
+      const val = d && d.open && d.close ? `${d.open} – ${d.close}` : t("closed");
       const last = out[out.length - 1];
       if (last && last.val === val && last.to === i - 1) last.to = i;
       else out.push({ from: i, to: i, val });
     });
+    const D = t("days"), L = t("dayList"), cap = (x) => x.charAt(0).toUpperCase() + x.slice(1);
     return out.map((g) => ({
-      label: g.from === g.to ? DAYS[g.from] + (g.from === 6 ? "s" : "")
-        : g.to - g.from === 1 ? `${DAYS[g.from]} y ${DAYS[g.to].toLowerCase()}`
-        : `${DAYS[g.from]} a ${DAYS[g.to].toLowerCase()}`,
+      label: g.from === g.to ? D[g.from]
+        : g.to - g.from === 1 ? t("pair")(cap(L[g.from]), L[g.to])
+        : t("range")(cap(L[g.from]), L[g.to]),
       val: g.val,
     }));
   };
@@ -137,6 +300,17 @@
     const day = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].indexOf(p.weekday);
     return { day, min: (+p.hour % 24) * 60 + +p.minute };
   };
+  // Fecha de hoy en Valencia: "2026-12-24"
+  const madridDate = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  // Temporada de un producto: { on, from: "12-20", to: "01-06" } (puede cruzar el año)
+  const inSeason = (se) => {
+    if (!se || !se.on || !/^\d\d-\d\d$/.test(se.from || "") || !/^\d\d-\d\d$/.test(se.to || "")) return true;
+    const d = madridDate().slice(5);
+    return se.from <= se.to ? d >= se.from && d <= se.to : d >= se.from || d <= se.to;
+  };
+  const isSeasonal = (p) => !!(p.season && p.season.on);
+  // En la vista previa del panel se ven también los de fuera de temporada (marcados)
+  const productShown = (p) => p.visible !== false && (isPreview || inSeason(p.season));
   const toMin = (s) => { const [h, m] = String(s).split(":").map(Number); return h * 60 + (m || 0); };
   const isOpen = (sch = []) => {
     const { day, min } = madridNow();
@@ -163,11 +337,11 @@
         </div>
         ${(s.slides || []).length > 1 ? `
         <div class="hero__controls">
-          <button class="hero__arrow" data-dir="-1" aria-label="Anterior">←</button>
+          <button class="hero__arrow" data-dir="-1" aria-label="${t("prev")}">←</button>
           <div class="hero__dots" role="tablist"></div>
-          <button class="hero__arrow" data-dir="1" aria-label="Siguiente">→</button>
+          <button class="hero__arrow" data-dir="1" aria-label="${t("next")}">→</button>
         </div>` : ""}
-        <a href="#amor" class="hero__scroll" aria-label="Bajar"><span></span></a>
+        <a href="#amor" class="hero__scroll" aria-label="${t("down")}"><span></span></a>
       </section>`,
 
     marquee: (s) => {
@@ -209,16 +383,22 @@
       </section>`,
 
     products: (s) => {
-      const cats = (s.categories || []).filter((c) => (s.items || []).some((p) => p.visible !== false && p.cat === c.id));
+      const cats = (s.categories || []).filter((c) => (s.items || []).some((p) => productShown(p) && p.cat === c.id));
+      const reviewed = (s.items || []).some((p) => productShown(p) && Array.isArray(p.allergens));
       return `
       <section class="catalog section" id="productos">
         <div class="container">
           ${head(s)}
           ${cats.length > 1 ? `
-          <div class="filters reveal" role="tablist" aria-label="Filtrar productos">
-            <button class="filter is-active" data-filter="all" role="tab" aria-selected="true">Todo</button>
+          <div class="filters reveal" role="tablist" aria-label="${t("filterProducts")}">
+            <button class="filter is-active" data-filter="all" role="tab" aria-selected="true">${t("all")}</button>
             ${cats.map((c) => `<button class="filter" data-filter="${esc(c.id)}" role="tab" aria-selected="false">${esc(c.name)}</button>`).join("")}
           </div>` : ""}
+          ${reviewed ? `
+          <div class="free-from reveal" role="group" aria-label="${t("freeAria")}">
+            ${FREE_FROM.map(([id, , l]) => `<button type="button" class="chip" data-free="${id}" aria-pressed="false"><span aria-hidden="true">${ALLERGENS[id][0]}</span> ${esc(l[LANG] || l.es)}</button>`).join("")}
+          </div>
+          <p class="free-from__note" data-free-note hidden>${esc(t("allergenNote"))}${allergenPage() ? ` <a href="${legalUrl(allergenPage())}">${esc(t("allergenLink"))}</a>` : ""}</p>` : ""}
           <div class="products" id="products-grid" aria-live="polite"></div>
         </div>
       </section>`;
@@ -232,7 +412,7 @@
         <div class="container">
           ${head(s)}
           <div class="news__grid">${posts.map((p, i) => postCard(p, i)).join("")}</div>
-          <div class="news__more reveal"><a href="/blog" class="btn">Ver todas las novedades</a></div>
+          <div class="news__more reveal"><a href="${langHref("/blog")}" class="btn">${t("allNews")}</a></div>
         </div>
       </section>`;
     },
@@ -245,7 +425,7 @@
           ${s.text ? `<p>${lines(s.text)}</p>` : ""}
           <div class="cta__actions">
             ${s.button ? `<a href="${esc(fixLink(s.link || "#tiendas"))}" class="btn btn--light">${esc(s.button)}</a>` : ""}
-            ${C.general.whatsapp ? `<a href="${waLink(C.general.whatsapp)}" class="btn btn--ghost" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>` : ""}
+            ${C.general.whatsapp ? `<a href="${waLink(C.general.whatsapp)}" class="btn btn--ghost" target="_blank" rel="noopener">${t("waAria")}</a>` : ""}
           </div>
         </div>
       </section>`,
@@ -257,7 +437,7 @@
           ${(s.steps || []).length ? `<ol class="steps" style="--n:${Math.min(s.steps.length, 4)}">${s.steps.map((st, i) => `
             <li class="step reveal" ${delay(i)}><span class="step__n">${String(i + 1).padStart(2, "0")}</span><h3>${esc(st.title)}</h3><p>${lines(st.text)}</p></li>`).join("")}</ol>` : ""}
           ${(s.gallery || []).filter((g) => g.image).length ? `<div class="gallery">${s.gallery.filter((g) => g.image).map((g, i) => `
-            <figure class="reveal" ${delay(i)}>${img(g.image, "Nuestro obrador")}</figure>`).join("")}</div>` : ""}
+            <figure class="reveal" ${delay(i)}>${img(g.image, t("ourWorkshop"))}</figure>`).join("")}</div>` : ""}
         </div>
       </section>`,
 
@@ -270,14 +450,14 @@
           ${head(s, true)}
           ${s.text ? `<p class="visit__lead reveal">${lines(s.text)}</p>` : ""}
           <div class="tour reveal" data-tour>
-            <div class="tour__stage" tabindex="0" aria-roledescription="recorrido virtual" aria-label="Recorrido virtual por el horno. Usa las flechas para cambiar de sala.">
+            <div class="tour__stage" tabindex="0" aria-roledescription="${t("tourRole")}" aria-label="${t("tourAria")}">
               ${scenes.map((sc, i) => `
                 <div class="tour__scene ${i === 0 ? "is-active" : ""}" data-id="${esc(sc.id)}" data-focus="${Number(sc.focus ?? 50)}" aria-hidden="${i !== 0}">
                   <div class="tour__pan">
                     <img ${i === 0 ? "src" : "data-src"}="${esc(sc.image)}" alt="${esc(sc.name)}" draggable="false" />
                     ${(sc.hotspots || []).filter((hs) => scenes.some((x) => x.id === hs.to)).map((hs) => `
                       <button type="button" class="hotspot ${Number(hs.x) > 58 ? "hotspot--left" : ""}" style="left:${Number(hs.x) || 50}%;top:${Number(hs.y) || 50}%" data-to="${esc(hs.to)}">
-                        <span class="hotspot__dot"></span><span class="hotspot__label">${esc(hs.label || "Ir")}</span>
+                        <span class="hotspot__dot"></span><span class="hotspot__label">${esc(hs.label || t("go"))}</span>
                       </button>`).join("")}
                   </div>
                 </div>`).join("")}
@@ -287,13 +467,13 @@
                 <p data-tour-text>${esc(scenes[0].text || "")}</p>
               </div>
               <div class="tour__controls">
-                <button type="button" class="tour__btn" data-tour-step="-1" aria-label="Sala anterior">←</button>
-                <button type="button" class="tour__btn" data-tour-step="1" aria-label="Sala siguiente">→</button>
-                <button type="button" class="tour__btn" data-tour-full aria-label="Pantalla completa">⤢</button>
+                <button type="button" class="tour__btn" data-tour-step="-1" aria-label="${t("prevRoom")}">←</button>
+                <button type="button" class="tour__btn" data-tour-step="1" aria-label="${t("nextRoom")}">→</button>
+                <button type="button" class="tour__btn" data-tour-full aria-label="${t("full")}">⤢</button>
               </div>
-              <div class="tour__hint" data-tour-hint><span class="tour__hand" aria-hidden="true">👆</span> Arrastra para mirar · pulsa los puntos para avanzar</div>
+              <div class="tour__hint" data-tour-hint><span class="tour__hand" aria-hidden="true">👆</span> ${t("tourHint")}</div>
             </div>
-            <div class="tour__thumbs" role="tablist" aria-label="Salas del horno">
+            <div class="tour__thumbs" role="tablist" aria-label="${t("rooms")}">
               ${scenes.map((sc, i) => `
                 <button type="button" class="tour__thumb ${i === 0 ? "is-active" : ""}" data-go="${esc(sc.id)}" role="tab" aria-selected="${i === 0}">
                   <img src="${esc(sc.image.replace(/\.webp$/, "-mini.webp"))}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${esc(sc.image)}'" />
@@ -316,7 +496,7 @@
           <div class="team__grid">
             ${items.map((m, i) => `
               <figure class="member reveal" ${delay(i % 3)}>
-                <div class="member__img">${img(m.image, m.name || "Equipo de Forn Almenar")}</div>
+                <div class="member__img">${img(m.image, m.name || t("team"))}</div>
                 ${m.name || m.role ? `<figcaption>${m.name ? `<strong>${esc(m.name)}</strong>` : ""}${m.role ? `<span>${esc(m.role)}</span>` : ""}</figcaption>` : ""}
               </figure>`).join("")}
           </div>
@@ -345,20 +525,20 @@
         <div class="container">
           ${head(s)}
           <article class="location ${withMap ? "" : "location--nomap"} reveal">
-            ${withMap ? `<div class="location__map" data-map-src="${esc(mapSrc(st))}" data-map-title="Mapa: ${esc(st.name)}">
+            ${withMap ? `<div class="location__map" data-map-src="${esc(mapSrc(st))}" data-map-title="${t("map")}: ${esc(st.name)}">
               <div class="map-consent">
                 <span class="map-consent__pin" aria-hidden="true"></span>
-                <p>El mapa lo ofrece Google, que puede usar cookies.</p>
-                <button type="button" class="btn btn--small" data-load-map>Ver el mapa</button>
+                <p>${t("mapMsg")}</p>
+                <button type="button" class="btn btn--small" data-load-map>${t("showMap")}</button>
               </div>
             </div>` : ""}
             <div class="location__info">
-              <span class="store__status ${open ? "is-open" : "is-closed"}">${open ? "Abierto ahora" : "Cerrado ahora"}</span>
+              <span class="store__status ${open ? "is-open" : "is-closed"}">${open ? t("openNow") : t("closedNow")}</span>
               <h3>${esc(st.name)}</h3>
               <p class="store__addr">${lines(st.address)}</p>
               <dl class="hours">${groupSchedule(st.schedule).map((g) => `<div><dt>${g.label}</dt><dd>${g.val}</dd></div>`).join("")}</dl>
               <div class="store__actions">
-                <a href="${esc(directionsUrl(st))}" target="_blank" rel="noopener" class="btn">Cómo llegar</a>
+                <a href="${esc(directionsUrl(st))}" target="_blank" rel="noopener" class="btn">${t("directions")}</a>
                 ${st.phone ? `<a href="${telLink(st.phone)}" class="link">${esc(st.phone)}</a>` : ""}
               </div>
               <ul class="location__contact">
@@ -375,7 +555,7 @@
 
   const footer = () => {
     const g = C.general, f = C.footer || {};
-    const navItems = [["products", "/#productos", navLabel("products", "Productos")], ["blog", "/blog", navLabel("blog", "Novedades")], ["workshop", "/#obrador", navLabel("workshop", "Obrador")], ["history", "/#historia", navLabel("history", "Nuestra historia")], ["stores", "/#tiendas", navLabel("stores", "Dónde estamos")]]
+    const navItems = [["products", "/#productos"], ["blog", "/blog"], ["workshop", "/#obrador"], ["history", "/#historia"], ["stores", "/#tiendas"]].map(([k, h]) => [k, langHref(h), esc(navLabel(k))])
       .filter(([k]) => k === "blog" || C[k]?.show !== false);
     const icon = {
       ig: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>`,
@@ -394,22 +574,22 @@
           </div>
         </div>
         <div>
-          <h4>Visítanos</h4>
+          <h4>${t("visit")}</h4>
           <p>${lines(C.stores?.items?.[0]?.address || "")}</p>
           ${g.phone ? `<p><a href="${telLink(g.phone)}">${esc(g.phone)}</a></p>` : ""}
         </div>
         <div>
-          <h4>Navega</h4>
+          <h4>${t("browse")}</h4>
           <ul>${navItems.map(([, h, l]) => `<li><a href="${h}">${l}</a></li>`).join("")}</ul>
         </div>
         <div>
-          <h4>Aviso legal</h4>
+          <h4>${t("legal")}</h4>
           <ul>${legalPages().map((l) => `<li><a href="${legalUrl(l)}">${esc(l.label || l.title)}</a></li>`).join("")}</ul>
         </div>
       </div>
       <div class="footer__bottom container">
-        <span>© ${new Date().getFullYear()} Forn Almenar · Desde 1952</span>
-        <a href="#top">Volver arriba ↑</a>
+        <span>© ${new Date().getFullYear()} Forn Almenar · ${t("since")}</span>
+        <a href="#top">${t("backTop")}</a>
       </div>`;
   };
 
@@ -461,13 +641,18 @@
     set("--btn-radius", d.buttons === "rectos" ? "6px" : null);
     set("--hero-dim", d.heroDim != null && d.heroDim !== "" ? String(Math.max(0.15, Math.min(1.2, Number(d.heroDim) / 100))) : null);
     // Textos del menú
-    const nav = d.nav || {};
     $$("[data-sec]").forEach((a) => {
       if (!a.dataset.label) a.dataset.label = a.textContent.trim();
-      a.textContent = (nav[a.dataset.sec] || "").trim() || a.dataset.label;
+      if (!a.dataset.href) a.dataset.href = a.getAttribute("href");
+      a.textContent = navLabel(a.dataset.sec) || a.dataset.label;
+      a.setAttribute("href", langHref(a.dataset.href));
     });
   }
-  const navLabel = (k, fallback) => ((C.design && C.design.nav && C.design.nav[k]) || "").trim() || fallback;
+  // Nombre de cada enlace del menú: el personalizado en /admin (en ese idioma) o el de siempre
+  const navLabel = (k) => {
+    const raw = (RAW && RAW.design && RAW.design.nav) || {};
+    return String(raw[LANG === "es" ? k : `${k}_${LANG}`] || "").trim() || t("nav")[k] || k;
+  };
   const sectionOrder = () => {
     const o = [...new Set((C.design && Array.isArray(C.design.order) ? C.design.order : []).filter((k) => ORDER.includes(k)))];
     ORDER.forEach((k, i) => {
@@ -478,9 +663,29 @@
     return o;
   };
 
+  let RAW = null;
   function render(content, { keepScroll = false } = {}) {
-    C = content;
+    RAW = content;
+    C = localize(content, LANG);
     const y = scrollY;
+    document.documentElement.lang = HTML_LANG[LANG];
+    $$("[data-t]").forEach((el) => (el.textContent = t(el.dataset.t)));
+    $("[data-wa]").setAttribute("aria-label", t("waAria"));
+    $(".burger")?.setAttribute("aria-label", t("menu"));
+    $$(".header__logo").forEach((a) => a.setAttribute("href", langHref("/")));
+    drawNavLang();
+    $$("[data-lang-switch]").forEach((box) => {
+      box.setAttribute("aria-label", t("language"));
+      $$("[data-lang]", box).forEach((a) => {
+        const on = a.dataset.lang === LANG;
+        a.classList.toggle("is-active", on);
+        on ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current");
+        const u = new URL(location.href); u.hash = "";
+        a.dataset.lang === "es" ? u.searchParams.delete("lang") : u.searchParams.set("lang", a.dataset.lang);
+        u.searchParams.delete("preview");
+        a.setAttribute("href", u.pathname + u.search);
+      });
+    });
     applyDesign(C.design || {});
     const g = C.general || {};
     if (g.siteTitle) document.title = g.siteTitle;
@@ -510,8 +715,140 @@
       });
     }
     $("#footer").innerHTML = footer();
+    renderNotice();
+    seo();
     initSection();
     if (keepScroll) scrollTo(0, y);
+  }
+
+  /* Cambiar de idioma sin recargar la página */
+  function setLang(l) {
+    if (!LANGS.includes(l) || !RAW) return;
+    LANG = l;
+    if (!isPreview) {
+      try { localStorage.setItem("fa-lang", l); } catch {}
+      const u = new URL(location.href);
+      l === "es" ? u.searchParams.delete("lang") : u.searchParams.set("lang", l);
+      history.replaceState(null, "", u.pathname + u.search + u.hash);
+    }
+    render(RAW, { keepScroll: true });
+  }
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("[data-lang]");
+    if (!a || e.metaKey || e.ctrlKey) return;
+    e.preventDefault();
+    setLang(a.dataset.lang);
+    if (burger.getAttribute("aria-expanded") === "true") toggleMenu(false);
+  });
+
+  /* =========================================================
+     AVISO RÁPIDO (arriba del todo, con fechas)
+     ========================================================= */
+  const hashStr = (s) => { let h = 0; for (const ch of String(s)) h = (h * 31 + ch.charCodeAt(0)) | 0; return String(h); };
+  function currentNotice() {
+    const N = C.notice;
+    if (!N || N.show === false) return null;
+    const today = madridDate();
+    return (N.items || []).find((n) => n.active !== false && String(n.text || "").trim()
+      && (!n.from || n.from <= today) && (!n.to || today <= n.to)) || null;
+  }
+  function renderNotice() {
+    const box = $("#notice"), n = currentNotice();
+    let closed = null;
+    try { closed = sessionStorage.getItem("fa-notice"); } catch {}
+    const id = n ? hashStr(n.text) : "";
+    const show = n && (isPreview || closed !== id);
+    document.body.classList.toggle("has-notice", !!show);
+    if (!show) { box.hidden = true; box.innerHTML = ""; document.documentElement.style.removeProperty("--notice-h"); return; }
+    const link = n.link ? (n.link.startsWith("#") && PAGE !== "home" ? langHref("/" + n.link) : n.link.startsWith("/") ? langHref(n.link) : n.link) : "";
+    const ext = /^https?:/i.test(link);
+    box.innerHTML = `<div class="notice__inner">${link
+      ? `<a href="${esc(link)}" ${ext ? 'target="_blank" rel="noopener"' : ""}>${esc(n.text)} <span aria-hidden="true">→</span></a>`
+      : `<span>${esc(n.text)}</span>`}
+      <button type="button" class="notice__close" aria-label="${t("closeNotice")}">×</button></div>`;
+    box.hidden = false;
+    const measure = () => document.documentElement.style.setProperty("--notice-h", box.offsetHeight + "px");
+    measure(); requestAnimationFrame(measure);
+    $(".notice__close", box).addEventListener("click", () => {
+      try { sessionStorage.setItem("fa-notice", id); } catch {}
+      box.hidden = true; document.body.classList.remove("has-notice");
+      document.documentElement.style.removeProperty("--notice-h");
+    });
+  }
+  addEventListener("resize", () => { const b = $("#notice"); if (b && !b.hidden) document.documentElement.style.setProperty("--notice-h", b.offsetHeight + "px"); });
+
+  /* =========================================================
+     SEO: idiomas alternativos, Open Graph y datos estructurados (schema.org)
+     ========================================================= */
+  const abs = (u) => { try { return u ? new URL(u, location.origin).href : ""; } catch { return ""; } };
+  const isPlaceholder = (v) => /000[\s.]?000/.test(String(v || ""));
+  function setTag(sel, make, attrs) {
+    let el = $(sel, document.head);
+    if (!el) { el = make(); document.head.append(el); }
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+  }
+  const meta = (prop, content, attr = "property") => content && setTag(`meta[${attr}="${prop}"]`, () => { const m = document.createElement("meta"); m.setAttribute(attr, prop); return m; }, { content });
+  function seo() {
+    if (isPreview) return;
+    const base = location.origin + location.pathname;
+    const urlFor = (l) => base + (l === "es" ? "" : `?lang=${l}`);
+    setTag('link[rel="canonical"]', () => Object.assign(document.createElement("link"), { rel: "canonical" }), { href: urlFor(LANG) });
+    [...LANGS, "x-default"].forEach((l) => {
+      const hl = l === "va" ? "ca" : l;
+      setTag(`link[rel="alternate"][hreflang="${hl}"]`, () => { const k = document.createElement("link"); k.rel = "alternate"; k.hreflang = hl; return k; }, { href: urlFor(l === "x-default" ? "es" : l) });
+    });
+    meta("og:title", document.title);
+    meta("og:description", $('meta[name="description"]')?.getAttribute("content"));
+    meta("og:url", urlFor(LANG));
+    meta("og:type", PAGE === "post" ? "article" : "website");
+    meta("og:locale", { es: "es_ES", va: "ca_ES", en: "en_GB" }[LANG]);
+    meta("og:site_name", siteName());
+
+    const g = C.general || {}, st = (C.stores?.items || [])[0] || {};
+    const data = [];
+    if (PAGE === "home") {
+      const lines0 = String(st.address || "").split(/\n/).map((x) => x.trim()).filter(Boolean);
+      const pc = String(st.address || "").match(/\b(\d{5})\s+([^\n,·]+)/);
+      const geo = coordsOf(st.map);
+      const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      const groups = {};
+      (st.schedule || []).forEach((d, i) => { if (d && d.open && d.close) (groups[`${d.open}-${d.close}`] = groups[`${d.open}-${d.close}`] || { opens: d.open, closes: d.close, days: [] }).days.push("https://schema.org/" + days[i]); });
+      const phone = [g.phone, st.phone].find((x) => x && !isPlaceholder(x));
+      data.push({
+        "@context": "https://schema.org", "@type": "Bakery", "@id": location.origin + "/#horno",
+        name: st.name || siteName(), description: g.siteDescription || "", url: urlFor(LANG),
+        image: [abs("/img/fotos/og-image.jpg"), ...((C.hero?.slides) || []).map((x) => abs(x.image)).filter(Boolean).slice(0, 3)],
+        logo: abs(g.logo || "/img/logo.png"),
+        ...(phone ? { telephone: phone } : {}),
+        ...(g.email && g.email !== "hola@fornalmenar.com" ? { email: g.email } : {}),
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: (lines0[0] || "").split(/\s*[·•|]\s*/)[0],
+          ...(pc ? { postalCode: pc[1], addressLocality: pc[2].trim() } : {}),
+          addressRegion: "Valencia", addressCountry: "ES",
+        },
+        ...(geo ? { geo: { "@type": "GeoCoordinates", latitude: Number(geo.split(",")[0]), longitude: Number(geo.split(",")[1]) } } : {}),
+        hasMap: directionsUrl(st),
+        openingHoursSpecification: Object.values(groups).map((x) => ({ "@type": "OpeningHoursSpecification", dayOfWeek: x.days, opens: x.opens, closes: x.closes })),
+        foundingDate: "1952", priceRange: "€",
+        servesCuisine: LANG === "en" ? ["Bakery", "Pastries", "Coffee"] : LANG === "va" ? ["Forn", "Pastisseria", "Cafeteria"] : ["Panadería", "Pastelería", "Cafetería"],
+        sameAs: [g.instagram, g.facebook].filter((x) => /^https?:/i.test(x || "")),
+        inLanguage: LOCALE[LANG],
+      });
+    }
+    if (PAGE === "post" && C._post) {
+      const p = C._post;
+      data.push({
+        "@context": "https://schema.org", "@type": "BlogPosting", headline: p.title, description: excerptOf(p),
+        datePublished: p.date || undefined, image: p.cover ? [abs(p.cover)] : undefined, inLanguage: LOCALE[LANG],
+        mainEntityOfPage: urlFor(LANG), publisher: { "@type": "Organization", name: siteName(), logo: { "@type": "ImageObject", url: abs(g.logo || "/img/logo.png") } },
+      });
+    }
+    let ld = $("#ld-json");
+    if (!data.length) { ld?.remove(); return; }
+    if (!ld) { ld = Object.assign(document.createElement("script"), { id: "ld-json", type: "application/ld+json" }); document.head.append(ld); }
+    ld.textContent = JSON.stringify(data.length === 1 ? data[0] : data);
   }
 
   /* =========================================================
@@ -522,31 +859,32 @@
 
   function blogPage() {
     const B = C.blog || {}, posts = publishedPosts();
-    document.title = `${B.pageTitle || "Novedades"} · ${siteName()}`;
+    document.title = `${B.pageTitle || t("nav").blog} · ${siteName()}`;
     const cats = [...new Set(posts.map((p) => p.category).filter(Boolean))];
     return `
       <section class="page-head">
         <div class="container">
           <p class="eyebrow eyebrow--dark">${esc(siteName())}</p>
-          <h1>${esc(B.pageTitle || "Novedades")}</h1>
+          <h1>${esc(B.pageTitle || t("nav").blog)}</h1>
           ${B.pageIntro ? `<p class="page-head__lead">${lines(B.pageIntro)}</p>` : ""}
         </div>
       </section>
       <section class="blog-list section">
         <div class="container">
-          ${cats.length > 1 ? `<div class="filters" role="tablist" aria-label="Filtrar novedades">
-            <button class="filter is-active" data-blog-filter="all">Todo</button>
+          ${cats.length > 1 ? `<div class="filters" role="tablist" aria-label="${t("filterNews")}">
+            <button class="filter is-active" data-blog-filter="all">${t("all")}</button>
             ${cats.map((c) => `<button class="filter" data-blog-filter="${esc(c)}">${esc(c)}</button>`).join("")}
           </div>` : ""}
           <div class="blog-grid" id="blog-grid">
-            ${posts.length ? posts.map((p, i) => postCard(p, i % 3, i === 0)).join("") : `<p class="empty">Todavía no hay novedades. ¡Vuelve pronto!</p>`}
+            ${posts.length ? posts.map((p, i) => postCard(p, i % 3, i === 0)).join("") : `<p class="empty">${t("noNews")}</p>`}
           </div>
         </div>
       </section>`;
   }
 
   const legalPages = () => ((C.legal && C.legal.pages) || []).filter((p) => p.title);
-  const legalUrl = (p) => `/legal/${encodeURIComponent(p.slug || p.id)}`;
+  const legalUrl = (p) => langHref(`/legal/${encodeURIComponent(p.slug || p.id)}`);
+  const allergenPage = () => legalPages().find((p) => p.id === "l4" || /alerg|al·lerg|allerg/i.test(`${p.slug} ${p.title}`));
   // Sustituye {{titular}}, {{nif}}… por los datos de «Datos generales»
   function fillTokens(html) {
     const g = C.general || {}, st = (C.stores?.items || [])[0] || {};
@@ -556,7 +894,7 @@
     };
     return html.replace(/\{\{\s*(\w+)\s*\}\}/g, (m, k) => {
       if (!(k in val)) return m;
-      return val[k] ? esc(val[k]) : `<mark class="todo">[falta: ${k}]</mark>`;
+      return val[k] ? esc(val[k]) : `<mark class="todo">[${t("missing")}: ${k}]</mark>`;
     });
   }
   let previewPageId = null;
@@ -565,21 +903,21 @@
     const slug = decodeURIComponent(location.pathname.split("/")[2] || "");
     const p = isPreview && previewPageId ? all.find((x) => x.id === previewPageId) : all.find((x) => x.slug === slug || x.id === slug);
     if (!p) {
-      document.title = `Página no encontrada · ${siteName()}`;
+      document.title = `${t("notFound")} · ${siteName()}`;
       return `<section class="page-head page-head--center"><div class="container">
-        <h1>Página no encontrada</h1><p class="page-head__lead">Puede que se haya movido.</p><a href="/" class="btn">Volver al inicio</a></div></section>`;
+        <h1>${t("notFound")}</h1><p class="page-head__lead">${t("moved")}</p><a href="${langHref("/")}" class="btn">${t("home")}</a></div></section>`;
     }
     document.title = `${p.title} · ${siteName()}`;
     return `
       <section class="page-head page-head--legal">
         <div class="container container--narrow">
-          <p class="eyebrow eyebrow--dark">Información legal</p>
+          <p class="eyebrow eyebrow--dark">${t("legalInfo")}</p>
           <h1>${esc(p.title)}</h1>
         </div>
       </section>
       <article class="legal section">
         <div class="prose container container--narrow">${fillTokens(sanitize(p.body))}</div>
-        ${all.length > 1 ? `<nav class="legal__nav container container--narrow" aria-label="Otras páginas legales">
+        ${all.length > 1 ? `<nav class="legal__nav container container--narrow" aria-label="${t("otherLegal")}">
           ${all.filter((x) => x.id !== p.id).map((x) => `<a href="${legalUrl(x)}" class="share-btn">${esc(x.label || x.title)}</a>`).join("")}
         </nav>` : ""}
       </article>`;
@@ -591,36 +929,37 @@
     const p = isPreview && previewPostId ? all.find((x) => x.id === previewPostId)
       : all.find((x) => (x.slug === slug || x.id === slug) && x.published !== false);
     if (!p) {
-      document.title = `Noticia no encontrada · ${siteName()}`;
+      document.title = `${t("postNotFoundT")} · ${siteName()}`;
       return `<section class="page-head page-head--center"><div class="container">
-        <h1>No encontramos esta noticia</h1><p class="page-head__lead">Puede que se haya movido o ya no esté publicada.</p>
-        <a href="/blog" class="btn">Ver todas las novedades</a></div></section>`;
+        <h1>${t("postNotFound")}</h1><p class="page-head__lead">${t("postMoved")}</p>
+        <a href="${langHref("/blog")}" class="btn">${t("allNews")}</a></div></section>`;
     }
     document.title = `${p.title} · ${siteName()}`;
+    C._post = p;
     $('meta[name="description"]')?.setAttribute("content", excerptOf(p));
     const more = publishedPosts().filter((x) => x.id !== p.id).slice(0, 3);
     const url = location.origin + postUrl(p);
     return `
       <article class="post">
         <header class="post__head container container--narrow">
-          <a href="/blog" class="post__back">← Todas las novedades</a>
-          <div class="post-meta">${p.category ? `<span class="post-cat">${esc(p.category)}</span>` : ""}<time datetime="${esc(p.date)}">${fmtDate(p.date)}</time><span>· ${readingTime(p.body)} min de lectura</span></div>
+          <a href="${langHref("/blog")}" class="post__back">${t("backNews")}</a>
+          <div class="post-meta">${p.category ? `<span class="post-cat">${esc(p.category)}</span>` : ""}<time datetime="${esc(p.date)}">${fmtDate(p.date)}</time><span>· ${readingTime(p.body)} ${t("minRead")}</span></div>
           <h1>${esc(p.title)}</h1>
           ${p.excerpt ? `<p class="post__lead">${esc(p.excerpt)}</p>` : ""}
         </header>
         ${p.cover ? `<figure class="post__cover container"><img src="${esc(p.cover)}" alt="${esc(p.title)}" /></figure>` : ""}
         <div class="prose container container--narrow">${sanitize(p.body)}</div>
         <footer class="post__share container container--narrow">
-          <span>Compartir</span>
+          <span>${t("share")}</span>
           <a href="${waLink("", p.title + " " + url)}" target="_blank" rel="noopener" class="share-btn">WhatsApp</a>
           <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank" rel="noopener" class="share-btn">Facebook</a>
-          <button type="button" class="share-btn" data-copy="${esc(url)}">Copiar enlace</button>
+          <button type="button" class="share-btn" data-copy="${esc(url)}">${t("copy")}</button>
         </footer>
       </article>
       ${more.length ? `
       <section class="news section section--cream">
         <div class="container">
-          <header class="section__head"><p class="eyebrow eyebrow--dark">Sigue leyendo</p><h2>Más <em>novedades</em></h2></header>
+          <header class="section__head"><p class="eyebrow eyebrow--dark">${t("keepReading")}</p><h2>${t("moreNews")}</h2></header>
           <div class="news__grid">${more.map((m, i) => postCard(m, i)).join("")}</div>
         </div>
       </section>` : ""}`;
@@ -631,7 +970,7 @@
      ========================================================= */
   // Header y menú móvil (una sola vez)
   const header = $(".header");
-  const onScroll = () => header.classList.toggle("is-scrolled", scrollY > 40);
+  const onScroll = () => { header.classList.toggle("is-scrolled", scrollY > 40); document.body.classList.toggle("is-scrolled", scrollY > 40); };
   addEventListener("scroll", onScroll, { passive: true });
   onScroll();
   const burger = $(".burger"), menu = $("#mobile-menu");
@@ -659,7 +998,7 @@
       let current = 0;
       slides.forEach((_, i) => {
         const b = document.createElement("button");
-        b.setAttribute("role", "tab"); b.setAttribute("aria-label", `Diapositiva ${i + 1}`);
+        b.setAttribute("role", "tab"); b.setAttribute("aria-label", `${t("slide")} ${i + 1}`);
         b.addEventListener("click", () => go(i, true));
         dots.appendChild(b);
       });
@@ -699,9 +1038,9 @@
       });
     }));
     $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "¡Enlace copiado!"; }
-      catch { prompt("Copia este enlace:", b.dataset.copy); }
-      setTimeout(() => (b.textContent = "Copiar enlace"), 2000);
+      try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = t("copied"); }
+      catch { prompt(t("copyPrompt"), b.dataset.copy); }
+      setTimeout(() => (b.textContent = t("copy")), 2000);
     }));
 
     /* Contadores */
@@ -721,36 +1060,69 @@
       $$("[data-count]").forEach((el) => cio.observe(el));
     }
 
-    /* Catálogo */
+    /* Catálogo: categorías + filtros de alérgenos ("Sin gluten"…) */
     const grid = $("#products-grid");
     if (grid) {
       const P = C.products, catName = Object.fromEntries((P.categories || []).map((c) => [c.id, c.name]));
-      const items = (P.items || []).filter((p) => p.visible !== false);
-      const card = (p) => `
-        <article class="product reveal" data-cat="${esc(p.cat)}">
+      const items = (P.items || []).filter(productShown);
+      const known = (ids) => (Array.isArray(ids) ? ids : []).filter((id) => ALLERGENS[id]);
+      const allergensHtml = (p) => {
+        if (!Array.isArray(p.allergens)) return ""; // sin revisar: no se muestra nada (ni se filtra como "sin")
+        const has = known(p.allergens), tr = known(p.traces).filter((id) => !has.includes(id));
+        const chip = (id) => `<span class="alg"><i aria-hidden="true">${ALLERGENS[id][0]}</i>${esc(allergenName(id))}</span>`;
+        if (!has.length && !tr.length) return `<p class="allergens allergens--none"><span aria-hidden="true">✓</span> ${esc(t("noAllergens"))}</p>`;
+        return `<div class="allergens">
+          ${has.length ? `<p><span class="allergens__k">${esc(t("contains"))}:</span> ${has.map(chip).join("")}</p>` : ""}
+          ${tr.length ? `<p class="allergens__tr">${esc(t("traces"))}: ${tr.map((id) => esc(allergenName(id).toLowerCase())).join(", ")}</p>` : ""}
+        </div>`;
+      };
+      const card = (p) => {
+        const off = isSeasonal(p) && !inSeason(p.season); // solo pasa en la vista previa
+        const tag = off ? t("outOfSeason") : p.tag || (isSeasonal(p) ? t("seasonal") : "");
+        return `
+        <article class="product reveal ${off ? "product--off" : ""}" data-cat="${esc(p.cat)}">
           <div class="product__img">
             ${img(p.image, p.name, 'onerror="this.remove()"')}
-            ${p.tag ? `<span class="product__tag">${esc(p.tag)}</span>` : ""}
+            ${tag ? `<span class="product__tag ${isSeasonal(p) && !p.tag ? "product__tag--season" : ""}">${esc(tag)}</span>` : ""}
           </div>
           <div class="product__body">
             ${catName[p.cat] ? `<span class="product__cat">${esc(catName[p.cat])}</span>` : ""}
             <h3>${esc(p.name)}</h3>
             ${p.desc ? `<p>${lines(p.desc)}</p>` : ""}
+            ${allergensHtml(p)}
             <div class="product__foot">
               <strong>${esc(p.price)}</strong>
             </div>
           </div>
         </article>`;
-      const draw = (f) => {
-        grid.innerHTML = (f === "all" ? items : items.filter((p) => p.cat === f)).map(card).join("");
+      };
+      const sec = grid.closest("section");
+      const st = { cat: "all", free: new Set() };
+      const passesFree = (p) => {
+        if (!st.free.size) return true;
+        if (!Array.isArray(p.allergens)) return false; // nunca se da por "sin X" un producto sin revisar
+        const bad = new Set([...known(p.allergens), ...known(p.traces)]);
+        return [...st.free].every((f) => FREE_FROM.find((x) => x[0] === f)[1].every((id) => !bad.has(id)));
+      };
+      const draw = () => {
+        const list = items.filter((p) => (st.cat === "all" || p.cat === st.cat) && passesFree(p));
+        grid.innerHTML = list.length ? list.map(card).join("") : `<p class="empty products__empty">${esc(t("noMatch"))}</p>`;
+        const note = $("[data-free-note]", sec);
+        if (note) note.hidden = !st.free.size;
         observe($$(".reveal", grid));
       };
-      $$(".filter").forEach((b) => b.addEventListener("click", () => {
-        $$(".filter").forEach((x) => { x.classList.remove("is-active"); x.setAttribute("aria-selected", "false"); });
+      $$(".filter", sec).forEach((b) => b.addEventListener("click", () => {
+        $$(".filter", sec).forEach((x) => { x.classList.remove("is-active"); x.setAttribute("aria-selected", "false"); });
         b.classList.add("is-active"); b.setAttribute("aria-selected", "true");
-        draw(b.dataset.filter);
+        st.cat = b.dataset.filter; draw();
       }));
-      draw("all");
+      $$("[data-free]", sec).forEach((b) => b.addEventListener("click", () => {
+        const on = !st.free.has(b.dataset.free);
+        on ? st.free.add(b.dataset.free) : st.free.delete(b.dataset.free);
+        b.classList.toggle("is-active", on); b.setAttribute("aria-pressed", on);
+        draw();
+      }));
+      draw();
     }
 
   }
@@ -935,6 +1307,7 @@
     if (!saved) return defaults;
     // Si lo guardado es de una versión anterior (p. ej. sin blog), completa lo que falte
     for (const k of Object.keys(defaults)) if (k !== "contentVersion" && !(k in saved)) saved[k] = defaults[k];
+    fillTranslations(saved, defaults); // traducciones de los textos que siguen siendo los de ejemplo
     return saved;
   }
 
@@ -947,17 +1320,23 @@
       if (e.data.type === "preview") {
         previewPostId = e.data.postId || null;
         previewPageId = e.data.pageId || null;
+        if (LANGS.includes(e.data.lang)) LANG = e.data.lang;
         render(e.data.content, { keepScroll: !first });
         if (first) { first = false; done(); }
       }
       if (e.data.type === "scrollTo") {
-        const el = document.getElementById(e.data.id);
+        const el = e.data.id === "top" ? null : document.getElementById(e.data.id);
         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
         else if (e.data.id === "top") scrollTo({ top: 0, behavior: "smooth" });
       }
     });
     parent.postMessage({ type: "preview-ready" }, location.origin);
   } else {
+    // El idioma elegido se refleja en la dirección (?lang=va), así los enlaces y lo que se comparte mantienen el idioma
+    if (LANG !== "es" && !new URLSearchParams(location.search).has("lang")) {
+      const u = new URL(location.href); u.searchParams.set("lang", LANG);
+      history.replaceState(null, "", u.pathname + u.search + u.hash);
+    }
     load().then((c) => { render(c); done(); initCookies(); })
       .catch(() => { document.body.classList.remove("is-loading"); });
   }
