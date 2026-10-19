@@ -153,6 +153,23 @@
       ],
     },
     {
+      id: "tour", name: "Visita el horno", desc: "Recorrido virtual por el local", anchor: "visita",
+      fields: [show, ...head(),
+        { key: "text", label: "Texto", type: "textarea", rows: 2 },
+        { key: "scenes", label: "Salas del recorrido", type: "list", addLabel: "Añadir sala", max: 15,
+          help: "La primera sala es la que se ve al empezar. En cada sala, pon puntos que lleven a otras salas.",
+          itemTitle: (s, c, i) => `${i + 1}. ${s.name || "Sala sin nombre"}`, itemImage: (s) => s.image,
+          itemMeta: (s) => `${(s.hotspots || []).length} punto${(s.hotspots || []).length === 1 ? "" : "s"}`,
+          newItem: () => ({ id: "sala-" + uid(), name: "Nueva sala", text: "", image: "", focus: 50, hotspots: [] }),
+          item: [
+            { key: "name", label: "Nombre de la sala", type: "text" },
+            { key: "text", label: "Descripción corta", type: "textarea", rows: 2 },
+            { key: "image", label: "Foto (mejor en horizontal)", type: "image", ratio: "wide", maxSize: 2400 },
+            { key: "hotspots", label: "Puntos para ir a otras salas", type: "hotspots" },
+          ] },
+      ],
+    },
+    {
       id: "workshop", name: "Obrador", desc: "El proceso y la galería de fotos", anchor: "obrador",
       fields: [show, ...head(),
         { key: "steps", label: "Pasos del proceso", type: "list", addLabel: "Añadir paso", max: 4,
@@ -527,6 +544,7 @@
         return h("label", { class: `toggle ${f.key === "show" ? "toggle--main" : ""}` }, cb, h("span", { class: "toggle__ui" }),
           h("span", { class: "toggle__text" }, f.label, f.help ? h("small", {}, f.help) : ""));
       }
+      case "hotspots": return renderHotspots(f, obj);
       case "note":
         return h("p", { class: "note" }, f.text);
       case "first": {
@@ -681,6 +699,45 @@
     root.append(items);
     if (!f.searchable) root.append(addBtn());
     return root;
+  }
+
+  /* ---------- Puntos del recorrido virtual ---------- */
+  function renderHotspots(f, scene) {
+    const list = scene.hotspots || (scene.hotspots = []);
+    const others = () => (state.content.tour?.scenes || []).filter((x) => x !== scene && x.id);
+    const box = h("div", { class: "hs" });
+    let placing = null; // índice del punto que se está colocando
+    const draw = () => {
+      box.innerHTML = "";
+      const pic = h("div", { class: `hs__pic ${placing !== null ? "is-placing" : ""}` },
+        scene.image ? h("img", { src: scene.image, alt: "" }) : h("span", { class: "img-field__empty" }, "Sube primero la foto de la sala"),
+        ...list.map((p, i) => h("span", { class: `hs__mark ${placing === i ? "is-on" : ""}`, style: `left:${p.x}%;top:${p.y}%` }, String(i + 1))));
+      if (placing !== null) pic.append(h("div", { class: "hs__tip" }, `Haz clic en la foto donde quieras el punto ${placing + 1}`));
+      pic.addEventListener("click", (e) => {
+        if (placing === null || !scene.image) return;
+        const r = pic.getBoundingClientRect();
+        list[placing].x = Math.round(((e.clientX - r.left) / r.width) * 1000) / 10;
+        list[placing].y = Math.round(((e.clientY - r.top) / r.height) * 1000) / 10;
+        placing = null; draw(); changed();
+      });
+      box.append(pic);
+      list.forEach((p, i) => {
+        const label = h("input", { type: "text", value: p.label || "", placeholder: "Texto del punto (p. ej. «El salón»)" });
+        label.addEventListener("input", () => { p.label = label.value; changed(); });
+        const opts = others();
+        const to = h("select", {}, h("option", { value: "" }, "— ¿A qué sala lleva? —"), ...opts.map((o) => h("option", { value: o.id, selected: p.to === o.id }, o.name || "Sala sin nombre")));
+        to.addEventListener("change", () => { p.to = to.value; changed(); });
+        box.append(h("div", { class: "hs__row" },
+          h("span", { class: "hs__num" }, String(i + 1)),
+          h("div", { class: "hs__fields" }, label, to),
+          h("button", { type: "button", class: `btn btn--small ${placing === i ? "btn--primary" : ""}`, onclick: () => { placing = placing === i ? null : i; draw(); } }, placing === i ? "Haz clic en la foto…" : "Colocar en la foto"),
+          h("button", { type: "button", class: "icon-btn icon-btn--danger", title: "Quitar punto", "aria-label": "Quitar punto", onclick: () => { list.splice(i, 1); placing = null; draw(); changed(); } }, "✕")));
+      });
+      box.append(h("button", { type: "button", class: "btn btn--add", onclick: () => { list.push({ x: 50, y: 50, label: "", to: "" }); placing = list.length - 1; draw(); changed(); } }, "+ Añadir punto"));
+    };
+    draw();
+    return h("div", { class: "field" }, h("span", { class: "field__label" }, f.label), box,
+      h("span", { class: "field__help" }, "Cada punto es un círculo en la foto con un texto. Al pulsarlo en la web, te lleva a la sala elegida."));
   }
 
   /* ---------- Horario ---------- */
@@ -963,9 +1020,9 @@
     ["artesana", "Artesana", "'Bricolage Grotesque', sans-serif", "Caveat, cursive"],
   ];
   const SECTION_NAMES = { hero: "Portada", marquee: "Cinta de lemas", intro: "Sobre nosotros", featured: "Destacados", products: "Productos",
-    blog: "Novedades (blog)", cta: "Banner con foto", workshop: "Obrador", team: "Equipo", history: "Nuestra historia", stores: "Dónde estamos" };
-  const DEFAULT_ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "workshop", "team", "history", "stores"];
-  const DEFAULT_TONE = { marquee: "Dorado", intro: "Claro", featured: "Crema", products: "Claro", blog: "Claro", workshop: "Oscuro", team: "Claro", history: "Crema", stores: "Claro" };
+    blog: "Novedades (blog)", cta: "Banner con foto", tour: "Visita el horno", workshop: "Obrador", team: "Equipo", history: "Nuestra historia", stores: "Dónde estamos" };
+  const DEFAULT_ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "tour", "workshop", "team", "history", "stores"];
+  const DEFAULT_TONE = { marquee: "Dorado", intro: "Claro", featured: "Crema", products: "Claro", blog: "Claro", tour: "Oscuro", workshop: "Oscuro", team: "Claro", history: "Crema", stores: "Claro" };
   const NAV_ITEMS = [["hero", "Inicio"], ["products", "Productos"], ["blog", "Novedades"], ["history", "Nuestra historia"], ["workshop", "Obrador"], ["stores", "Dónde estamos"]];
 
   // Contraste (WCAG) entre dos colores
@@ -1051,7 +1108,11 @@
     ));
 
     /* --- Secciones: orden, visibilidad y fondo --- */
-    const order = () => { const o = (D.order || []).filter((k) => DEFAULT_ORDER.includes(k)); return [...new Set([...o, ...DEFAULT_ORDER])]; };
+    const order = () => {
+      const o = [...new Set((D.order || []).filter((k) => DEFAULT_ORDER.includes(k)))];
+      DEFAULT_ORDER.forEach((k, i) => { if (o.includes(k)) return; const prev = DEFAULT_ORDER.slice(0, i).reverse().find((p) => o.includes(p)); o.splice(prev ? o.indexOf(prev) + 1 : 0, 0, k); });
+      return o;
+    };
     const tones = D.tones || {};
     const list = h("div", { class: "sec-order" });
     order().forEach((k, i, arr) => {

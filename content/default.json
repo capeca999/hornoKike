@@ -581,5 +581,206 @@
         "role": ""
       }
     ]
+  },
+  "tour": {
+    "show": true,
+    "eyebrow": "Visita el horno",
+    "title": "Pasa,",
+    "titleAccent": "estás en tu casa",
+    "text": "Recorre el horno sin moverte del sofá: arrastra para mirar alrededor y pulsa los puntos para avanzar.",
+    "scenes": [
+      {
+        "id": "entrada",
+        "name": "Al entrar",
+        "text": "Nada más cruzar la puerta: el mostrador a la izquierda y el croissant gigante saludando a la derecha.",
+        "image": "/img/fotos/visita/entrada.webp",
+        "focus": 50,
+        "hotspots": [
+          {
+            "x": 40,
+            "y": 50,
+            "label": "La vitrina",
+            "to": "mostrador"
+          },
+          {
+            "x": 68,
+            "y": 63,
+            "label": "Los sofás",
+            "to": "sofas"
+          },
+          {
+            "x": 79,
+            "y": 22,
+            "label": "El croissant gigante",
+            "to": "croissant"
+          },
+          {
+            "x": 4,
+            "y": 44,
+            "label": "Al fondo, el salón",
+            "to": "salon"
+          }
+        ]
+      },
+      {
+        "id": "sofas",
+        "name": "El rincón de los sofás",
+        "text": "Un café, algo dulce y sin prisas. El sitio favorito para desayunar.",
+        "image": "/img/fotos/visita/sofas.webp",
+        "focus": 50,
+        "hotspots": [
+          {
+            "x": 54,
+            "y": 27,
+            "label": "El croissant gigante",
+            "to": "croissant"
+          },
+          {
+            "x": 82,
+            "y": 58,
+            "label": "El escaparate",
+            "to": "escaparate"
+          },
+          {
+            "x": 15,
+            "y": 50,
+            "label": "La vitrina",
+            "to": "mostrador"
+          }
+        ]
+      },
+      {
+        "id": "escaparate",
+        "name": "Junto al escaparate",
+        "text": "Luz natural, hojas de otoño y la terraza al otro lado del cristal.",
+        "image": "/img/fotos/visita/escaparate.webp",
+        "focus": 40,
+        "hotspots": [
+          {
+            "x": 33,
+            "y": 22,
+            "label": "El croissant gigante",
+            "to": "croissant"
+          },
+          {
+            "x": 34,
+            "y": 66,
+            "label": "Los sofás",
+            "to": "sofas"
+          },
+          {
+            "x": 8,
+            "y": 44,
+            "label": "La vitrina",
+            "to": "mostrador"
+          }
+        ]
+      },
+      {
+        "id": "croissant",
+        "name": "El croissant gigante",
+        "text": "Chocolate que gotea por la pared. La foto que todo el mundo se lleva.",
+        "image": "/img/fotos/visita/croissant.webp",
+        "focus": 50,
+        "hotspots": [
+          {
+            "x": 30,
+            "y": 84,
+            "label": "La vitrina de pasteles",
+            "to": "mostrador"
+          },
+          {
+            "x": 90,
+            "y": 42,
+            "label": "El escaparate",
+            "to": "escaparate"
+          }
+        ]
+      },
+      {
+        "id": "mostrador",
+        "name": "La vitrina",
+        "text": "Bollería, pasteles y pan recién hecho a lo largo de todo el mostrador.",
+        "image": "/img/fotos/visita/mostrador.webp",
+        "focus": 60,
+        "hotspots": [
+          {
+            "x": 43,
+            "y": 45,
+            "label": "Hacia el fondo",
+            "to": "rincon"
+          },
+          {
+            "x": 82,
+            "y": 80,
+            "label": "Los sofás",
+            "to": "sofas"
+          }
+        ]
+      },
+      {
+        "id": "rincon",
+        "name": "Un rincón tranquilo",
+        "text": "Sofás junto a la cortina granate, perfectos para leer o charlar.",
+        "image": "/img/fotos/visita/rincon.webp",
+        "focus": 45,
+        "hotspots": [
+          {
+            "x": 90,
+            "y": 36,
+            "label": "El salón",
+            "to": "salon"
+          },
+          {
+            "x": 40,
+            "y": 70,
+            "label": "Volver a la entrada",
+            "to": "entrada"
+          }
+        ]
+      },
+      {
+        "id": "salon",
+        "name": "El salón",
+        "text": "Mesas de mármol bajo nuestro logo encendido. Cabe toda la familia.",
+        "image": "/img/fotos/visita/salon.webp",
+        "focus": 50,
+        "hotspots": [
+          {
+            "x": 92,
+            "y": 45,
+            "label": "La pared de recuerdos",
+            "to": "recuerdos"
+          },
+          {
+            "x": 8,
+            "y": 52,
+            "label": "Volver a la entrada",
+            "to": "entrada"
+          }
+        ]
+      },
+      {
+        "id": "recuerdos",
+        "name": "La pared de recuerdos",
+        "text": "Fotos de la familia y del horno desde 1952. Tres generaciones colgadas en la pared.",
+        "image": "/img/fotos/visita/recuerdos.webp",
+        "focus": 55,
+        "hotspots": [
+          {
+            "x": 20,
+            "y": 33,
+            "label": "El logo encendido",
+            "to": "salon"
+          },
+          {
+            "x": 90,
+            "y": 55,
+            "label": "Volver a la entrada",
+            "to": "entrada"
+          }
+        ]
+      }
+    ]
   }
 }

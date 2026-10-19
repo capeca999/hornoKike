@@ -409,3 +409,18 @@ h1 { font: 900 2.2rem/1 var(--f-display); text-transform: uppercase; color: var(
   .sec-row { flex-wrap: wrap; }
   .sec-row select, .sec-row__tone { order: 5; max-width: none; width: 100%; }
 }
+
+/* Puntos del recorrido virtual */
+.hs { display: grid; gap: 8px; }
+.hs__pic { position: relative; border-radius: 12px; overflow: hidden; background: var(--cream); min-height: 80px; display: grid; place-items: center; }
+.hs__pic img { width: 100%; display: block; }
+.hs__pic.is-placing { cursor: crosshair; box-shadow: 0 0 0 3px var(--wheat); }
+.hs__mark { position: absolute; translate: -50% -50%; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+  background: #fff; color: var(--burgundy); font-weight: 700; font-size: .8rem; box-shadow: 0 0 0 4px rgba(255,255,255,.4), 0 4px 10px rgba(0,0,0,.4); pointer-events: none; }
+.hs__mark.is-on { background: var(--burgundy); color: #fff; animation: pulse 1s infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 9px rgba(255,255,255,.25), 0 4px 10px rgba(0,0,0,.4); } }
+.hs__tip { position: absolute; left: 10px; right: 10px; bottom: 10px; background: rgba(20,6,8,.8); color: #fff; padding: 8px 10px; border-radius: 8px; font-size: .82rem; text-align: center; pointer-events: none; }
+.hs__row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.hs__num { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--burgundy); color: #fff; font-weight: 700; font-size: .8rem; flex: none; }
+.hs__fields { flex: 1 1 220px; display: grid; gap: 6px; min-width: 0; }
+.hs__fields input, .hs__fields select { width: 100%; padding: .55em .7em; border-radius: 8px; border: 1.5px solid var(--line); background: #fff; font-size: .88rem; }

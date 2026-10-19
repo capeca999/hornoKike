@@ -261,6 +261,50 @@
         </div>
       </section>`,
 
+    tour: (s) => {
+      const scenes = (s.scenes || []).filter((sc) => sc.image);
+      if (!scenes.length) return "";
+      return `
+      <section class="visit section section--dark" id="visita">
+        <div class="container">
+          ${head(s, true)}
+          ${s.text ? `<p class="visit__lead reveal">${lines(s.text)}</p>` : ""}
+          <div class="tour reveal" data-tour>
+            <div class="tour__stage" tabindex="0" aria-roledescription="recorrido virtual" aria-label="Recorrido virtual por el horno. Usa las flechas para cambiar de sala.">
+              ${scenes.map((sc, i) => `
+                <div class="tour__scene ${i === 0 ? "is-active" : ""}" data-id="${esc(sc.id)}" data-focus="${Number(sc.focus ?? 50)}" aria-hidden="${i !== 0}">
+                  <div class="tour__pan">
+                    <img ${i === 0 ? "src" : "data-src"}="${esc(sc.image)}" alt="${esc(sc.name)}" draggable="false" />
+                    ${(sc.hotspots || []).filter((hs) => scenes.some((x) => x.id === hs.to)).map((hs) => `
+                      <button type="button" class="hotspot ${Number(hs.x) > 58 ? "hotspot--left" : ""}" style="left:${Number(hs.x) || 50}%;top:${Number(hs.y) || 50}%" data-to="${esc(hs.to)}">
+                        <span class="hotspot__dot"></span><span class="hotspot__label">${esc(hs.label || "Ir")}</span>
+                      </button>`).join("")}
+                  </div>
+                </div>`).join("")}
+              <div class="tour__hud">
+                <span class="tour__count"><b data-tour-n>1</b> / ${scenes.length}</span>
+                <strong data-tour-name>${esc(scenes[0].name)}</strong>
+                <p data-tour-text>${esc(scenes[0].text || "")}</p>
+              </div>
+              <div class="tour__controls">
+                <button type="button" class="tour__btn" data-tour-step="-1" aria-label="Sala anterior">←</button>
+                <button type="button" class="tour__btn" data-tour-step="1" aria-label="Sala siguiente">→</button>
+                <button type="button" class="tour__btn" data-tour-full aria-label="Pantalla completa">⤢</button>
+              </div>
+              <div class="tour__hint" data-tour-hint><span class="tour__hand" aria-hidden="true">👆</span> Arrastra para mirar · pulsa los puntos para avanzar</div>
+            </div>
+            <div class="tour__thumbs" role="tablist" aria-label="Salas del horno">
+              ${scenes.map((sc, i) => `
+                <button type="button" class="tour__thumb ${i === 0 ? "is-active" : ""}" data-go="${esc(sc.id)}" role="tab" aria-selected="${i === 0}">
+                  <img src="${esc(sc.image.replace(/\.webp$/, "-mini.webp"))}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${esc(sc.image)}'" />
+                  <span>${esc(sc.name)}</span>
+                </button>`).join("")}
+            </div>
+          </div>
+        </div>
+      </section>`;
+    },
+
     team: (s) => {
       const items = (s.items || []).filter((m) => m.image);
       if (!items.length) return "";
@@ -369,7 +413,7 @@
       </div>`;
   };
 
-  const ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "workshop", "team", "history", "stores"];
+  const ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "tour", "workshop", "team", "history", "stores"];
   let C = null;
 
   /* =========================================================
@@ -425,8 +469,13 @@
   }
   const navLabel = (k, fallback) => ((C.design && C.design.nav && C.design.nav[k]) || "").trim() || fallback;
   const sectionOrder = () => {
-    const o = (C.design && Array.isArray(C.design.order) ? C.design.order : []).filter((k) => ORDER.includes(k));
-    return [...new Set([...o, ...ORDER])];
+    const o = [...new Set((C.design && Array.isArray(C.design.order) ? C.design.order : []).filter((k) => ORDER.includes(k)))];
+    ORDER.forEach((k, i) => {
+      if (o.includes(k)) return;
+      const prev = ORDER.slice(0, i).reverse().find((p) => o.includes(p));
+      o.splice(prev ? o.indexOf(prev) + 1 : 0, 0, k);
+    });
+    return o;
   };
 
   function render(content, { keepScroll = false } = {}) {
@@ -637,6 +686,7 @@
 
     observe($$(".reveal"));
     if (isPreview || cookieChoice() === "accept") loadMaps();
+    initTour();
 
     /* Blog: filtros y copiar enlace */
     $$("[data-blog-filter]").forEach((b) => b.addEventListener("click", () => {
@@ -714,6 +764,142 @@
     });
   }
   document.addEventListener("click", (e) => { if (e.target.closest("[data-load-map]")) loadMaps(); });
+
+  /* =========================================================
+     RECORRIDO VIRTUAL
+     ========================================================= */
+  function initTour() {
+    const tour = $("[data-tour]");
+    if (!tour) return;
+    const stage = $(".tour__stage", tour);
+    const scenes = $$(".tour__scene", tour);
+    const byId = Object.fromEntries(scenes.map((s) => [s.dataset.id, s]));
+    let cur = scenes[0], busy = false;
+    const pos = new Map(scenes.map((s) => [s, { fx: (Number(s.dataset.focus) || 50) / 100, fy: 0.5 }]));
+
+    const loadImg = (sc) => { const im = $("img", sc); if (im && !im.src && im.dataset.src) im.src = im.dataset.src; return im; };
+    const prefetch = (sc) => $$(".hotspot", sc).forEach((h) => byId[h.dataset.to] && loadImg(byId[h.dataset.to]));
+
+    // Tamaño de la foto: algo mayor que el visor para poder "mirar alrededor"
+    function layout(sc) {
+      const im = $("img", sc), pan = $(".tour__pan", sc);
+      if (!im || !im.naturalWidth) return;
+      const W = stage.clientWidth, H = stage.clientHeight;
+      // Cubre el visor y amplía un poco más para poder "mirar alrededor"
+      const k = Math.max(W / im.naturalWidth, H / im.naturalHeight) * 1.14;
+      const pw = im.naturalWidth * k, ph = im.naturalHeight * k;
+      pan.style.width = pw + "px"; pan.style.height = ph + "px";
+      sc._dims = { W, H, pw, ph };
+      place(sc);
+    }
+    function place(sc) {
+      const d = sc._dims; if (!d) return;
+      const p = pos.get(sc);
+      p.fx = Math.min(1, Math.max(0, p.fx)); p.fy = Math.min(1, Math.max(0, p.fy));
+      const x = -(d.pw - d.W) * p.fx, y = -(d.ph - d.H) * p.fy;
+      $(".tour__pan", sc).style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      // La etiqueta de cada punto se pone hacia el lado donde hay sitio en pantalla
+      $$(".hotspot", sc).forEach((hs) => {
+        const sx = (parseFloat(hs.style.left) / 100) * d.pw + x;
+        hs.classList.toggle("hotspot--left", sx > d.W * 0.58);
+      });
+    }
+    scenes.forEach((sc) => { const im = $("img", sc); im.addEventListener("load", () => layout(sc)); if (im.complete && im.naturalWidth) layout(sc); });
+    new ResizeObserver(() => scenes.forEach((sc) => sc._dims !== undefined || sc === cur ? layout(sc) : 0)).observe(stage);
+    loadImg(cur); prefetch(cur);
+    // Evita que el navegador desplace el visor por dentro al enfocar un punto
+    stage.addEventListener("scroll", () => { stage.scrollLeft = 0; stage.scrollTop = 0; });
+    $$(".tour__scene", stage).forEach((sc) => sc.addEventListener("scroll", () => { sc.scrollLeft = 0; sc.scrollTop = 0; }));
+
+    // Arrastrar para mirar
+    let drag = null;
+    stage.addEventListener("pointerdown", (e) => {
+      if (e.target.closest(".hotspot, .tour__btn")) return;
+      drag = { x: e.clientX, y: e.clientY, p: { ...pos.get(cur) }, moved: false };
+      stage.setPointerCapture(e.pointerId); stage.classList.add("is-dragging");
+    });
+    stage.addEventListener("pointermove", (e) => {
+      if (!drag || !cur._dims) return;
+      const d = cur._dims, p = pos.get(cur);
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; hideHint(); }
+      p.fx = drag.p.fx - dx / Math.max(1, d.pw - d.W);
+      p.fy = drag.p.fy - dy / Math.max(1, d.ph - d.H);
+      place(cur);
+    });
+    const endDrag = () => { drag = null; stage.classList.remove("is-dragging"); };
+    stage.addEventListener("pointerup", endDrag); stage.addEventListener("pointercancel", endDrag);
+
+    // Cambiar de sala
+    const hud = { n: $("[data-tour-n]", tour), name: $("[data-tour-name]", tour), text: $("[data-tour-text]", tour) };
+    function go(id, from) {
+      const next = byId[id];
+      if (!next || next === cur || busy) return;
+      busy = true; hideHint();
+      const im = loadImg(next);
+      const start = () => {
+        layout(next);
+        const prev = cur;
+        if (from && !reduceMotion) {
+          const r = from.getBoundingClientRect(), pr = $(".tour__pan", prev).getBoundingClientRect();
+          $(".tour__pan", prev).style.transformOrigin = `${r.left + r.width / 2 - pr.left}px ${r.top + r.height / 2 - pr.top}px`;
+        }
+        prev.classList.add(from && !reduceMotion ? "is-leaving-zoom" : "is-leaving");
+        next.classList.add("is-active", "is-entering"); next.setAttribute("aria-hidden", "false");
+        cur = next; prefetch(next);
+        const i = scenes.indexOf(next);
+        hud.n.textContent = i + 1;
+        hud.name.textContent = $("img", next).alt;
+        const data = (C.tour.scenes || []).find((x) => x.id === id);
+        hud.text.textContent = (data && data.text) || "";
+        $$(".tour__thumb", tour).forEach((t) => { const on = t.dataset.go === id; t.classList.toggle("is-active", on); t.setAttribute("aria-selected", on); if (on) t.scrollIntoView({ block: "nearest", inline: "center", behavior: reduceMotion ? "auto" : "smooth" }); });
+        requestAnimationFrame(() => requestAnimationFrame(() => next.classList.remove("is-entering")));
+        setTimeout(() => {
+          prev.classList.remove("is-active", "is-leaving", "is-leaving-zoom"); prev.setAttribute("aria-hidden", "true");
+          $(".tour__pan", prev).style.transformOrigin = "";
+          pos.get(prev).fx = (Number(prev.dataset.focus) || 50) / 100; pos.get(prev).fy = 0.5; place(prev);
+          busy = false;
+        }, reduceMotion ? 0 : 750);
+      };
+      if (im.complete && im.naturalWidth) start(); else { stage.classList.add("is-loading"); im.addEventListener("load", () => { stage.classList.remove("is-loading"); start(); }, { once: true }); im.addEventListener("error", () => { stage.classList.remove("is-loading"); busy = false; }, { once: true }); }
+    }
+    tour.addEventListener("click", (e) => {
+      const hs = e.target.closest(".hotspot"); if (hs) return go(hs.dataset.to, hs);
+      const th = e.target.closest("[data-go]"); if (th) return go(th.dataset.go);
+      const st = e.target.closest("[data-tour-step]");
+      if (st) { const i = scenes.indexOf(cur); go(scenes[(i + Number(st.dataset.tourStep) + scenes.length) % scenes.length].dataset.id); }
+      if (e.target.closest("[data-tour-full]")) toggleFull();
+    });
+    stage.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); const i = scenes.indexOf(cur); go(scenes[(i + (e.key === "ArrowRight" ? 1 : -1) + scenes.length) % scenes.length].dataset.id); }
+      if (e.key === "Escape" && tour.classList.contains("is-full")) toggleFull();
+    });
+
+    // Pantalla completa (con alternativa para iPhone)
+    function toggleFull() {
+      const on = !tour.classList.contains("is-full");
+      if (on && tour.requestFullscreen && !/iPhone|iPad/.test(navigator.userAgent)) tour.requestFullscreen().catch(() => {});
+      else if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      tour.classList.toggle("is-full", on); document.body.classList.toggle("no-scroll", on);
+      setTimeout(() => layout(cur), 60);
+    }
+    document.addEventListener("fullscreenchange", () => {
+      if (!document.fullscreenElement && tour.classList.contains("is-full")) { tour.classList.remove("is-full"); document.body.classList.remove("no-scroll"); setTimeout(() => layout(cur), 60); }
+    });
+
+    // Pista inicial: un pequeño paseo de la cámara la primera vez que se ve
+    const hint = $("[data-tour-hint]", tour);
+    function hideHint() { hint && hint.classList.add("is-hidden"); }
+    if (!reduceMotion && !isPreview) {
+      const io2 = new IntersectionObserver((en) => {
+        if (!en[0].isIntersecting) return; io2.disconnect();
+        const p = pos.get(cur), f0 = p.fx, t0 = performance.now();
+        const step = (t) => { if (drag) return; const k = Math.min(1, (t - t0) / 2600); p.fx = f0 + Math.sin(k * Math.PI * 2) * 0.18; place(cur); if (k < 1) requestAnimationFrame(step); };
+        setTimeout(() => requestAnimationFrame(step), 500);
+      }, { threshold: 0.5 });
+      io2.observe(stage);
+    }
+  }
 
   /* Cookies */
   function initCookies() {
