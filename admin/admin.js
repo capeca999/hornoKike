@@ -68,6 +68,8 @@
         newItem: () => ({ eyebrow: "", title: "Nuevo título", text: "", button: "Ver productos", link: "#productos", image: "" }),
         item: [
           { key: "image", label: "Foto de fondo", type: "image", ratio: "wide", maxSize: 2200, help: "Mejor en horizontal y con buena luz." },
+          { key: "pos", label: "En el móvil, ¿qué parte de la foto se ve?", type: "select",
+            options: () => [["center", "El centro"], ["20% center", "La parte izquierda"], ["80% center", "La parte derecha"]] },
           { key: "eyebrow", label: "Antetítulo", type: "text" },
           { key: "title", label: "Título", type: "textarea", rows: 2, help: "Pulsa Intro para partir el título en dos líneas." },
           { key: "text", label: "Texto", type: "textarea", rows: 2 },
@@ -162,6 +164,20 @@
       ],
     },
     {
+      id: "team", name: "Equipo", desc: "Fotos y nombres del equipo", anchor: "equipo",
+      fields: [show, ...head(),
+        { key: "text", label: "Texto", type: "textarea", rows: 2 },
+        { key: "items", label: "Personas", type: "list", addLabel: "Añadir persona", grid: true, max: 12,
+          help: "El nombre y el puesto son opcionales: si los dejas vacíos, solo se ve la foto.",
+          newItem: () => ({ image: "", name: "", role: "" }),
+          item: [
+            { key: "image", label: "", type: "image", ratio: "tall" },
+            { key: "name", label: "Nombre", type: "text" },
+            { key: "role", label: "Puesto", type: "text", placeholder: "Maestro panadero, barista…" },
+          ] },
+      ],
+    },
+    {
       id: "history", name: "Nuestra historia", desc: "La línea del tiempo", anchor: "historia",
       fields: [show, ...head(), {
         key: "items", label: "Momentos", type: "list", addLabel: "Añadir momento",
@@ -215,6 +231,7 @@
         { type: "note", text: "Los enlaces legales del pie salen solos de la sección «Textos legales»." },
       ],
     },
+    { id: "design", name: "Diseño y colores", desc: "Colores, letras, orden y fondos", special: true },
     { id: "legal", name: "Textos legales", desc: "Aviso legal, privacidad, cookies, alérgenos", special: true },
     { id: "backups", name: "Copias de seguridad", desc: "Volver a una versión anterior", special: true },
   ];
@@ -323,10 +340,11 @@
     if (!state.content) {
       try {
         const { content } = await api("/api/content?fresh=" + Date.now());
-        const defaults = await (await fetch("/content/default.json")).json();
+        const defaults = await (await fetch("/content/default.json", { cache: "no-cache" })).json();
+        state.defaults = defaults;
         state.content = content || defaults;
         // Si el contenido guardado es de una versión anterior, añade las secciones nuevas
-        for (const k of Object.keys(defaults)) if (!(k in state.content)) state.content[k] = defaults[k];
+        for (const k of Object.keys(defaults)) if (k !== "contentVersion" && !(k in state.content)) state.content[k] = defaults[k];
       } catch (e) {
         toast("No se ha podido cargar el contenido: " + e.message, "error", 8000);
         state.content = await (await fetch("/content/default.json")).json();
@@ -336,6 +354,52 @@
     const hash = location.hash.slice(1);
     if (SECTIONS.some((s) => s.id === hash)) state.section = hash;
     renderNav(); renderEditor(); updateStatus(); sendPreview();
+    offerUpdate();
+  }
+
+  /* =========================================================
+     ACTUALIZACIÓN DE CONTENIDO (p. ej. las fotos reales del horno)
+     ========================================================= */
+  const UPDATES = {
+    2: {
+      title: "Hay fotos nuevas del horno preparadas para la web",
+      text: "Portada, Sobre nosotros, Destacados, todos los productos (con su foto), Banner, Obrador, Equipo y las noticias de ejemplo. No se tocan la dirección, el horario, los datos de contacto, los textos legales ni las noticias que hayáis escrito vosotros.",
+      apply(c, d) {
+        c.hero.slides = clone(d.hero.slides);
+        c.intro.image1 = d.intro.image1; c.intro.image2 = d.intro.image2;
+        c.featured.items = clone(d.featured.items);
+        c.products.categories = clone(d.products.categories);
+        c.products.items = clone(d.products.items);
+        c.cta.image = d.cta.image;
+        c.workshop.gallery = clone(d.workshop.gallery);
+        c.team = clone(d.team);
+        const samples = new Set(["p1", "p2", "p3"]);
+        const own = (c.blog?.posts || []).filter((p) => !samples.has(p.id));
+        c.blog = c.blog || clone(d.blog);
+        c.blog.posts = [...clone(d.blog.posts), ...own];
+      },
+    },
+  };
+  const clone = (x) => JSON.parse(JSON.stringify(x));
+  function offerUpdate() {
+    const d = state.defaults; if (!d) return;
+    const from = Number(state.content.contentVersion) || 1, to = Number(d.contentVersion) || 1;
+    if (from >= to || $(".update-bar")) return;
+    const pending = Object.keys(UPDATES).map(Number).filter((v) => v > from && v <= to);
+    if (!pending.length) return;
+    const u = UPDATES[pending[pending.length - 1]];
+    const bar = h("div", { class: "update-bar", role: "status" },
+      h("div", {}, h("strong", {}, "✨ " + u.title), h("span", {}, u.text)),
+      h("div", { class: "update-bar__actions" },
+        h("button", { class: "btn btn--small btn--ghost", onclick: () => bar.remove() }, "Ahora no"),
+        h("button", { class: "btn btn--small btn--primary", onclick: () => {
+          pending.forEach((v) => UPDATES[v].apply(state.content, d));
+          state.content.contentVersion = to;
+          bar.remove();
+          changed({ rerender: true }); renderNav(); sendPreview();
+          toast("Fotos puestas. Revisa la vista previa y pulsa «Guardar cambios» para publicarlas.", "ok", 7000);
+        } }, "Poner las fotos nuevas")));
+    $("#editor").prepend(bar);
   }
 
   /* =========================================================
@@ -363,8 +427,13 @@
         h("span", {}, h("strong", {}, "Blog · Novedades"),
           h("small", {}, `${live} publicada${live === 1 ? "" : "s"}${drafts ? ` · ${drafts} borrador${drafts === 1 ? "" : "es"}` : ""}`))),
       h("button", { type: "button", class: "blog-card__new", onclick: () => { goSection("blog"); createPost(); } }, "+ Escribir noticia")));
+    const swatch = (state.content.design?.colors) || {};
+    nav.append(h("button", { type: "button", class: `design-card ${state.section === "design" ? "is-active" : ""}`, onclick: () => goSection("design") },
+      h("span", { class: "design-card__dots", "aria-hidden": "true" },
+        ...[swatch.primary || "#561c24", swatch.accent || "#c8a67e", swatch.background || "#fffaf4"].map((c) => h("i", { style: `background:${c}` }))),
+      h("span", {}, h("strong", {}, "Diseño y colores"), h("small", {}, "Colores, letras, orden de secciones"))));
     nav.append(h("p", { class: "nav-label" }, "Contenido de la web"));
-    SECTIONS.filter((s) => s.id !== "blog").forEach((s) => {
+    SECTIONS.filter((s) => s.id !== "blog" && s.id !== "design").forEach((s) => {
       if (s.id === "backups") nav.append(h("p", { class: "nav-label" }, "Seguridad"));
       const hidden = state.content[s.id]?.show === false;
       nav.append(h("button", {
@@ -382,7 +451,9 @@
   function renderEditor() {
     const sec = SECTIONS.find((s) => s.id === state.section);
     const ed = $("#editor");
+    const keepBar = $(".update-bar", ed);
     ed.innerHTML = "";
+    if (keepBar) ed.append(keepBar);
     setPreviewPath(sec.id === "blog" ? (state.blogPost ? "/blog/_preview" : "/blog")
       : sec.id === "legal" ? "/legal/_preview" : "/");
     if (sec.id === "blog" && state.blogPost) return renderPostEditor(ed);
@@ -390,6 +461,7 @@
     ed.append(h("div", { class: "editor__head" }, h("h1", {}, sec.name), h("p", {}, sec.desc)));
     if (sec.id === "blog") return renderBlogList(ed, sec);
     if (sec.id === "legal") return renderLegalList(ed);
+    if (sec.id === "design") return renderDesign(ed);
     if (sec.special) return renderBackups(ed);
     const obj = state.content[sec.id] || (state.content[sec.id] = {});
     ed.append(renderFields(sec.fields, obj, sec.id));
@@ -870,6 +942,161 @@
       if (b.classList.contains("ql-list")) b.title = b.value === "ordered" ? "Lista numerada" : "Lista con puntos";
     });
     return wrapEl;
+  }
+
+  /* =========================================================
+     DISEÑO Y COLORES
+     ========================================================= */
+  const ORIGINAL = { primary: "#561c24", accent: "#c8a67e", background: "#fffaf4", text: "#2a1a1c" };
+  const PALETTES = [
+    { name: "Original Forn Almenar", colors: ORIGINAL },
+    { name: "Chocolate", colors: { primary: "#4a2c1d", accent: "#d4a373", background: "#fdf8f1", text: "#2b1d14" } },
+    { name: "Verde oliva", colors: { primary: "#3f4a32", accent: "#c9a86a", background: "#fbf9f3", text: "#22261c" } },
+    { name: "Azul noche", colors: { primary: "#1f2a44", accent: "#d8b26e", background: "#f8f7f3", text: "#1b1f2a" } },
+    { name: "Rosa pastelería", colors: { primary: "#8c3b52", accent: "#e2ab95", background: "#fff8f6", text: "#3a1f27" } },
+    { name: "Terracota", colors: { primary: "#9a3f22", accent: "#e0b062", background: "#fffaf2", text: "#2e1a12" } },
+  ];
+  const FONT_SETS = [
+    ["clasica", "Clásica (la original)", "'Big Shoulders Display', Impact, sans-serif", "Fraunces, Georgia, serif"],
+    ["elegante", "Elegante", "'Playfair Display', Georgia, serif", "'Cormorant Garamond', Georgia, serif"],
+    ["moderna", "Moderna", "'Archivo Black', Impact, sans-serif", "'Instrument Serif', Georgia, serif"],
+    ["artesana", "Artesana", "'Bricolage Grotesque', sans-serif", "Caveat, cursive"],
+  ];
+  const SECTION_NAMES = { hero: "Portada", marquee: "Cinta de lemas", intro: "Sobre nosotros", featured: "Destacados", products: "Productos",
+    blog: "Novedades (blog)", cta: "Banner con foto", workshop: "Obrador", team: "Equipo", history: "Nuestra historia", stores: "Dónde estamos" };
+  const DEFAULT_ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "workshop", "team", "history", "stores"];
+  const DEFAULT_TONE = { marquee: "Dorado", intro: "Claro", featured: "Crema", products: "Claro", blog: "Claro", workshop: "Oscuro", team: "Claro", history: "Crema", stores: "Claro" };
+  const NAV_ITEMS = [["hero", "Inicio"], ["products", "Productos"], ["blog", "Novedades"], ["history", "Nuestra historia"], ["workshop", "Obrador"], ["stores", "Dónde estamos"]];
+
+  // Contraste (WCAG) entre dos colores
+  const lum = (hx) => { const c = (hx || "").replace("#", ""); if (c.length !== 6) return 1;
+    return [0, 2, 4].map((i) => parseInt(c.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+      .reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0); };
+  const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
+
+  function renderDesign(ed) {
+    const D = state.content.design || (state.content.design = {});
+    const colors = () => ({ ...ORIGINAL, ...(D.colors || {}) });
+    const redraw = () => { const y = $("#editor").scrollTop; renderEditor(); $("#editor").scrollTop = y; renderNav(); };
+    const update = (fn, rerender = false) => { fn(); changed(); if (rerender) redraw(); };
+
+    ed.append(h("p", { class: "lead" }, "Cambia el aspecto de la web sin tocar los textos. Lo ves al momento en la vista previa; no se publica hasta que pulses «Guardar cambios»."));
+
+    /* --- Paletas --- */
+    const cur = colors();
+    const isSame = (p) => Object.keys(ORIGINAL).every((k) => p.colors[k].toLowerCase() === (cur[k] || "").toLowerCase());
+    ed.append(h("section", { class: "dgroup" },
+      h("h2", { class: "subhead" }, "Colores"),
+      h("p", { class: "field__help" }, "Elige una combinación lista o ajusta cada color a tu gusto."),
+      h("div", { class: "palettes" }, PALETTES.map((p) => h("button", {
+        type: "button", class: `palette ${isSame(p) ? "is-active" : ""}`,
+        onclick: () => update(() => { D.colors = p.id === "x" ? {} : { ...p.colors }; if (p.colors === ORIGINAL) delete D.colors; }, true),
+      }, h("span", { class: "palette__sw" }, ...["primary", "accent", "background", "text"].map((k) => h("i", { style: `background:${p.colors[k]}` }))), h("span", {}, p.name)))),
+      h("div", { class: "colors" }, [
+        ["primary", "Color principal", "Botones, títulos, cabecera del pie y fondos oscuros."],
+        ["accent", "Color de acento", "Detalles dorados, antetítulos, la cinta de lemas."],
+        ["background", "Fondo", "El fondo claro de la web (los tonos crema salen de aquí)."],
+        ["text", "Texto", "El color del texto normal."],
+      ].map(([k, label, help]) => {
+        const val = cur[k];
+        const pick = h("input", { type: "color", value: val, "aria-label": label });
+        const txt = h("input", { type: "text", value: val, maxlength: 7, class: "color-hex" });
+        const setVal = (v) => { if (!/^#[0-9a-f]{6}$/i.test(v)) return; D.colors = { ...colors(), [k]: v.toLowerCase() }; pick.value = v; txt.value = v; changed(); checkContrast(); };
+        pick.addEventListener("input", () => setVal(pick.value));
+        pick.addEventListener("change", () => renderNav());
+        txt.addEventListener("change", () => setVal(txt.value.trim().startsWith("#") ? txt.value.trim() : "#" + txt.value.trim()));
+        return h("label", { class: "color-field" }, h("span", { class: "color-field__pick" }, pick),
+          h("span", { class: "color-field__text" }, h("strong", {}, label), h("small", {}, help)), txt);
+      })),
+    ));
+    const warn = h("p", { class: "contrast-warn", hidden: true });
+    ed.lastChild.append(warn);
+    function checkContrast() {
+      const c = colors(); const msgs = [];
+      if (contrast(c.text, c.background) < 4.5) msgs.push("el texto se lee mal sobre el fondo");
+      if (contrast(c.primary, c.background) < 3) msgs.push("el color principal se distingue poco del fondo");
+      if (contrast(c.primary, "#f7f0e7") < 4) msgs.push("los textos claros sobre el color principal se leerán mal (prueba un tono más oscuro)");
+      warn.hidden = !msgs.length;
+      warn.textContent = msgs.length ? "⚠️ Ojo: " + msgs.join("; ") + "." : "";
+    }
+    checkContrast();
+
+    /* --- Tipografía --- */
+    ed.append(h("section", { class: "dgroup" },
+      h("h2", { class: "subhead" }, "Tipo de letra"),
+      h("div", { class: "fonts" }, FONT_SETS.map(([id, name, display, serif]) => h("button", {
+        type: "button", class: `font-opt ${(D.fonts || "clasica") === id ? "is-active" : ""}`,
+        onclick: () => update(() => { if (id === "clasica") delete D.fonts; else D.fonts = id; }, true),
+      }, h("span", { class: "font-opt__title", style: `font-family:${display}` }, "Forn Almenar"),
+        h("span", { class: "font-opt__accent", style: `font-family:${serif};font-style:italic` }, "desde 1952"),
+        h("small", {}, name)))),
+      renderField({ key: "titleUpper", label: "Títulos en MAYÚSCULAS", type: "toggle" }, D, "design"),
+    ));
+    // Carga las fuentes en el panel para que se vean las muestras
+    if (!$("#admin-font-samples")) document.head.append(h("link", { id: "admin-font-samples", rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@900&family=Fraunces:ital@1&family=Playfair+Display:wght@800&family=Cormorant+Garamond:ital,wght@1,600&family=Archivo+Black&family=Instrument+Serif:ital@1&family=Bricolage+Grotesque:wght@800&family=Caveat:wght@700&display=swap" }));
+
+    /* --- Estilo --- */
+    const dim = h("input", { type: "range", min: 20, max: 120, step: 5, value: D.heroDim ?? 100 });
+    const dimOut = h("output", {}, `${D.heroDim ?? 100}%`);
+    dim.addEventListener("input", () => { D.heroDim = Number(dim.value); if (D.heroDim === 100) delete D.heroDim; dimOut.textContent = `${dim.value}%`; changed(); });
+    ed.append(h("section", { class: "dgroup" },
+      h("h2", { class: "subhead" }, "Estilo"),
+      h("div", { class: "row" },
+        renderField({ key: "radius", label: "Esquinas de fotos y tarjetas", type: "select", options: () => [["", "Redondeadas"], ["suaves", "Suaves"], ["rectas", "Rectas"]] }, D, "design"),
+        renderField({ key: "buttons", label: "Forma de los botones", type: "select", options: () => [["", "Redondos"], ["rectos", "Rectangulares"]] }, D, "design")),
+      h("label", { class: "field" }, h("span", { class: "field__label" }, "Oscurecer las fotos con texto encima (portada y banner)"),
+        h("div", { class: "range" }, h("small", {}, "Más luz"), dim, h("small", {}, "Más oscuro"), dimOut),
+        h("span", { class: "field__help" }, "Si bajas mucho, el texto blanco puede leerse peor sobre fotos claras.")),
+    ));
+
+    /* --- Secciones: orden, visibilidad y fondo --- */
+    const order = () => { const o = (D.order || []).filter((k) => DEFAULT_ORDER.includes(k)); return [...new Set([...o, ...DEFAULT_ORDER])]; };
+    const tones = D.tones || {};
+    const list = h("div", { class: "sec-order" });
+    order().forEach((k, i, arr) => {
+      const sec = state.content[k] || {};
+      const fixed = k === "hero";
+      const move = (d) => update(() => { const o = order(); const j = i + d; if (j < 1 || j >= o.length) return; [o[i], o[j]] = [o[j], o[i]]; D.order = o; }, true);
+      const vis = h("input", { type: "checkbox", checked: sec.show !== false });
+      vis.addEventListener("change", () => update(() => { (state.content[k] = state.content[k] || {}).show = vis.checked; }, true));
+      const toneSel = h("select", { "aria-label": "Fondo" },
+        h("option", { value: "" }, `Fondo: ${DEFAULT_TONE[k] || "foto"} (original)`),
+        ...[["light", "Fondo claro"], ["cream", "Fondo crema"], ["dark", "Fondo oscuro"]].map(([v, l]) => h("option", { value: v, selected: tones[k] === v }, l)));
+      toneSel.addEventListener("change", () => update(() => { D.tones = { ...(D.tones || {}), [k]: toneSel.value }; if (!toneSel.value) delete D.tones[k]; }));
+      list.append(h("div", { class: `sec-row ${sec.show === false ? "is-off" : ""}` },
+        h("label", { class: "sec-row__vis", title: "Mostrar u ocultar" }, vis, h("span", { class: "toggle__ui" })),
+        h("span", { class: "sec-row__name" }, SECTION_NAMES[k], fixed ? h("small", {}, "siempre arriba") : ""),
+        ["hero", "cta"].includes(k) ? h("span", { class: "sec-row__tone muted" }, "Fondo: su foto") : toneSel,
+        h("span", { class: "item__controls" },
+          h("button", { type: "button", class: "icon-btn", title: "Subir", disabled: fixed || i <= 1, onclick: () => move(-1) }, "↑"),
+          h("button", { type: "button", class: "icon-btn", title: "Bajar", disabled: fixed || i === arr.length - 1, onclick: () => move(1) }, "↓"))));
+    });
+    ed.append(h("section", { class: "dgroup" },
+      h("h2", { class: "subhead" }, "Secciones de la portada"),
+      h("p", { class: "field__help" }, "Cambia el orden con las flechas, enciende o apaga cada sección y elige su color de fondo."),
+      list));
+
+    /* --- Menú --- */
+    const nav = D.nav || {};
+    ed.append(h("section", { class: "dgroup" },
+      h("h2", { class: "subhead" }, "Textos del menú"),
+      h("p", { class: "field__help" }, "Los nombres de los enlaces de arriba. Déjalo vacío para usar el original."),
+      h("div", { class: "nav-labels" }, NAV_ITEMS.map(([k, def]) => {
+        const inp = h("input", { type: "text", value: nav[k] || "", placeholder: def });
+        inp.addEventListener("input", () => { D.nav = { ...(D.nav || {}), [k]: inp.value }; if (!inp.value.trim()) delete D.nav[k]; changed(); });
+        return h("label", { class: "field" }, h("span", { class: "field__label" }, def), inp);
+      }))));
+
+    /* --- Restaurar --- */
+    ed.append(h("section", { class: "dgroup dgroup--reset" },
+      h("div", {}, h("strong", {}, "¿Quieres volver al diseño de siempre?"),
+        h("span", {}, "Restaura colores, letras, estilo, orden, fondos y textos del menú. Los textos, fotos y productos no se tocan.")),
+      h("button", { type: "button", class: "btn btn--danger", onclick: () => {
+        if (!confirm("¿Volver al diseño original de la web?")) return;
+        update(() => { delete state.content.design; }, true);
+        toast("Diseño original restaurado. Pulsa «Guardar cambios» para publicarlo.");
+      } }, "Restaurar diseño original")));
   }
 
   /* ---------- Copias de seguridad ---------- */

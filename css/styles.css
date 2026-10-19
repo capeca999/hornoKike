@@ -172,7 +172,7 @@ p { margin: 0 0 1em; }
 }
 .slide::before {
   content: ""; position: absolute; inset: 0;
-  background: var(--img) center/cover no-repeat, linear-gradient(135deg, var(--burgundy-700), var(--wheat-dark));
+  background: var(--img) var(--pos, center)/cover no-repeat, linear-gradient(135deg, var(--burgundy-700), var(--wheat-dark));
   transform: scale(1.12);
   transition: transform 7s linear;
 }
@@ -303,7 +303,7 @@ p { margin: 0 0 1em; }
    ========================================================= */
 .cta {
   position: relative; padding: clamp(110px, 16vw, 200px) 0; color: var(--cream); text-align: center;
-  background: linear-gradient(rgba(61, 19, 25, .78), rgba(61, 19, 25, .78)), var(--img) center/cover fixed, var(--burgundy);
+  background: var(--img) center/cover fixed, var(--burgundy);
 }
 @media (hover: none) { .cta { background-attachment: scroll; } }
 .cta h2 { color: var(--cream); font-size: clamp(3rem, 8vw, 6.4rem); }
@@ -579,3 +579,73 @@ p { margin: 0 0 1em; }
 .legal .prose { font-size: 1.04rem; }
 .legal__nav { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 30px; margin-top: 30px; border-top: 1px dashed var(--sand); }
 mark.todo { background: #fff1c2; color: #8a5f22; padding: 0 .3em; border-radius: 4px; font-weight: 700; }
+
+/* Equipo */
+.team__lead { text-align: center; color: var(--muted); max-width: 560px; margin: -30px auto 50px; }
+.team__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 22px; }
+.member { margin: 0; }
+.member__img { aspect-ratio: 3 / 4; border-radius: var(--radius); overflow: hidden; background: var(--burgundy); box-shadow: 0 30px 50px -34px rgba(61, 19, 25, .7); }
+.member__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.1s var(--ease), filter .6s; filter: saturate(.92); }
+.member:hover .member__img img { transform: scale(1.05); filter: none; }
+.member figcaption { padding: 14px 4px 0; text-align: center; }
+.member figcaption strong { display: block; font: 800 1.4rem/1 var(--f-display); text-transform: uppercase; color: var(--burgundy); }
+.member figcaption span { display: block; margin-top: 4px; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--wheat-dark); font-weight: 700; }
+@media (min-width: 1000px) { .team__grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px) { .team__grid { grid-template-columns: 1fr 1fr; gap: 14px; } .member figcaption strong { font-size: 1.1rem; } }
+
+@media (min-width: 900px) { .slide::before { background-position: center; } }
+/* tarjeta del blog en el panel: que no se corte el título */
+
+/* =========================================================
+   DISEÑO PERSONALIZABLE (panel → Diseño)
+   Sin ajustes, todo queda igual que el diseño original.
+   ========================================================= */
+:root { --btn-radius: 999px; --title-case: uppercase; --hero-dim: 1; }
+
+h1, h2, h3, h4, .h1, .mobile-menu a:not(.btn), .marquee span { text-transform: var(--title-case); }
+.btn, .filter, .share-btn, .product__add, .product__tag, .post-card__pin, .post-cat { border-radius: var(--btn-radius); }
+
+/* Colores que antes iban fijos, ahora derivados de la paleta */
+.header { background: color-mix(in srgb, var(--paper) 96%, transparent); }
+.btn--ghost { border-color: color-mix(in srgb, var(--cream) 60%, transparent); }
+.slide::after {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--burgundy-900) 88%, transparent) 0%,
+    color-mix(in srgb, var(--burgundy-900) 58%, transparent) 50%,
+    color-mix(in srgb, var(--burgundy-900) 16%, transparent) 100%);
+  opacity: var(--hero-dim);
+}
+.cta { position: relative; isolation: isolate; background: var(--img) center/cover fixed, var(--burgundy); }
+.cta::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: var(--hero-dim);
+  background: linear-gradient(color-mix(in srgb, var(--burgundy-900) 62%, transparent), color-mix(in srgb, var(--burgundy-900) 80%, transparent)); }
+@media (hover: none) { .cta { background-attachment: scroll; } }
+.step p { color: color-mix(in srgb, var(--sand) 85%, transparent); }
+.footer { color: color-mix(in srgb, var(--sand) 82%, transparent); }
+.social a { border-color: color-mix(in srgb, var(--sand) 30%, transparent); }
+.footer__bottom { border-top-color: color-mix(in srgb, var(--sand) 15%, transparent); }
+.prose { color: var(--ink); }
+.form input:focus, .form select:focus, .form textarea:focus { box-shadow: 0 0 0 4px color-mix(in srgb, var(--wheat) 25%, transparent); }
+
+/* Fondo de cada sección: claro, crema u oscuro */
+.tone-light { background: var(--paper) !important; }
+.tone-cream { background: var(--cream) !important; }
+.tone-dark { background: var(--burgundy) !important; color: var(--sand); }
+.tone-dark :is(.section__head h2, .intro__text h2, .feat h3, .tl h3, .tl__year, .stats strong, .member figcaption strong, .contact__grid h2) { color: var(--cream); }
+.tone-dark :is(h2 em) { color: var(--wheat); }
+.tone-dark .eyebrow--dark, .tone-dark .stats span, .tone-dark .member figcaption span { color: var(--wheat); }
+.tone-dark :is(.intro__text p, .feat p, .tl p, .team__lead) { color: color-mix(in srgb, var(--sand) 85%, transparent); }
+.tone-dark .timeline::before { background: color-mix(in srgb, var(--wheat) 45%, transparent); }
+.tone-dark .tl::before { background: var(--burgundy); border-color: var(--wheat); }
+.tone-dark .filter { color: var(--cream); border-color: color-mix(in srgb, var(--sand) 35%, transparent); }
+.tone-dark .filter.is-active { background: var(--cream); color: var(--burgundy); border-color: var(--cream); }
+.tone-dark .news__more .btn { --bg: var(--cream); --fg: var(--burgundy); }
+.tone-dark .feat__img { box-shadow: 0 0 0 10px var(--burgundy), 0 0 0 11px color-mix(in srgb, var(--wheat) 50%, transparent), 0 30px 50px -30px rgba(0,0,0,.6); }
+.tone-dark.marquee { background: var(--burgundy-900) !important; color: var(--wheat); }
+/* El obrador es oscuro por defecto: si se pone claro, sus textos pasan a oscuros */
+:is(.tone-light, .tone-cream) .section__head--light h2 { color: var(--burgundy); }
+:is(.tone-light, .tone-cream) .section__head--light h2 em { color: var(--wheat-dark); }
+:is(.tone-light, .tone-cream) .section__head--light .eyebrow { color: var(--wheat-dark); }
+:is(.tone-light, .tone-cream) .step { background: color-mix(in srgb, var(--burgundy) 5%, transparent); }
+:is(.tone-light, .tone-cream) .step h3 { color: var(--burgundy); }
+:is(.tone-light, .tone-cream) .step p { color: var(--muted); }
+:is(.tone-light, .tone-cream).workshop { color: var(--ink); }

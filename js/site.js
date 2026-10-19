@@ -152,7 +152,7 @@
       <section class="hero" id="inicio" aria-roledescription="carrusel">
         <div class="hero__slides">
           ${(s.slides || []).map((sl, i) => `
-            <article class="slide ${i === 0 ? "is-active" : ""}" style="--img:url('${esc(sl.image)}')">
+            <article class="slide ${i === 0 ? "is-active" : ""}" style="--img:url('${esc(sl.image)}');--pos:${esc(sl.pos || "center")}">
               <div class="slide__content">
                 ${sl.eyebrow ? `<p class="eyebrow">${esc(sl.eyebrow)}</p>` : ""}
                 ${i === 0 ? `<h1>${lines(sl.title)}</h1>` : `<h2 class="h1">${lines(sl.title)}</h2>`}
@@ -261,6 +261,25 @@
         </div>
       </section>`,
 
+    team: (s) => {
+      const items = (s.items || []).filter((m) => m.image);
+      if (!items.length) return "";
+      return `
+      <section class="team section" id="equipo">
+        <div class="container">
+          ${head(s)}
+          ${s.text ? `<p class="team__lead reveal">${lines(s.text)}</p>` : ""}
+          <div class="team__grid">
+            ${items.map((m, i) => `
+              <figure class="member reveal" ${delay(i % 3)}>
+                <div class="member__img">${img(m.image, m.name || "Equipo de Forn Almenar")}</div>
+                ${m.name || m.role ? `<figcaption>${m.name ? `<strong>${esc(m.name)}</strong>` : ""}${m.role ? `<span>${esc(m.role)}</span>` : ""}</figcaption>` : ""}
+              </figure>`).join("")}
+          </div>
+        </div>
+      </section>`;
+    },
+
     history: (s) => `
       <section class="history section section--cream" id="historia">
         <div class="container">
@@ -312,7 +331,7 @@
 
   const footer = () => {
     const g = C.general, f = C.footer || {};
-    const navItems = [["products", "/#productos", "Productos"], ["blog", "/blog", "Novedades"], ["workshop", "/#obrador", "Obrador"], ["history", "/#historia", "Nuestra historia"], ["stores", "/#tiendas", "Dónde estamos"]]
+    const navItems = [["products", "/#productos", navLabel("products", "Productos")], ["blog", "/blog", navLabel("blog", "Novedades")], ["workshop", "/#obrador", navLabel("workshop", "Obrador")], ["history", "/#historia", navLabel("history", "Nuestra historia")], ["stores", "/#tiendas", navLabel("stores", "Dónde estamos")]]
       .filter(([k]) => k === "blog" || C[k]?.show !== false);
     const icon = {
       ig: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>`,
@@ -350,12 +369,70 @@
       </div>`;
   };
 
-  const ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "workshop", "history", "stores"];
+  const ORDER = ["hero", "marquee", "intro", "featured", "products", "blog", "cta", "workshop", "team", "history", "stores"];
   let C = null;
+
+  /* =========================================================
+     DISEÑO (colores, letras, formas) — editable en /admin → Diseño
+     ========================================================= */
+  const FONT_SETS = {
+    clasica: { display: '"Big Shoulders Display", "Oswald", Impact, sans-serif', serif: '"Fraunces", Georgia, serif', body: '"DM Sans", system-ui, sans-serif', url: "" },
+    elegante: { display: '"Playfair Display", Georgia, serif', serif: '"Cormorant Garamond", Georgia, serif', body: '"Lato", system-ui, sans-serif',
+      url: "family=Playfair+Display:wght@700;800;900&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Lato:wght@400;700" },
+    moderna: { display: '"Archivo Black", Impact, sans-serif', serif: '"Instrument Serif", Georgia, serif', body: '"Inter", system-ui, sans-serif',
+      url: "family=Archivo+Black&family=Instrument+Serif:ital@1&family=Inter:wght@400;500;700" },
+    artesana: { display: '"Bricolage Grotesque", sans-serif', serif: '"Caveat", cursive', body: '"Nunito Sans", system-ui, sans-serif',
+      url: "family=Bricolage+Grotesque:wght@700;800&family=Caveat:wght@500;700&family=Nunito+Sans:wght@400;600;700" },
+  };
+  const hex = (h) => { const m = String(h || "").replace("#", "").match(/^([0-9a-f]{6})$/i); if (!m) return null; const n = parseInt(m[1], 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
+  const toHex = (c) => "#" + c.map((v) => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, "0")).join("");
+  const mixC = (a, b, t) => toHex(a.map((v, i) => v + (b[i] - v) * t));
+  function applyDesign(d = {}) {
+    const root = document.documentElement.style;
+    const set = (k, v) => (v == null || v === "" ? root.removeProperty(k) : root.setProperty(k, v));
+    // Colores: solo si se han personalizado (si no, se usan los del CSS original)
+    const c = d.colors || {};
+    const P = hex(c.primary), A = hex(c.accent), B = hex(c.background), T = hex(c.text);
+    const W = [255, 255, 255], K = [0, 0, 0];
+    set("--burgundy", P && toHex(P)); set("--burgundy-700", P && mixC(P, W, 0.12)); set("--burgundy-900", P && mixC(P, K, 0.3));
+    set("--wheat", A && toHex(A)); set("--wheat-dark", A && mixC(A, K, 0.14));
+    set("--paper", B && toHex(B));
+    set("--cream", B && mixC(B, A || [200, 166, 126], 0.1)); set("--sand", B && mixC(B, A || [200, 166, 126], 0.33));
+    set("--ink", T && toHex(T)); set("--muted", T && mixC(T, B || [255, 250, 244], 0.38));
+    if (P) $('meta[name="theme-color"]')?.setAttribute("content", toHex(P));
+    // Tipografías
+    const f = FONT_SETS[d.fonts] || null;
+    set("--f-display", f && d.fonts !== "clasica" ? f.display : null);
+    set("--f-serif", f && d.fonts !== "clasica" ? f.serif : null);
+    set("--f-body", f && d.fonts !== "clasica" ? f.body : null);
+    let link = $("#design-fonts");
+    if (f && f.url) {
+      const href = `https://fonts.googleapis.com/css2?${f.url}&display=swap`;
+      if (!link) { link = document.createElement("link"); link.id = "design-fonts"; link.rel = "stylesheet"; document.head.append(link); }
+      if (link.href !== href) link.href = href;
+    } else if (link) link.remove();
+    // Formas y estilo
+    set("--title-case", d.titleUpper === false ? "none" : null);
+    set("--radius", { rectas: "4px", suaves: "12px" }[d.radius] || null);
+    set("--btn-radius", d.buttons === "rectos" ? "6px" : null);
+    set("--hero-dim", d.heroDim != null && d.heroDim !== "" ? String(Math.max(0.15, Math.min(1.2, Number(d.heroDim) / 100))) : null);
+    // Textos del menú
+    const nav = d.nav || {};
+    $$("[data-sec]").forEach((a) => {
+      if (!a.dataset.label) a.dataset.label = a.textContent.trim();
+      a.textContent = (nav[a.dataset.sec] || "").trim() || a.dataset.label;
+    });
+  }
+  const navLabel = (k, fallback) => ((C.design && C.design.nav && C.design.nav[k]) || "").trim() || fallback;
+  const sectionOrder = () => {
+    const o = (C.design && Array.isArray(C.design.order) ? C.design.order : []).filter((k) => ORDER.includes(k));
+    return [...new Set([...o, ...ORDER])];
+  };
 
   function render(content, { keepScroll = false } = {}) {
     C = content;
     const y = scrollY;
+    applyDesign(C.design || {});
     const g = C.general || {};
     if (g.siteTitle) document.title = g.siteTitle;
     if (g.siteDescription) $('meta[name="description"]')?.setAttribute("content", g.siteDescription);
@@ -370,7 +447,19 @@
     if (PAGE === "blog") $("#main").innerHTML = blogPage();
     else if (PAGE === "post") $("#main").innerHTML = postPage();
     else if (PAGE === "legal") $("#main").innerHTML = legalPage();
-    else $("#main").innerHTML = ORDER.filter((k) => C[k] && C[k].show !== false && S[k]).map((k) => S[k](C[k])).join("");
+    else {
+      const tones = (C.design && C.design.tones) || {};
+      $("#main").innerHTML = sectionOrder().filter((k) => C[k] && C[k].show !== false && S[k]).map((k) => {
+        const html = S[k](C[k]);
+        const tone = ["light", "cream", "dark"].includes(tones[k]) ? tones[k] : "";
+        // marca cada sección con su nombre (y su fondo elegido) en la primera etiqueta
+        return html.replace(/^(\s*<\w+)/, `$1 data-key="${k}"${tone ? ` data-tone="${tone}"` : ""}`);
+      }).join("");
+      $$("[data-tone]").forEach((el) => {
+        el.classList.remove("section--cream", "section--dark");
+        el.classList.add("tone-" + el.dataset.tone);
+      });
+    }
     $("#footer").innerHTML = footer();
     initSection();
     if (keepScroll) scrollTo(0, y);
@@ -659,7 +748,7 @@
     const defaults = await defaultsP;
     if (!saved) return defaults;
     // Si lo guardado es de una versión anterior (p. ej. sin blog), completa lo que falte
-    for (const k of Object.keys(defaults)) if (!(k in saved)) saved[k] = defaults[k];
+    for (const k of Object.keys(defaults)) if (k !== "contentVersion" && !(k in saved)) saved[k] = defaults[k];
     return saved;
   }
 
