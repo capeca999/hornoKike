@@ -497,3 +497,20 @@ body[data-lang="en"] .field--tr input, body[data-lang="en"] .field--tr textarea 
 .nav-item--maint .maint-on { background: var(--danger); color: #fff; }
 .nav-item--maint.is-maint-on:not(.is-active) { background: #fdf0ef; box-shadow: inset 3px 0 0 var(--danger); }
 @media (max-width: 760px) { .maint-badge { font-size: 0; padding: .5em; } .maint-badge::before { content: "🔧"; font-size: .9rem; } }
+
+/* Pin del mapa */
+.pin__tools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.pin__tools input { flex: 1 1 220px; min-width: 0; }
+.pin__map { height: 320px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--cream); display: grid; place-items: center; z-index: 0; position: relative; }
+.pin__loading { color: var(--muted); font-size: .88rem; padding: 20px; text-align: center; }
+.pin__coords { display: block; margin-top: 8px; font-size: .84rem; color: var(--muted); }
+.pin__coords.is-set { color: var(--ok); font-weight: 700; }
+.pin__hint:not(:empty) { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: #fff3dd; color: #7a4a00; font-size: .84rem; }
+.pin__adv { margin-top: 12px; }
+.pin__adv > summary { cursor: pointer; font-size: .82rem; font-weight: 700; color: var(--burgundy); }
+.pin__adv[open] > summary { margin-bottom: 10px; }
+.pin__icon { background: none; border: 0; }
+.pin__icon span { position: absolute; left: 3px; top: 0; width: 24px; height: 24px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); transform-origin: center;
+  background: #ea4335; border: 2px solid #b31412; box-shadow: 0 3px 6px rgba(0, 0, 0, .35); top: 4px; }
+.pin__icon span::after { content: ""; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: #7d0f0d; }
+.leaflet-container { font: inherit; }

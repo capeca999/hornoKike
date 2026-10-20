@@ -73,7 +73,7 @@ ADMIN_PASSWORD=1234 LOCAL_STORAGE_DIR=./.local-storage npm run dev
 | `index.html`, `css/styles.css`, `js/site.js` | Web pública; se dibuja a partir del contenido |
 | `legal/page.html` | Páginas legales (`/legal/aviso-legal`, `/legal/politica-de-privacidad`, `/legal/politica-de-cookies`, `/legal/alergenos`), editables en el panel → «Textos legales» |
 | `blog/index.html`, `blog/post.html` | Página `/blog` y página de cada noticia (`vercel.json` redirige `/blog/:slug`) |
-| `admin/vendor/` | Editor de texto enriquecido (Quill 2, licencia BSD) |
+| `admin/vendor/` | Editor de texto enriquecido (Quill 2, licencia BSD) y mapa para colocar el pin (Leaflet, licencia BSD; mapa de OpenStreetMap, solo en el panel) |
 | `img/fotos/visita/` | Fotos del recorrido virtual «Visita el horno» (escenas y miniaturas) |
 | `img/fotos/` | Fotos reales del horno, ya recortadas y optimizadas (WebP). Se sirven desde Vercel |
 | `content/default.json` | Contenido inicial (se usa hasta el primer guardado) |

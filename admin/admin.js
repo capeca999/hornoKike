@@ -322,8 +322,7 @@
           { key: "schedule", label: "Horario", type: "schedule" },
           { type: "group", label: "Mapa de Google", fields: [
             { key: "showMap", label: "Mostrar el mapa", type: "toggle" },
-            { key: "map", label: "Ubicación en el mapa", type: "textarea", rows: 2, placeholder: "39.48570, -0.36891",
-              help: "Pega las coordenadas (en Google Maps: clic derecho sobre el horno → clic en los números para copiarlos) o el código de Compartir → Insertar un mapa. Si lo dejas vacío, se busca la dirección." },
+            { key: "map", label: "Dónde va el pin rojo", type: "mappin" },
             { key: "mapsUrl", label: "Enlace del botón «Cómo llegar» (opcional)", type: "text", help: "En Google Maps: Compartir → Copiar enlace. Si lo dejas vacío, se calcula solo." },
           ]},
         ],
@@ -712,6 +711,7 @@
         return wrap(f, ta, "", obj);
       }
       case "season": return renderSeason(f, obj);
+      case "mappin": return renderMapPin(f, obj);
       case "allergens": return renderAllergens(f, obj);
       case "select": {
         const opts = f.options(state.content);
@@ -924,6 +924,97 @@
     draw();
     return h("div", { class: "field" }, h("span", { class: "field__label" }, f.label), box,
       h("span", { class: "field__help" }, "Cada punto es un círculo en la foto con un texto. Al pulsarlo en la web, te lleva a la sala elegida."));
+  }
+
+  /* ---------- Pin del mapa (se coloca pinchando o arrastrando sobre un mapa) ---------- */
+  let leafletP = null;
+  const loadLeaflet = () => leafletP || (leafletP = new Promise((resolve, reject) => {
+    if (window.L) return resolve(window.L);
+    document.head.append(h("link", { rel: "stylesheet", href: "/admin/vendor/leaflet/leaflet.css" }));
+    const sc = h("script", { src: "/admin/vendor/leaflet/leaflet.js" });
+    sc.onload = () => resolve(window.L); sc.onerror = () => { leafletP = null; reject(new Error("leaflet")); };
+    document.head.append(sc);
+  }));
+  // Lee coordenadas de: "39.4857, -0.3689", un enlace con @lat,lng o el código de «Insertar un mapa» (!2d lng !3d lat)
+  const parseCoords = (v) => {
+    v = String(v || "");
+    let m = v.match(/(-?\d{1,2}\.\d{3,})\s*,\s*(-?\d{1,3}\.\d{3,})/); if (m) return [+m[1], +m[2]];
+    m = v.match(/!2d(-?\d+\.\d+)!3d(-?\d+\.\d+)/); if (m) return [+m[2], +m[1]];
+    m = v.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/); if (m) return [+m[1], +m[2]];
+    return null;
+  };
+  function renderMapPin(f, st) {
+    const HORNO = [39.4857, -0.36891]; // C/ de Molinell, 10 (aproximado)
+    const mapEl = h("div", { class: "pin__map" }, h("span", { class: "pin__loading" }, "Cargando mapa…"));
+    const coordsTxt = h("span", { class: "pin__coords" });
+    const search = h("input", { type: "search", placeholder: "Buscar una dirección: C/ de Molinell, 10, València" });
+    const hint = h("div", { class: "pin__hint" });
+    const adv = h("textarea", { rows: 2, placeholder: "39.48570, -0.36891" });
+    adv.value = st.map || "";
+    let map = null, marker = null;
+
+    const drawCoords = () => {
+      const c = parseCoords(st.map);
+      coordsTxt.textContent = c ? `📍 Pin fijado en ${c[0].toFixed(5)}, ${c[1].toFixed(5)}` : "Todavía no has fijado el pin: Google buscará la dirección escrita arriba.";
+      coordsTxt.classList.toggle("is-set", !!c);
+    };
+    const drawHint = () => {
+      hint.innerHTML = "";
+      if (!st.mapsUrl || !parseCoords(st.map)) return;
+      hint.append(h("span", {}, "El botón «Cómo llegar» usa un enlace propio de Google Maps (en el campo de abajo), no este pin."),
+        h("button", { type: "button", class: "btn btn--small", onclick: () => { st.mapsUrl = ""; changed({ rerender: true }); toast("Listo: «Cómo llegar» llevará al pin."); } }, "Que «Cómo llegar» lleve a este pin"));
+    };
+    const setPos = (lat, lng, { save = true, zoom = false } = {}) => {
+      lat = Math.round(lat * 1e5) / 1e5; lng = Math.round(lng * 1e5) / 1e5;
+      marker.setLatLng([lat, lng]);
+      if (zoom) map.setView([lat, lng], 18);
+      if (save) { st.map = `${lat}, ${lng}`; adv.value = st.map; changed(); drawHint(); }
+      drawCoords();
+    };
+    const geocode = async (q) => {
+      const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=es&accept-language=es&q=${encodeURIComponent(q)}`);
+      const [hit] = await r.json();
+      return hit ? [+hit.lat, +hit.lon] : null;
+    };
+    const doSearch = async () => {
+      const q = search.value.trim(); if (!q || !map) return;
+      try { const c = await geocode(q); if (!c) return toast("No encuentro esa dirección. Prueba con la calle, el número y la ciudad.", "error"); setPos(c[0], c[1], { zoom: true }); toast("Pin movido. Si no está justo encima del horno, arrástralo."); }
+      catch { toast("No se ha podido buscar ahora. Mueve el pin a mano.", "error"); }
+    };
+    search.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); doSearch(); } });
+    adv.addEventListener("input", () => {
+      st.map = adv.value; changed(); drawCoords(); drawHint();
+      const c = parseCoords(adv.value); if (c && marker) { marker.setLatLng(c); map.setView(c, 18); }
+    });
+
+    loadLeaflet().then((L) => {
+      mapEl.innerHTML = "";
+      const start = parseCoords(st.map);
+      map = L.map(mapEl, { scrollWheelZoom: false, zoomControl: true }).setView(start || HORNO, start ? 18 : 17);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(map);
+      marker = L.marker(start || HORNO, { draggable: true, autoPan: true, title: "Arrástrame",
+        icon: L.divIcon({ className: "pin__icon", html: "<span></span>", iconSize: [30, 36], iconAnchor: [15, 33] }) }).addTo(map);
+      marker.on("dragend", () => { const p = marker.getLatLng(); setPos(p.lat, p.lng); });
+      map.on("click", (e) => setPos(e.latlng.lat, e.latlng.lng));
+      new ResizeObserver(() => map.invalidateSize()).observe(mapEl);
+      // Sin pin guardado: se centra en la dirección escrita (sin guardar nada hasta que lo muevas)
+      if (!start && st.address) geocode(String(st.address).replace(/\s*[·•|]\s*|\s*\n+\s*/g, ", ")).then((c) => c && setPos(c[0], c[1], { save: false, zoom: true })).catch(() => {});
+    }).catch(() => { mapEl.innerHTML = ""; mapEl.append(h("span", { class: "pin__loading" }, "No se ha podido cargar el mapa. Puedes pegar las coordenadas en «Opciones avanzadas».")); });
+
+    drawCoords(); drawHint();
+    return h("div", { class: "field" },
+      h("span", { class: "field__label" }, f.label),
+      h("div", { class: "pin__tools" }, search, h("button", { type: "button", class: "btn btn--small", onclick: doSearch }, "Buscar"),
+        navigator.geolocation ? h("button", { type: "button", class: "btn btn--small btn--ghost", title: "Si estás dentro del horno con el móvil", onclick: () => {
+          navigator.geolocation.getCurrentPosition((p) => { if (map) { setPos(p.coords.latitude, p.coords.longitude, { zoom: true }); toast("Pin puesto donde estás. Revisa que esté justo encima del horno."); } },
+            () => toast("No se ha podido saber dónde estás (revisa los permisos de ubicación).", "error"), { enableHighAccuracy: true, timeout: 10000 });
+        } }, "📍 Estoy en el horno") : ""),
+      mapEl, coordsTxt,
+      h("span", { class: "field__help" }, "Pincha en el mapa o arrastra el pin rojo hasta la puerta del horno. Google pondrá su pin justo ahí. Se publica al guardar."),
+      hint,
+      h("details", { class: "pin__adv" }, h("summary", {}, "Opciones avanzadas"),
+        h("label", { class: "field" }, h("span", { class: "field__label" }, "Coordenadas o código de «Insertar un mapa» de Google"), adv,
+          h("span", { class: "field__help" }, "En Google Maps: clic derecho sobre el horno → clic en los números para copiarlos, y pégalos aquí."))));
   }
 
   /* ---------- Temporada de un producto ---------- */
