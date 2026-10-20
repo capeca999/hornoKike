@@ -117,6 +117,14 @@
     ["frutos", ["frutos", "cacahuetes"], { es: "Sin frutos secos", va: "Sense fruits secs", en: "Nut-free" }],
   ];
 
+  /* Textos fijos de la página de mantenimiento */
+  const MNT_T = {
+    es: { stages: ["Amasando…", "Fermentando la masa…", "Horneando…", "Dorando la corteza…", "Casi lista…", "¡Saliendo del horno!"], where: "Dónde", call: "Llámanos", pill: "La web está <b>en mantenimiento</b>: solo la ves tú porque has entrado en el panel.", panel: "Ir al panel", progress: "Progreso" },
+    va: { stages: ["Pastant…", "Fermentant la massa…", "Enfornant…", "Daurant la crosta…", "Quasi a punt…", "Eixint del forn!"], where: "On", call: "Telefona'ns", pill: "La web està <b>en manteniment</b>: només la veus tu perquè has entrat al panell.", panel: "Anar al panell", progress: "Progrés" },
+    en: { stages: ["Kneading…", "Proving the dough…", "Baking…", "Browning the crust…", "Almost ready…", "Fresh out of the oven!"], where: "Where", call: "Call us", pill: "The website is <b>under maintenance</b>: only you can see it because you're logged into the panel.", panel: "Go to panel", progress: "Progress" },
+  };
+  const mt = (k) => (MNT_T[LANG] || MNT_T.es)[k];
+
   // Devuelve una copia del contenido con los textos en el idioma elegido
   function localize(obj, lang) {
     if (Array.isArray(obj)) return obj.map((x) => localize(x, lang));
@@ -687,6 +695,7 @@
       });
     });
     applyDesign(C.design || {});
+    if (renderMaintenance()) return;
     const g = C.general || {};
     if (g.siteTitle) document.title = g.siteTitle;
     if (g.siteDescription) $('meta[name="description"]')?.setAttribute("content", g.siteDescription);
@@ -719,6 +728,92 @@
     seo();
     initSection();
     if (keepScroll) scrollTo(0, y);
+  }
+
+  /* =========================================================
+     MODO MANTENIMIENTO (se enciende en /admin → Mantenimiento)
+     Quien ha entrado en el panel en este navegador sigue viendo la web normal, con un aviso.
+     ========================================================= */
+  let previewMaint = false, mntRaf = 0;
+  const adminBypass = () => { try { return Number(localStorage.getItem("fa-admin") || 0) > Date.now(); } catch { return false; } };
+  function renderMaintenance() {
+    const M = C.maintenance || {};
+    const on = isPreview ? previewMaint : !!M.on && !adminBypass();
+    cancelAnimationFrame(mntRaf);
+    document.body.classList.toggle("is-maint", on);
+    $(".maint-pill")?.remove();
+    if (!on) {
+      if (M.on && !isPreview) document.body.insertAdjacentHTML("beforeend", `<div class="maint-pill" role="status"><span aria-hidden="true">🔧</span><span>${mt("pill")} <a href="/admin#maintenance">${mt("panel")}</a></span></div>`);
+      $(".mnt")?.remove();
+      return false;
+    }
+    const g = C.general || {}, st = (C.stores?.items || [])[0] || {};
+    let box = $(".mnt");
+    if (!box) { box = document.createElement("div"); box.className = "mnt"; document.body.prepend(box); }
+    document.title = `${siteName()} · ${M.title || ""} ${M.titleAccent || ""}`.trim();
+    const phone = [g.phone, st.phone].find((x) => x && !/000[\s.]?000/.test(x));
+    box.innerHTML = `
+      <div class="mnt__page">
+        <header class="mnt__head">
+          <img src="${esc(g.logoLight || "/img/logo-light.png")}" alt="Forn Almenar 1952" />
+          ${langSwitch("lang--mnt")}
+        </header>
+        <main class="mnt__main">
+          <section>
+            ${M.eyebrow ? `<p class="eyebrow">${esc(M.eyebrow)}</p>` : ""}
+            <h1>${lines(M.title)}${M.titleAccent ? `<em>${esc(M.titleAccent)}</em>` : ""}</h1>
+            ${M.text ? `<p class="mnt__lead">${lines(M.text)}</p>` : ""}
+            <div class="mnt__progress" aria-live="polite">
+              <div class="mnt__ptop"><span class="mnt__stage" data-mnt-stage></span><span class="mnt__pct" data-mnt-pct>0%</span></div>
+              <div class="mnt__bar" role="progressbar" aria-label="${mt("progress")}" aria-valuemin="0" aria-valuemax="100" data-mnt-bar><div class="mnt__fill" data-mnt-fill></div></div>
+            </div>
+          </section>
+          <div class="oven-wrap" aria-hidden="true">
+            <div class="steam"><span></span><span></span><span></span></div>
+            <div class="oven">
+              <div class="panel"><div class="knobs"><span class="knob"></span><span class="knob"></span></div><span class="lamp"></span><span class="display" data-mnt-temp>20°C</span></div>
+              <div class="door"><div class="handle"></div>
+                <div class="window">
+                  <span class="coil coil--top"></span><span class="rack"></span>
+                  <div class="bread"><svg viewBox="0 0 220 110">
+                    <path class="crust" d="M8 104 C 6 60, 46 18, 110 16 C 174 18, 214 60, 212 104 Z" />
+                    <path class="crust-top" d="M30 70 C 44 38, 76 26, 110 25 C 144 26, 176 38, 190 70 C 160 56, 140 52, 110 52 C 80 52, 60 56, 30 70 Z" opacity=".75" />
+                    <g fill="none" stroke-width="5" stroke-linecap="round" class="score"><path d="M62 52 C 74 40, 88 36, 100 36" /><path d="M98 44 C 110 32, 124 28, 138 30" /><path d="M134 44 C 146 36, 156 36, 166 40" /></g>
+                  </svg></div>
+                  <span class="coil coil--bottom"></span><span class="shimmer"></span>
+                </div>
+              </div>
+            </div>
+            <div class="floor-glow"></div>
+          </div>
+        </main>
+        <footer class="mnt__foot">
+          ${M.showContact !== false && st.address ? `<span><strong>${mt("where")}</strong>${esc(cleanAddr(st.address))}</span>
+          <span><a href="${esc(directionsUrl(st))}" target="_blank" rel="noopener">${t("directions")} →</a></span>` : ""}
+          ${M.showContact !== false && phone ? `<span><strong>${mt("call")}</strong><a href="${telLink(phone)}">${esc(phone)}</a></span>` : ""}
+          <span>© ${new Date().getFullYear()} Forn Almenar · ${t("since")}</span>
+        </footer>
+      </div>`;
+    // Los "drawLang" del selector
+    $$("[data-lang]", box).forEach((a) => a.classList.toggle("is-active", a.dataset.lang === LANG));
+    // Barra, texto y temperatura sincronizados con el pan (ciclo de 12 s)
+    const stage = $("[data-mnt-stage]", box), pct = $("[data-mnt-pct]", box), fill = $("[data-mnt-fill]", box), bar = $("[data-mnt-bar]", box), temp = $("[data-mnt-temp]", box);
+    const steps = [0, 0.15, 0.38, 0.62, 0.84, 0.96], names = mt("stages");
+    let last = "";
+    const setStage = (txt) => { if (txt !== last) { last = txt; stage.innerHTML = `<span>${esc(txt)}</span>`; } };
+    if (reduceMotion) { fill.style.width = "85%"; pct.textContent = "85%"; bar.setAttribute("aria-valuenow", 85); setStage(names[2]); temp.textContent = "220°C"; }
+    else {
+      const t0 = performance.now();
+      const tick = (now) => {
+        const p = ((now - t0) % 12000) / 12000, v = Math.min(99, Math.round(p * 104));
+        fill.style.width = v + "%"; pct.textContent = v + "%"; bar.setAttribute("aria-valuenow", v);
+        for (let i = steps.length - 1; i >= 0; i--) if (p >= steps[i]) { setStage(names[i]); break; }
+        temp.textContent = Math.round(p < 0.15 ? 20 + (p / 0.15) * 200 : 220 + Math.sin(now / 700) * 3) + "°C";
+        mntRaf = requestAnimationFrame(tick);
+      };
+      mntRaf = requestAnimationFrame(tick);
+    }
+    return true;
   }
 
   /* Cambiar de idioma sin recargar la página */
@@ -1321,6 +1416,7 @@
         previewPostId = e.data.postId || null;
         previewPageId = e.data.pageId || null;
         if (LANGS.includes(e.data.lang)) LANG = e.data.lang;
+        previewMaint = !!e.data.maintenance;
         render(e.data.content, { keepScroll: !first });
         if (first) { first = false; done(); }
       }

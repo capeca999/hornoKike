@@ -487,3 +487,13 @@ body[data-lang="en"] .field--tr input, body[data-lang="en"] .field--tr textarea 
   #new-post-btn, .topbar__brand { display: none; }
   .topbar__actions .btn { padding-inline: .8em; }
 }
+
+/* Mantenimiento */
+.maint-badge { border: 0; cursor: pointer; font: 700 .78rem/1 var(--f-body); padding: .55em .9em; border-radius: 999px; background: #fde3e1; color: var(--danger); animation: maintPulse 2s ease-in-out infinite; }
+.maint-badge[hidden] { display: none; }
+@keyframes maintPulse { 50% { box-shadow: 0 0 0 5px rgba(179, 66, 60, .15); } }
+.nav-item--maint em { font-style: normal; font-size: .62rem; font-weight: 700; letter-spacing: .08em; padding: .25em .6em; border-radius: 999px; margin-left: 8px; vertical-align: middle; }
+.nav-item--maint .maint-off { background: var(--cream); color: var(--muted); text-transform: uppercase; }
+.nav-item--maint .maint-on { background: var(--danger); color: #fff; }
+.nav-item--maint.is-maint-on:not(.is-active) { background: #fdf0ef; box-shadow: inset 3px 0 0 var(--danger); }
+@media (max-width: 760px) { .maint-badge { font-size: 0; padding: .5em; } .maint-badge::before { content: "🔧"; font-size: .9rem; } }

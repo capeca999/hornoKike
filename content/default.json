@@ -1268,5 +1268,21 @@
         "to": "2027-01-06"
       }
     ]
+  },
+  "maintenance": {
+    "on": false,
+    "showContact": true,
+    "eyebrow": "Volvemos enseguida",
+    "eyebrow_va": "Tornem de seguida",
+    "eyebrow_en": "Back very soon",
+    "title": "Estamos horneando",
+    "title_va": "Estem enfornant",
+    "title_en": "We're baking",
+    "titleAccent": "algo nuevo para la web",
+    "titleAccent_va": "alguna cosa nova per al web",
+    "titleAccent_en": "something new for the website",
+    "text": "Como el buen pan, las cosas bien hechas necesitan su tiempo. Mientras termina de cocerse, te esperamos en el horno de siempre.",
+    "text_va": "Com el bon pa, les coses ben fetes necessiten el seu temps. Mentre acaba de coure's, t'esperem al forn de sempre.",
+    "text_en": "Like good bread, things done right take their time. While it finishes baking, come and see us at the bakery as always."
   }
 }

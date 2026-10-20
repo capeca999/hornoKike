@@ -122,6 +122,21 @@
       ],
     },
     {
+      id: "maintenance", name: "Mantenimiento", desc: "Cerrar la web un rato con el horno horneándose", anchor: "top",
+      fields: [
+        { key: "on", label: "Web en mantenimiento", type: "toggle",
+          help: "Encendido: los visitantes solo ven la página del horno horneándose (en los tres idiomas). Tú, en este navegador, sigues viendo la web normal con un aviso. Se aplica al pulsar «Guardar cambios»." },
+        { type: "note", text: "La vista previa de la derecha te enseña cómo se ve la página de mantenimiento mientras estás en esta sección." },
+        { type: "group", label: "Textos de la página", fields: [
+          { key: "eyebrow", label: "Antetítulo", type: "text" },
+          { key: "title", label: "Título", type: "text" },
+          { key: "titleAccent", label: "Título en cursiva", type: "text" },
+          { key: "text", label: "Texto", type: "textarea", rows: 3 },
+          { key: "showContact", label: "Mostrar dirección, «Cómo llegar» y teléfono abajo", type: "toggle" },
+        ]},
+      ],
+    },
+    {
       id: "notice", name: "Aviso arriba", desc: "Mensaje corto en la franja de arriba, con fechas", anchor: "top",
       fields: [
         { key: "show", label: "Mostrar avisos en la web", type: "toggle", help: "Apágalo para quitar todos los avisos de golpe." },
@@ -417,6 +432,7 @@
     try {
       const { token } = await api("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: f.password.value, captcha: captcha.token }) });
       state.token = token; sessionStorage.setItem("fa-token", token);
+      markAdmin();
       f.reset();
       start();
     } catch (ex) { err.textContent = ex.message; }
@@ -424,10 +440,19 @@
     btn.disabled = false; btn.textContent = "Entrar";
   });
 
+  // Marca este navegador como "del panel" (12 h): así ve la web aunque esté en mantenimiento
+  const markAdmin = () => { try { localStorage.setItem("fa-admin", String(Date.now() + 12 * 3600 * 1000)); } catch {} };
+  function updateMaintBadge() {
+    const on = state.content?.maintenance?.on === true;
+    let b = $("#maint-badge");
+    if (!b) { b = h("button", { id: "maint-badge", class: "maint-badge", type: "button", onclick: () => goSection("maintenance") }, "🔧 Web en mantenimiento"); $("#status").after(b); }
+    b.hidden = !on;
+  }
   function showLogin() { $("#login").hidden = false; setupCaptcha(); }
 
   function logout(expired) {
     state.token = ""; sessionStorage.removeItem("fa-token");
+    if (!expired) try { localStorage.removeItem("fa-admin"); } catch {}
     $("#app").hidden = true; showLogin();
     if (expired) $(".login__error").textContent = "La sesión ha caducado. Vuelve a entrar (tus cambios sin guardar siguen aquí).";
   }
@@ -459,7 +484,8 @@
     }
     const hash = location.hash.slice(1);
     if (SECTIONS.some((s) => s.id === hash)) state.section = hash;
-    renderNav(); renderEditor(); updateStatus(); sendPreview();
+    markAdmin();
+    renderNav(); renderEditor(); updateStatus(); sendPreview(); updateMaintBadge();
     offerUpdate();
   }
 
@@ -556,6 +582,12 @@
     SECTIONS.filter((s) => s.id !== "blog" && s.id !== "design").forEach((s) => {
       if (s.id === "backups") nav.append(h("p", { class: "nav-label" }, "Seguridad"));
       const hidden = state.content[s.id]?.show === false;
+      if (s.id === "maintenance") {
+        const on = state.content.maintenance?.on === true;
+        nav.append(h("button", { class: `nav-item nav-item--maint ${s.id === state.section ? "is-active" : ""} ${on ? "is-maint-on" : ""}`, onclick: () => goSection(s.id) },
+          h("span", { class: "nav-item__name" }, "🔧 " + s.name, h("em", { class: on ? "maint-on" : "maint-off" }, on ? "ACTIVADO" : "apagado")), h("span", { class: "nav-item__desc" }, s.desc)));
+        return;
+      }
       nav.append(h("button", {
         class: `nav-item ${s.id === state.section ? "is-active" : ""} ${hidden ? "is-off" : ""}`,
         onclick: () => goSection(s.id),
@@ -689,8 +721,11 @@
         return wrap(f, sel);
       }
       case "toggle": {
-        const cb = h("input", { type: "checkbox", checked: obj[f.key] !== false });
-        cb.addEventListener("change", () => { obj[f.key] = cb.checked; changed(); if (f.key === "show") renderNav(); });
+        const cb = h("input", { type: "checkbox", checked: f.key === "on" ? obj[f.key] === true : obj[f.key] !== false });
+        cb.addEventListener("change", () => {
+          if (f.key === "on" && cb.checked && !confirm("¿Poner la web en mantenimiento? Al guardar, los visitantes solo verán la página del horno horneándose.")) { cb.checked = false; return; }
+          obj[f.key] = cb.checked; changed(); if (f.key === "show" || f.key === "on") { renderNav(); updateMaintBadge(); }
+        });
         return h("label", { class: `toggle ${f.key === "show" ? "toggle--main" : ""}` }, cb, h("span", { class: "toggle__ui" }),
           h("span", { class: "toggle__text" }, f.label, f.help ? h("small", {}, f.help) : ""));
       }
@@ -1475,7 +1510,7 @@
   const frame = $("#preview-frame");
   const postPreview = (msg) => frame.contentWindow?.postMessage(msg, location.origin);
   const sendPreview = () => {
-    if (state.previewReady && state.content) postPreview({ type: "preview", lang: state.lang, content: state.content, postId: state.section === "blog" ? state.blogPost : null,
+    if (state.previewReady && state.content) postPreview({ type: "preview", lang: state.lang, maintenance: state.section === "maintenance", content: state.content, postId: state.section === "blog" ? state.blogPost : null,
       pageId: state.section === "legal" ? (state.legalPage || state.content.legal?.pages?.[0]?.id) : null });
   };
   function setPreviewPath(path) {

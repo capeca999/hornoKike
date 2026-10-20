@@ -96,6 +96,8 @@ Reglamento UE 1169/2011). Si `allergens` no existe, el producto está «sin revi
 nunca aparece en los filtros «Sin gluten / leche / huevo / frutos secos».
 
 **Temporada:** `season: { on, from: "MM-DD", to: "MM-DD" }` (puede cruzar el año, p. ej. 20/12 → 06/01).
+**Mantenimiento:** `maintenance.on = true` hace que los visitantes vean solo la página del horno horneándose
+(en los 3 idiomas). El navegador donde se ha entrado al panel sigue viendo la web normal durante 12 h, con un aviso.
 **Aviso superior:** `notice.items[]` con `active`, `text`, `link`, `from`, `to` (fechas opcionales, hora de Madrid).
 **Google:** la web añade los datos estructurados `Bakery` (dirección, coordenadas, horario, teléfono, fotos)
 y `BlogPosting` en cada noticia.
